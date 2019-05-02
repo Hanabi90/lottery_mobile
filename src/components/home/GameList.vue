@@ -2,7 +2,7 @@
     <div id="game-list-container">
         <ul class="container">
             <li class="gameItem" v-for="game in gameList" :key="game.name">
-                <router-link to="/">
+                <router-link to="/navview">
                     <img :src="require(`../../assets/images/${game.icon}.png`)" >
                     <div class="name">{{game.name}}</div>
                 </router-link>

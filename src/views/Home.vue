@@ -48,13 +48,13 @@
                     <i class="icon"></i>
                     <span>钱包</span>
                 </router-link>
-                <router-link class="navItem navItem_login" to="/" tag="li">
+                <li class="navItem navItem_login" @click="show=true">
                     <i class="icon"></i>
-                    <span @click="show=true">登录</span>
-                </router-link>
+                    <span >登录</span>
+                </li>
             </ul>
         </div>
-        <Popup class="popup" v-model="show" position="bottom">
+        <Popup ref="popup" @closed="fixPop" class="popup" v-model="show" position="bottom">
             <div class="form">
                 <form>
                     <div class="form_group">
@@ -66,8 +66,8 @@
                     </div>
                     <div class="form_tip"></div>
                     <div class="form_ctl">
-                        <label class="label">
-                            <i class="form_ckeckbox active">
+                        <label class="label" >
+                            <i :class="[{'active':isCheckBoxActive},'form_ckeckbox']" @click="rememberInfo">
                                 <input type="checkbox" value="on" checked>
                             </i>
                             <!-- -->
@@ -78,6 +78,7 @@
                     <button type="button" class="button submit" style="visibility:initial">登录</button>
                 </form>
             </div>
+             <div class="login_foot">没有账号？<router-link to="/">请新建一个账号</router-link></div>
         </Popup>
     </div>
 </template>
@@ -92,10 +93,11 @@ import 'vant/lib/popup/style/'
 export default {
     data() {
         return {
+            isCheckBoxActive:false,
             show: false,
             swiperOption: {
                 slidesPerView: 1,
-                spaceBetween: 30,
+                spaceBetween: 0,
                 loop: true,
                 pagination: {
                     el: '.swiper-pagination',
@@ -114,6 +116,16 @@ export default {
                 '<<沙巴体育维护公告》沙巴体育将于 4 月 24 日 13:30 至 16:00 进行维护>>                              '
         }
     },
+    methods:{
+        fixPop(){
+            setTimeout(() => {
+                this.$refs.popup.inited = false
+            }, 100);
+        },
+        rememberInfo(){
+            this.isCheckBoxActive = !this.isCheckBoxActive
+        }
+    },
     components: {
         swiper,
         swiperSlide,
@@ -130,6 +142,8 @@ export default {
 .popup
     .form
         padding 26px 38px
+        color: #959595;
+        font-size 12px
         .form_group
             background-color: #eee
             border-radius: 3px
@@ -145,13 +159,41 @@ export default {
             font-size 12px
         .form_ckeckbox
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 18px;
+            height: 18px;
+            overflow hidden
             background-repeat: no-repeat;
             background-position: center top;
             background-size: 100%;
             background-image: url('../assets/images/checkbox.png');
             vertical-align: -6px;
+            &.active
+                background-position center bottom
+        .form_ctl
+            display flex
+            justify-content space-between
+            line-height: 18px
+            margin 22px 0 
+        .submit
+            width: 100%;
+            background-color: #c32026;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            height: 1.20313rem;
+            font-size: .3125rem;
+            height 49.8px
+    .login_foot
+        font-size: .34375rem;
+        color: #959595;
+        text-align: center;
+        line-height: 20px;
+        padding 20px 0
+        background-color: #fcfcfc;
+        border-top: 1px solid #eee;
+        a
+            color #959595
+            text-decoration underline
 
 .loginBox
     height 150px
@@ -235,6 +277,7 @@ export default {
     height 187.5px
     background-color yellowgreen
     position relative
+    overflow hidden
     .marquee
         position absolute
         bottom 0
