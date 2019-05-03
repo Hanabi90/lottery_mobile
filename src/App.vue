@@ -13,8 +13,10 @@ export default {
 </script>
 <style lang="stylus">
 #app
+    height 100%
     font-family 'Microsoft yahei'
     width 375px
+    overflow-x: hidden;
 .swiper-pagination-bullet.swiper-pagination-bullet-active
     background #fff
     transform scale(1.5, 1.5)

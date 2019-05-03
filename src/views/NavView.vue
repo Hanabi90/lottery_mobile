@@ -1,6 +1,7 @@
 <template>
-  <div id="navview">
-      <div class="tab">
+  <div id="navview" :class="{active:isLeftOrMain}">
+      <div class="left-content">
+          <div class="tab">
           <router-link to="/" class="goHome"></router-link>
           <ul class="tabList">
               <li @click="tabActive(index)"  :class="[{'active':tabitem.active},'tabItem']" v-for="(tabitem,index) in tablist" :key="tabitem.name + index">
@@ -10,15 +11,16 @@
           </ul>
       </div>
       <div class="listTeam">
-          <div class="title">
-              <div class="gamename">快三</div>
-              <div class="back"></div>
+          <div class="title" ref="title">
+              <div class="gamename">{{title}}</div>
+              <div class="back" @click="tabLeftMain"></div>
           </div>
           <div class="list-container">
                 <template v-for="(listitem,outerIndex) in tablist" >
-                    <transition name="fade">
+                    
                         <div v-if="listitem.active">
-                            <ul v-for="(gameitem,index) in listitem.gamelist" :key="gameitem.name">
+                            <transition-group name="bounce" v-on:enter="enter" v-bind:css="false">
+                            <ul class="outerWrap" v-for="(gameitem,index) in listitem.gamelist" :key="gameitem.name">
                                 <li class="gameitem">
                                     <a @click="openList(outerIndex,index)">
                                         <div>
@@ -43,18 +45,27 @@
                                     </ul>
                                 </li>
                             </ul>
+                            </transition-group>
                         </div>
-                    </transition>
+                    
                 </template>
             </div>
+      </div>
+      </div>
+      <div class="main-content" @click="tabLeftMain">
+          <Dice></Dice>
       </div>
   </div>
 </template>
 
 <script>
+import Dice from '../components/lottery/Dice'
 export default {
   data () {
     return {
+        count:0,
+        title:'体育',
+        isLeftOrMain:true,
       tablist:[
           {name:'体育',active:true,gamelist:[
               {name:'足球',rest:50,active:false,list:[
@@ -108,10 +119,32 @@ export default {
                   {title:'优胜冠军',time:137},
               ]}
           ]},
-          {name:'PK拾',active:false},
-          {name:'快乐彩',active:false},
-          {name:'时时彩',active:false},
-          {name:'世界乐透',active:false},
+          {name:'PK拾',active:false,gamelist:[
+              {name:'test1',rest:50,active:false,},
+              {name:'test2',rest:50,active:false,},
+              {name:'test3',rest:50,active:false,}
+          ]},
+          {name:'快乐彩',active:false,gamelist:[
+              {name:'test4',rest:50,active:false,},
+              {name:'test5',rest:50,active:false,},
+              {name:'test6',rest:50,active:false,}
+          ]},
+          {name:'时时彩',active:false,gamelist:[
+              {name:'test7',rest:50,active:false,},
+              {name:'test8',rest:50,active:false,},
+              {name:'test9',rest:50,active:false,}
+          ]},
+          {name:'世界乐透',active:false,gamelist:[
+              {name:'test10',rest:50,active:false,},
+              {name:'test11',rest:50,active:false,},
+              {name:'test12',rest:50,active:false,},
+              {name:'test13',rest:50,active:false,},
+              {name:'test14',rest:50,active:false,},
+              {name:'test15',rest:50,active:false,},
+              {name:'test16',rest:50,active:false,},
+              {name:'test17',rest:50,active:false,},
+              {name:'test18',rest:50,active:false,}
+          ]},
       ],
       gamelist:[
           {}
@@ -119,29 +152,60 @@ export default {
     }
   },
   methods: {
+      tabLeftMain(){
+          this.isLeftOrMain = false
+      },
       tabActive(i){
           for (let i = 0; i < this.tablist.length; i++) {
               const item = this.tablist[i];
               item.active = false
           }
             this.tablist[i].active = true
+            this.title = this.tablist[i].name
       },
       openList(oi,i){
           this.tablist[oi].gamelist[i].active = !this.tablist[oi].gamelist[i].active
-      }
+      },
+      enter(el,done){
+          var len = el.parentNode.childNodes.length
+          var title = this.$refs.title
+          title.style.transform = `translateX(-100%)`
+          title.style.transition = 'none'
+          
+          setTimeout(() => {
+              if(this.count == 0){
+                  title.style.transition = 'all 0.4s ease-out'
+                  title.style.transform = `translateX(-0%)`
+              }
+                  el.style.transform=`translateX(0)`
+          },this.count*100);
+              this.count+=1
+          if (this.count>=len) {
+              this.count = 0
+          }
+      },
   },
+  components:{
+      Dice
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
-.fade-enter-active,  {
-  transition: opacity .2s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 #navview
-    height 100vh
+    height 100%
+    transition 0.4s all 
+    transform translateX(-50%)
+    display: flex;
+    width: 200%;
+    &.active
+        transform translateX(0)
+    .left-content
+        width 100vw
+        height 100%
+    .main-content
+        width: 100vw;
+        // background: #000;
     
 .tab
     width 50px
@@ -151,6 +215,7 @@ export default {
     position fixed
     top 0
     left 0
+    z-index 2
     .goHome
         width 48px
         height 50px
@@ -193,8 +258,12 @@ export default {
     height 100%
     padding-left 50px
     &:nth-child(2)
-        margin-top: 50px;
+        padding-top: 50px;
     .list-container
+        ul.outerWrap
+            transition all 0.4s ease-out
+            transform translateX(-100%)
+            transition-delay 0.4s
         .wraper
             display none
         &>.active
@@ -248,11 +317,11 @@ export default {
         display flex
         justify-content space-between
         line-height 50px
-        transition: 0.3s all;
-        width: calc( 100% - 50px);
+        // transition all 0.4s ease-out
+        width: calc( 100vw - 50px);
         position fixed
         top: 0
-        // transform: translate(-100%);
+        transform: translateX(0%);
         .gamename
             text-indent 16px
         .back
