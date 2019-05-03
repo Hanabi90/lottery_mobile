@@ -16,7 +16,7 @@
                 <a class="icon icon-user"></a>
             </div>
         </header>
-        <swiper :options="swiperOption" class="slide-container" @slideChange='haha'>
+        <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
             <swiper-slide class="slide-1">1</swiper-slide>
             <swiper-slide class="slide-2">2</swiper-slide>
             <swiper-slide class="slide-3">3</swiper-slide>
@@ -54,6 +54,16 @@ export default {
         haha(e){
             console.log('object',e);
         }
+    },
+    computed:{
+        swiper() {
+            return this.$refs.mySwiper.swiper
+        }
+    },
+    mounted(){
+         setTimeout(() => {
+             this.swiper.slideTo(3, 1000, false)
+         }, 3000);
     },
     components: {
         swiper,
