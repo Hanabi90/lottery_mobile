@@ -16,16 +16,25 @@
                 <a class="icon icon-user"></a>
             </div>
         </header>
-        <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
-            <swiper-slide class="slide-1">1</swiper-slide>
-            <swiper-slide class="slide-2">2</swiper-slide>
-            <swiper-slide class="slide-3">3</swiper-slide>
-            <swiper-slide class="slide-4">4</swiper-slide>
-            <swiper-slide class="slide-5">5</swiper-slide>
-            <div class="swiper-pagination" slot="pagination"></div>
-            <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
-            <!-- <div class="swiper-button-next" slot="button-next"></div> -->
-        </swiper>
+        <div class="slide-wrapper">
+            <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
+                <swiper-slide class="slide-1">
+                    1
+                </swiper-slide>
+                <swiper-slide class="slide-2">2</swiper-slide>
+                <swiper-slide class="slide-3">3</swiper-slide>
+                <div class="swiper-pagination" slot="pagination"></div>
+                
+                <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
+                <!-- <div class="swiper-button-next" slot="button-next"></div> -->
+            </swiper>
+            <ul class="slide-content-title">
+                <li @click="tabSlide(1)"><i>{{this.lotteryState.a.state}}</i><span class="jiangqi">{{this.lotteryState.a.num | etc}}</span></li>
+                <li @click="tabSlide(2)"><i>{{this.lotteryState.b.state}}</i><span class="jiangqi">{{this.lotteryState.b.num | etc}}</span></li>
+                <li @click="tabSlide(3)"><i>{{this.lotteryState.c.state}}</i><span class="jiangqi">{{this.lotteryState.c.num | etc}}</span></li>
+                
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -43,16 +52,18 @@ export default {
                     el: '.swiper-pagination',
                     clickable: true
                 },
-                autoplay: {
-                    delay: 2500,
-                    disableOnInteraction: false
-                }
+            },
+            lotteryState:{
+                a:{state:'受注中',num:'111222302'},b:{state:'等待开奖',num:'111222301'},c:{state:'已开奖',num:'111222300'}
             }
         }
     },
     methods: {
         haha(e){
-            console.log('object',e);
+            console.log(this.swiper.realIndex)
+        },
+        tabSlide(slideindex){
+            this.swiper.slideTo(slideindex)
         }
     },
     computed:{
@@ -60,9 +71,14 @@ export default {
             return this.$refs.mySwiper.swiper
         }
     },
+    filters: {
+        etc: function (value) {
+            return `...${value.slice(value.length-3)}`
+        }
+    },
     mounted(){
          setTimeout(() => {
-             this.swiper.slideTo(3, 1000, false)
+            //  this.swiper.slideTo(3, 1000, false)
          }, 3000);
     },
     components: {
@@ -77,6 +93,26 @@ export default {
     width 100%
     height 144px
     background-color #eee
+    .slide-1,.slide-2,.slide-3
+        position relative
+        top 0
+        left 0
+        background-image url('../../assets/images/navview/ks_background_001.jpg')
+        &::before,&::after
+            position absolute
+            top 0
+            content ''
+            background-size cover
+            width 100px
+            height 100%
+            background-position: -2px -10px;
+            background-repeat: no-repeat;
+        &::before
+            left 0
+            background-image url('../../assets/images/navview/bg_leftside_001.png')
+        &::after
+            background-image url('../../assets/images/navview/bg_rightside_001.png')
+            right 0 
 header
     background-color #c32026
     height 50px
@@ -120,4 +156,47 @@ header
             height 50px
             max-width 30px
             background-position -121px 7px
+.slide-wrapper
+    position relative
+    top 0
+    left 0
+    .slide-content-title
+        font-size 12px
+        position absolute
+        display flex
+        justify-content space-around
+        top 0
+        left 0
+        height 20px
+        width 100%
+        z-index: 1;
+        color #fff
+        align-items center
+        margin-top 10px
+        li
+            display flex
+            position relative
+            width 33%
+            justify-content center
+            
+            &::after
+                content: '';
+                width: 1px;
+                height: 10px;
+                background-color: #969696;
+                position: absolute;
+                right: 0;
+                top: 6px;
+            &^[-1]::after &
+                width: 20px
+            i 
+                padding: 4px 4px;
+                border-radius 4px
+                background-color #c9443d
+            span
+                padding: 4px 4px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                max-width: 40px;
 </style>
