@@ -45,12 +45,15 @@
                 </li>
             </ul>
         </div>
+        <bet-area></bet-area>
+        
     </div>
 </template>
 
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
+import betArea from './betArea.vue'
 export default {
     data() {
         return {
@@ -99,7 +102,8 @@ export default {
     },
     components: {
         swiper,
-        swiperSlide
+        swiperSlide,
+        betArea
     }
 }
 </script>
@@ -267,5 +271,9 @@ header
             span
                 padding: 4px 4px;
                 overflow: hidden;
+
+//bet-aera
+
+            
                 
 </style>
