@@ -12,6 +12,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+body
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 #app
     height 100%
     font-family 'Microsoft yahei'

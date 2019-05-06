@@ -19,20 +19,30 @@
         <div class="slide-wrapper">
             <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
                 <swiper-slide class="slide-1">
-                    1
+                    <div class="content-wrapper">
+                        <div class="count">1000</div>
+                        <div v-if="1===0" class="market-name">超级快3(45秒)</div>
+                        <div else class="dice">
+                            <span class="dice_1"></span>
+                            <span class="dice_2"></span>
+                            <span class="dice_3"></span>
+                        </div>
+                        <div class="note">等待开奖</div>
+                    </div>
+                    <div class="history">开奖历史</div>
                 </swiper-slide>
-                <swiper-slide class="slide-2">2</swiper-slide>
-                <swiper-slide class="slide-3">3</swiper-slide>
-                <div class="swiper-pagination" slot="pagination"></div>
+                <swiper-slide class="slide-2"></swiper-slide>
+                <swiper-slide class="slide-3"></swiper-slide>
+                <!-- <div class="swiper-pagination" slot="pagination"></div> -->
                 
                 <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
                 <!-- <div class="swiper-button-next" slot="button-next"></div> -->
             </swiper>
             <ul class="slide-content-title">
-                <li @click="tabSlide(1)"><i>{{this.lotteryState.a.state}}</i><span class="jiangqi">{{this.lotteryState.a.num | etc}}</span></li>
-                <li @click="tabSlide(2)"><i>{{this.lotteryState.b.state}}</i><span class="jiangqi">{{this.lotteryState.b.num | etc}}</span></li>
-                <li @click="tabSlide(3)"><i>{{this.lotteryState.c.state}}</i><span class="jiangqi">{{this.lotteryState.c.num | etc}}</span></li>
-                
+                <li v-for="(item, index) in lotteryState" :key="item.state" @click="tabSlide(index)">
+                    <i :class="{active:nowIndex==index}">{{item.state}}</i>
+                    <span class="jiangqi">{{item.num | etc(nowIndex==index)}}</span>
+                </li>
             </ul>
         </div>
     </div>
@@ -53,33 +63,39 @@ export default {
                     clickable: true
                 },
             },
-            lotteryState:{
-                a:{state:'受注中',num:'111222302'},b:{state:'等待开奖',num:'111222301'},c:{state:'已开奖',num:'111222300'}
-            }
+            lotteryState:[
+                {state:'受注中',num:'11222302'},
+                {state:'等待开奖',num:'11222301'},
+                {state:'已开奖',num:'11222300'}
+            ],
+            nowIndex:-1
         }
     },
     methods: {
         haha(e){
-            console.log(this.swiper.realIndex)
+            this.nowIndex = this.swiper.realIndex
         },
         tabSlide(slideindex){
-            this.swiper.slideTo(slideindex)
+            this.swiper.slideTo(slideindex+1)
+            this.nowIndex = slideindex
         }
     },
     computed:{
         swiper() {
             return this.$refs.mySwiper.swiper
-        }
+        },
     },
     filters: {
-        etc: function (value) {
-            return `...${value.slice(value.length-3)}`
+        etc: function (value,index) {
+            if(index){
+                return value
+            }else{
+                return `...${value.slice(value.length-3)}`
+            }
         }
     },
     mounted(){
-         setTimeout(() => {
-            //  this.swiper.slideTo(3, 1000, false)
-         }, 3000);
+        this.nowIndex = this.$refs.mySwiper.swiper.realIndex
     },
     components: {
         swiper,
@@ -98,6 +114,7 @@ export default {
         top 0
         left 0
         background-image url('../../assets/images/navview/ks_background_001.jpg')
+        background-size auto 100%
         &::before,&::after
             position absolute
             top 0
@@ -113,6 +130,59 @@ export default {
         &::after
             background-image url('../../assets/images/navview/bg_rightside_001.png')
             right 0 
+        .content-wrapper
+            color #fff
+            position absolute
+            top 0   
+            left 50%
+            transform translateX(-50%)
+            padding-top 40px
+            text-align center
+            .note,.count,.market-name,.history
+                width 100%
+                margin-bottom 5px
+            .count
+                font-size 30px
+            .market-name
+                font-size 20px
+            .note
+                font-size 12px
+                color: #fff;
+                border: 1px solid #989898;
+                padding: 0 8px;
+                line-height: 18px;
+                border-radius: 10px;
+                display: inline-block;
+                margin-top 5px
+        .history
+            position: absolute;
+            right: 12px;
+            bottom: 18px;
+            display: block;
+            border-radius: 18px;
+            border: 1px solid #fff;
+            font-size: 12px;
+            padding: 5px 7px 5px 10px;
+            border-color: #c32026;
+            background-color: #fff;
+            color: #c32026;
+            z-index 99
+        .dice
+            display flex
+            width: 140px;
+            justify-content: space-between;
+            span
+                background-image url('../../assets/images/navview/color_dice_001.jpg') 
+                height: 40px
+                background-size: 40px auto;
+                border-color: #c32026
+                width 40px
+                border-radius: 8px
+                background-position: 0 40px
+                
+
+
+
 header
     background-color #c32026
     height 50px
@@ -176,7 +246,6 @@ header
         li
             display flex
             position relative
-            width 33%
             justify-content center
             
             &::after
@@ -185,18 +254,18 @@ header
                 height: 10px;
                 background-color: #969696;
                 position: absolute;
-                right: 0;
+                right: -13px;
                 top: 6px;
-            &^[-1]::after &
-                width: 20px
+        li:last-child
+                &::after
+                    width 0
             i 
                 padding: 4px 4px;
                 border-radius 4px
-                background-color #c9443d
+                &.active
+                    background-color #c9443d
             span
                 padding: 4px 4px;
                 overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                max-width: 40px;
+                
 </style>
