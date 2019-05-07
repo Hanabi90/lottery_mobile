@@ -1,48 +1,81 @@
 <template>
-    <ul class="dices_list">
-        <li v-for="(item, index) in dices" :key="index">
-            <div class="dice_wrap">
-                <div :class="[{'alone':item.dice.length==1},'dice-box']">
-                    <span v-if="item.dice.length>=1" :class="['dice','dice-'+item.dice[0]]"></span>
-                    <span v-if="item.dice.length>=2" :class="['dice','dice-'+item.dice[1]]"></span>
-                    <span v-if="item.dice.length>=3" :class="['dice','dice-'+item.dice[2]]"></span>
+    <div>
+        <ul class="dices_list">
+            <li v-for="(item, index) in dices" :key="index">
+                <div class="dice_wrap">
+                    <div :class="[{'alone':item.dice.length==1},'dice-box']">
+                        <span v-if="item.dice.length>=1" :class="['dice','dice-'+item.dice[0]]"></span>
+                        <span v-if="item.dice.length>=2" :class="['dice','dice-'+item.dice[1]]"></span>
+                        <span v-if="item.dice.length>=3" :class="['dice','dice-'+item.dice[2]]"></span>
+                    </div>
+                    <span class="dicesum">{{item.dicesum}}</span>
+                    <div :class="[{'alone':item.dice.length==1},'odds']" v-if="item.odds">x {{item.odds}}</div>
                 </div>
-                <div class="odds" v-if="item.odds">x {{item.odds}}</div>
-            </div>
-            <div class="info" v-if="item.leakHot.leak">{{item.leakHot.leak}}</div>
-            <div class="info" v-else-if="item.leakHot.hot">{{item.leakHot.hot}}</div>
-        </li>
-    </ul>
+                <div
+                    class="info"
+                    v-if="item.leakHot.leak&&hotOrLeak == 'leak'"
+                >{{item.leakHot.leak}}</div>
+                <div
+                    class="info"
+                    v-else-if="item.leakHot.hot&&hotOrLeak == 'hot'"
+                >{{item.leakHot.hot}}</div>
+            </li>
+        </ul>
+    </div>
 </template>
-
 <script>
+import { Dialog } from 'vant'
+import { Collapse, CollapseItem } from 'vant'
+import { mapMutations } from 'vuex'
 export default {
     data() {
         return {
-            msg: ''
+            activeNames: ['1'],
+            show: false
         }
     },
-    props:{
+    computed:{
+        hotOrLeak(){
+            return this.$store.state.hotOrLeak
+        }
+    },
+    props: {
         dices: {
             type: Array,
             required: true
+        }
+    },
+    methods: {
+        ...mapMutations([
+            'tabHotOrLeak'
+        ]),
+        test() {
+            this.show = true
         },
     },
-    methods: {}
+    components: {
+        'van-dialog': Dialog,
+        Collapse,
+        CollapseItem
+    }
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus" >
 .dices_list
     display flex
     width 100%
     flex-wrap wrap
+    padding 12px
+    padding-top 1px
+    border-bottom: 1px solid #c9c9c9;
+
     li
         display flex
         flex-direction column
         margin 0 4px
         width calc(33.33% - 8px)
-        margin-top 16px
+        margin-top 8px
         .dice
             background-image url('../../assets/images/navview/dice.svg')
             width 40px
@@ -76,12 +109,17 @@ export default {
             border-color #fff2ec
             background-color #fff2ec
             padding 6px 4px
+            min-height: 32px;
+            .dicesum
+                font-size 14px
             .dice-box
                 display flex
                 &.alone
                     transform scale(1.3)
         .odds
             font-size 13px
+            &.alone
+                transform: translateX(35%);
         .info
             font-size 13px
             text-align left
