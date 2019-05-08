@@ -80,6 +80,7 @@
             </div>
              <div class="login_foot">没有账号？<router-link to="/">请新建一个账号</router-link></div>
         </Popup>
+        <my-popup></my-popup>
     </div>
 </template>
 

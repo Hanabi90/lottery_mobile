@@ -30,7 +30,7 @@ export default {
     font-size 13px
     justify-content center
     text-align center
-    padding 10px 6px
+    padding 16px 6px
     border-bottom : 1px solid #c9c9c9;
     span
         width 70%
