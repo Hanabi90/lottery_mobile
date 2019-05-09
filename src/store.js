@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        hotOrLeak:'leak'
+        hotOrLeak:'leak',
+        keyboardshow:true
     },
     mutations: {
         tabHotOrLeak(state,status) {

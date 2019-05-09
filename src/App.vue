@@ -2,74 +2,68 @@
     <div id="app" @click="tab()">
         <router-view/>
         <transition name="fade">
-            <my-popup v-if="show">
+            <my-popup v-if="show1">
                 <template v-slot:footer>
-                    <div class="test">
-                        <div class="bet-group-1">
-                            <div class="bet-option">
-                                <span>236</span>
-                                <span>@35</span>
-                            </div>
-                            <div class="bet-amount">
-                                <span>注数</span>
-                                <span>共 1 注</span>
-                            </div>
-                            <a href="javascript:void(0);">X</a>
-                        </div>
-                        <div class="bet-group-2">
-                            <div class="bet-detail"></div>
-                            <div class="bet-control"></div>
-                        </div>
-                        <div class="bet-group-3">
-                            <div class="chips-contro">
-                                <div class="tt">筹码下注</div>
-                                <ul class="sys-template">
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                                <a href="javascript:void(0);"></a>
-                            </div>
-                        </div>
-                        <a class="submit" href="javascript:void(0);"></a>
-                    </div>
+                    <betSlip></betSlip>
                 </template>
             </my-popup>
         </transition>
+        <van-number-keyboard
+            :show="keyboardshow"
+            @blur="keyboardshow = false"
+            @input="onInput"
+            @delete="onDelete"
+            style="z-index:99999"
+        />
     </div>
 </template>
 <script>
 import myPopup from './components/lottery/popup'
 import Nav from '@/components/nav.vue'
 import Footer from '@/components/footer.vue'
+import betSlip from '@/components/lottery/betslip.vue'
+import { NumberKeyboard } from 'vant'
 export default {
     data() {
         return {
-            show:false
+            show1: true,
+            show: true
+        }
+    },
+    computed:{
+        keyboardshow(){
+            return this.$store.state.keyboardshow
         }
     },
     created() {
         this.tab()
     },
     components: {
-        myPopup
+        myPopup,
+        betSlip,
+        'van-number-keyboard': NumberKeyboard
     },
-    methods:{
-        tab(){
-            this.show = !this.show
+    methods: {
+        tab() {
+            // this.show = !this.show
+        },
+        onInput(value) {
+            console.log(value)
+        },
+        onDelete(value) {
+            console.log(value)
         }
     }
 }
 </script>
 <style lang="stylus">
-body
-    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+.van-key
+    height 10.5vw
 #app
     height 100%
     font-family 'Microsoft yahei'
     width 375px
-    overflow-x: hidden;
+    overflow-x hidden
 .swiper-pagination-bullet.swiper-pagination-bullet-active
     background #fff
     transform scale(1.5, 1.5)
@@ -80,32 +74,8 @@ body
 
 @import 'styles/rest.styl'
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-.test
-    margin: 0px 5px;
-    border-radius: 4px;
-    overflow: hidden;
-    float: initial;
-    background-color pink 
-    width 100%
-    height 400px;
-    display flex
-    flex-direction column
-    .bet-group-1
-        background-color pink
-        flex 1
-    .bet-group-2
-        background-color yellow 
-        flex 1
-    .bet-group-3
-        background-color green
-        flex 1
-    .submit
-        flex 1
-
+.fade-enter-active, .fade-leave-active
+    transition opacity 0.5s
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+    opacity 0
 </style>
