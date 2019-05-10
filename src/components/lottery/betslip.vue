@@ -1,6 +1,6 @@
 <template>
-    <div :class="[{popKeyboard:show},'test']">
-        <div class="bet-group-1">
+    <div :class="[{popKeyboard:iskeyboardshow},'test']" @click="checkKeyboard">
+        <div :class="[{display:isEditing},'bet-group-1']">
             <div class="bet-option">
                 <span>123, 124, 125, 126, 134, 135, 136, 145, 146, 156, 234, 235, 236, 245, 246, 256, 345, 346, 356, 456</span>
                 <span class="odds">@35</span>
@@ -11,7 +11,7 @@
             </div>
             <a class="close" href="javascript:void(0);"></a>
         </div>
-        <div class="bet-group-2">
+        <div :class="[{display:isEditing},'bet-group-2']">
             <div class="bet-detail">
                 <div class="bet-title">任选三不同号</div>
                 <div class="draw">
@@ -22,9 +22,9 @@
             <div class="bet-control">
                 <ul>
                     <li class="tt">追号</li>
-                    <li class="input-control">
+                    <li :class="[{active:selectedItem=='zhuihao'},'input-control']">
                         <i class="minus"></i>
-                        <div class="inputarea">10</div>
+                        <div class="inputarea" @click.stop="showKeyBoard('zhuihao')">{{zhuihao}}</div>
                         <i class="plus"></i>
                     </li>
                 </ul>
@@ -32,61 +32,165 @@
                     <li>
                         <div class="tt hide">本金</div>
                         <div class="tt">每注金额</div>
-                        <div class="input-txt">
-                            <span>0</span>
-                            <a class="icon close" href="javascript:void(0);"></a>
+                        <div :class="[{active:selectedItem=='eachonemoney'},'input-txt']"  @click.stop="showKeyBoard('eachonemoney')">
+                            <span>{{eachonemoney}}</span>
+                            <a class="icon close" href="javascript:void(0);" @click="eachonemoney = 0"></a>
                         </div>
                     </li>
                     <li>
                         <div class="tt">返还</div>
                         <div class="input-txt gray">
-                            <span>7770.00</span>
+                            <span>{{returnmoney}}</span>
                         </div>
                     </li>
                 </ul>
                 <ul>
                     <li class="tt">总额</li>
                     <div class="input-txt total gray">
-                        <span>34840</span>
+                        <span>{{totalemoney}}</span>
                     </div>
                 </ul>
             </div>
         </div>
         <div class="bet-group-3">
             <div class="chips-contro">
-                <div class="tt">筹码下注</div>
-                <ul class="sys-template">
-                    <li>10</li>
-                    <li>200</li>
-                    <li>500</li>
-                    <li>1000</li>
+                <div class="tt wrap">
+                    <span>筹码下注</span>
+                    <a class="icon set" href="javascript:void(0);" @click.stop="showKeyBoard('setchips')"></a>
+                </div>
+                <ul class="sys-template set" v-if="isEditing">
+                    <li :class="[{active:currentChips==index}]"
+                        @click.stop="setChips(index)" 
+                        v-for="(chipitem,index) in chipArr" 
+                        :key="chipitem + index">
+                        {{ chipitem }}
+                    </li>
+                </ul>
+                <ul class="sys-template" v-else>
+                    <li @click.stop="addChips(index)"
+                        v-for="(chipitem,index) in chipArr" 
+                        :key="chipitem + index + 'x'">
+                        {{ chipitem }}
+                    </li>
                 </ul>
                 <a href="javascript:void(0);"></a>
             </div>
         </div>
-        <a class="submit" href="javascript:void(0);" @click.stop="show=true">立即投注</a>
+        <a class="submit" href="javascript:void(0);" v-if="!isEditing">立即投注</a>
+        <a class="submit" href="javascript:void(0);" v-else @click="showKeyBoard('close')">设定完成</a>
         
     </div>
 </template>
 
 <script>
 import { NumberKeyboard } from 'vant'
+import {mapMutations} from 'vuex'
 export default {
     data() {
         return {
-            show: true,
-            show1:true
+            zhuihao:'1',
+            eachonemoney:'0',
+            totalemoney:'0',
+            returnmoney:'0',
+            chipArr:['10','200','500','1000'],
+            currentSelect:'zhuihao',
+            selectedItem:'',
+            isEditing:false,
+            currentChips:'0'
         }
     },
+    props:{
+        iskeyboardshow:Boolean
+    },
     methods: {
-        tab() {
-            // this.show = !this.show
+        ...mapMutations(['updateKeyboardshow']),
+        showKeyBoard(selectedItem){
+            /* console.log(selectedItem);
+            this.selectedItem = selectedItem
+            console.log('asdasd',typeof selectedItem =="number"&&this.isEditing);
+            if(this.selectedItem=='showkeyboard'){
+                this.isEditing = true
+            }
+            if(this.selectedItem=='showkeyboard'&&typeof selectedItem =="number"){
+                this.$emit('showKeyBoard',false)
+                this.isEditing = false
+            }else{
+                this.$emit('showKeyBoard',true)
+            } */
+                this.$emit('showKeyBoard',true)
+                this.selectedItem = selectedItem
+                if(selectedItem=='setchips'||selectedItem == 'close'){
+                    this.isEditing = !this.isEditing
+                    if(!this.isEditing){
+                        this.chipArr.map((item,index)=>{
+                            console.log(item,index);
+                            if(Number(item)==''){
+                                this.$set(this.chipArr,index,'10')
+                            }
+                        })
+                        this.$emit('showKeyBoard',false)
+                    }
+                }
+                
+                
+        },
+        setChips(index){
+            console.log('setChips',index);
+            this.currentChips = index
+            this.$set(this.chipArr,index,'')
+            console.log(this.chipArr);
+        },
+        addChips(index){
+            var val = Number(this.chipArr[index])
+            var eachonemoney = Number(this.eachonemoney) 
+            this.eachonemoney = String(eachonemoney += val)
         },
         onInput(value) {
-            console.log(value)
+            console.log('asdasdsad');
+            if (this.selectedItem=='setchips') {
+                console.log(value);
+                var newVal = this.chipArr[this.currentChips] + value
+                if(Number(newVal)>=30000){
+                    newVal = '30000'
+                }else if(Number(newVal)<=1){
+                    newVal = '1'
+                }else if(newVal==''){
+                    console.log('object');
+                    newVal = '10'
+                }
+                this.$set(this.chipArr,this.currentChips,newVal)
+            }
+            if(this.selectedItem=='eachonemoney'){
+                if(this.eachonemoney == 0){
+                    this.eachonemoney = ''
+                }
+                this.eachonemoney += String(value)
+            }
+
+            if(this.selectedItem=='zhuihao'){
+                this.zhuihao += String(value)
+            }
         },
         onDelete(value) {
-            console.log(value)
+            if (this.selectedItem=='setchips'&&this.currentChips!==null) {
+                var newVal = this.chipArr[this.currentChips].slice(0,this.chipArr[this.currentChips].length-1)
+                this.$set(this.chipArr,this.currentChips,newVal)
+            }
+            if(this.selectedItem=='eachonemoney'){
+                this.eachonemoney = String(this.eachonemoney.slice(0,this.eachonemoney.length-1))
+            }
+            if(this.selectedItem=='zhuihao'){
+                this.zhuihao = String(this.zhuihao.slice(0,this.zhuihao.length-1))
+            }
+        },
+        checkKeyboard(){
+            if(this.isEditing){
+                return
+            }
+            this.$emit('showKeyBoard',false)
+            if(this.eachonemoney==''){
+                this.eachonemoney = '0'
+            }
         }
     },
     components: {
@@ -96,6 +200,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.icon
+    background-image url('../../assets/images/navview/main_icon_001.png')
+    background-size auto 200px
+    &.set
+        display: block;
+        width: 26px;
+        height: 26px;
+        background-position: -54px -177px;
 .test
     margin 0px 5px
     border-radius 10px
@@ -114,6 +226,10 @@ export default {
         padding 0 5px
         font-size 13px
         text-align left
+        &.wrap
+            width 100% !important
+            display flex
+            justify-content space-between
     .hide
         display none
     .bet-group-1
@@ -122,6 +238,17 @@ export default {
         display flex
         flex-direction column
         padding 7px 12px
+        position relative
+        &.display:before
+            content: "";
+            position: absolute;
+            background-color: #000;
+            opacity: 0.4;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         .bet-option
             display flex
             flex-direction column
@@ -154,6 +281,17 @@ export default {
     .bet-group-2
         padding 7px 12px
         flex 1
+        position relative
+        &.display:before
+            content: "";
+            position: absolute;
+            background-color: #000;
+            opacity: 0.4;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         .bet-control
             display flex
             flex-direction column
@@ -178,6 +316,9 @@ export default {
                     border-radius 1.06667vw
                     padding-left 10px
                     position relative
+                    &.active
+                        background-color: #fff;
+                        border: 1px solid #F00;
                     &.gray
                         background-color #eee
                         border none
@@ -201,9 +342,14 @@ export default {
                     justify-content center
                     align-content center
                     align-items center
+                    &.active
+                        background-color: #fff;
+                        border: 1px solid #F00;
                     .inputarea
                         width 60px
                         text-align center
+                        height: 30px;
+                        line-height: 30px;
                     .minus
                         background-image url('../../assets/images/navview/main_icon_001.png')
                         background-size auto 200px
@@ -235,6 +381,8 @@ export default {
         .sys-template
             display flex
             text-align center
+            &.set 
+                color red
             li
                 flex 1
                 margin 0px 4px
@@ -244,6 +392,10 @@ export default {
                 border-radius 4px
                 padding 10px 15px
                 justify-content space-between
+                height 33px
+                &.active
+                    background-color: #fff;
+                    border: 1px solid #F00;
     .submit
         color #fff !important
         background-color #f85d68

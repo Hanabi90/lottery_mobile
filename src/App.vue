@@ -4,13 +4,14 @@
         <transition name="fade">
             <my-popup v-if="show1">
                 <template v-slot:footer>
-                    <betSlip></betSlip>
+                    <betSlip ref="betSlip" @showKeyBoard=showKeyBoard :iskeyboardshow = show></betSlip>
                 </template>
             </my-popup>
         </transition>
         <van-number-keyboard
-            :show="keyboardshow"
-            @blur="keyboardshow = false"
+            :hide-on-click-outside='false'
+            :show="show"
+            @blur="show = false"
             @input="onInput"
             @delete="onDelete"
             style="z-index:99999"
@@ -27,31 +28,41 @@ export default {
     data() {
         return {
             show1: true,
-            show: true
+            show: false,
+            isHide:false
         }
     },
     computed:{
-        keyboardshow(){
-            return this.$store.state.keyboardshow
-        }
+        
     },
     created() {
         this.tab()
     },
     components: {
-        myPopup,
+        'my-popup':myPopup,
         betSlip,
         'van-number-keyboard': NumberKeyboard
     },
     methods: {
+        showKeyBoard(isShowOrNot){
+            // console.log(selectedItem);
+            // console.log('this.$refs.betSlip.selectedItem',this.$refs.betSlip.selectedItem);
+            this.show = isShowOrNot
+            if(isShowOrNot==false){
+
+            }
+        },
+        closeKeyBoard(){
+            this.show = false
+        },
         tab() {
             // this.show = !this.show
         },
         onInput(value) {
-            console.log(value)
+            this.$refs.betSlip.onInput(value)
         },
         onDelete(value) {
-            console.log(value)
+            this.$refs.betSlip.onDelete(value)
         }
     }
 }

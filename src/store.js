@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         hotOrLeak:'leak',
-        keyboardshow:true
+        keyboardshow:false
     },
     mutations: {
         tabHotOrLeak(state,status) {
@@ -15,6 +15,9 @@ export default new Vuex.Store({
             } else {
                 state.hotOrLeak = 'leak'
             }
+        },
+        updateKeyboardshow(state,status) {
+            state.keyboardshow = true
         }
     },
     actions: {
