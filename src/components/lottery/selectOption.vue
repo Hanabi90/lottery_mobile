@@ -80,6 +80,7 @@ export default {
         this.test([1, 2, 3, 4, 5, 6])
         this.test2(["11", "22", "33", "44", "55",'66'],["1", "2", "3", "4", "5", "6"])
         console.log(this.newbets2.split(','));
+        console.log(this.newbets);
     }
 }
 </script>

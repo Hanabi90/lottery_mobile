@@ -1,8 +1,8 @@
 <template>
     <div>
         <ul class="dices_list">
-            <li v-for="(item, index) in dices" :key="index">
-                <div class="dice_wrap">
+            <li v-for="(item, index) in dices.dices" :key="index" @click="makeOrder(dices.type,dices.dices[index])">
+                <div class="dice_wrap" :data-content="index">
                     <div :class="[{'alone':item.dice.length==1},'dice-box']">
                         <span v-if="item.dice.length>=1" :class="['dice','dice-'+item.dice[0]]"></span>
                         <span v-if="item.dice.length>=2" :class="['dice','dice-'+item.dice[1]]"></span>
@@ -41,17 +41,30 @@ export default {
     },
     props: {
         dices: {
-            type: Array,
+            type: Object,
             required: true
         }
     },
     methods: {
         ...mapMutations([
-            'tabHotOrLeak'
+            'tabHotOrLeak',
+            'myPopCtrl',
+            'updateBetArr'
         ]),
         test() {
             this.show = true
         },
+        makeOrder(type,dices){
+            this.myPopCtrl()
+            console.log("dicestype");
+            console.log("type:",type);
+            if(type=='hezhi'){
+                this.updateBetArr(dices.dicesum)
+            }else{
+                this.updateBetArr(dices.dice)
+            }
+            console.log("dices:",dices.dice);
+        }
     },
     components: {
         'van-dialog': Dialog,
@@ -76,6 +89,7 @@ export default {
         margin 0 4px
         width calc(33.33% - 8px)
         margin-top 8px
+        margin-bottom 8px
         .dice
             background-image url('../../assets/images/navview/dice.svg')
             width 40px
@@ -90,6 +104,7 @@ export default {
             width 30px
             height 30px
             background-size 30px auto
+            
         .dice-1
             background-position 0px 0px
         .dice-2
@@ -110,6 +125,35 @@ export default {
             background-color #fff2ec
             padding 6px 4px
             min-height: 32px;
+            &.active
+                background-color #dc3c47
+                position relative
+                &::before
+                    content ''
+                    position absolute
+                    top: -8px;
+                    right: -6px;
+                    width: 24px;
+                    height: 24px;
+                    background-size: contain;
+                    z-index 1
+                    background-image url(../../assets/images/uni_icon_check_001.png)
+                &::after
+                    content attr(data-content)
+                    font-size 12px
+                    color #fff
+                    position absolute
+                    min-width: 12px;
+                    min-height: 12px;
+                    bottom: -20px;
+                    right: 0px;
+                    background-size: contain;
+                    border-radius 40px
+                    padding 3px
+                    background-color #555
+                    z-index 1
+                .dice
+                    transform: rotate(-7deg);
             .dicesum
                 font-size 14px
             .dice-box

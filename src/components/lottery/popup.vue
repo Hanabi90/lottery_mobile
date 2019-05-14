@@ -1,7 +1,8 @@
 <template>
     <div class="mask">
         <div class="box">
-            <slot name="footer"></slot>
+            <slot name="footer" v-if="!isPopResults"></slot>
+            <slot name="betCallBack" v-else></slot>
         </div>
     </div>
 </template>
@@ -10,8 +11,12 @@
 export default {
   data () {
     return {
-      
     }
+  },
+  computed:{
+      isPopResults(){
+          return this.$store.state.isPopResults
+      }
   },
   methods: {
       transitionComplete(){

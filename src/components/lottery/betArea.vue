@@ -100,40 +100,51 @@ export default {
                 '大','大','大','大','大','小','小','大','小','小','大','小','小','小','小','小','小','小','小','大','大','大','大','大','小','小','大','小','小','大','小','小','小','小','小','小','小','小','大','大','大','大','大','小','小','大','小','小','大','小','小','小','小','小','小','小','小','大','大','大','大','大','小','小','大','小','小','大','小','小','小','小','小','小','小','小','大','大','大','大','大','小','小','大','小','小','大','小','小','小','小','小','小','小','小'
             ],
             active: 2,
-            dices:[
+            dices:{
+                type:'ertonghaofuxuan',
+                dices:[
                 {dice:[1,1],odds:13,leakHot:{leak:1,hot:1}},
                 {dice:[2,2],odds:13,leakHot:{leak:3,hot:2}},
                 {dice:[3,3],odds:13,leakHot:{leak:5,hot:4}},
                 {dice:[4,4],odds:13,leakHot:{leak:4,hot:3}},
                 {dice:[5,5],odds:13,leakHot:{leak:5,hot:4}},
                 {dice:[6,6],odds:13,leakHot:{leak:4,hot:6}},
-            ],
-            dices_2:[
-                {dice:[1,2],odds:13,leakHot:{leak:1,hot:2}},
-                {dice:[2,3],odds:13,leakHot:{leak:3,hot:2}},
-                {dice:[3,4],odds:13,leakHot:{leak:5,hot:4}},
-                {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
-                {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
-                {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
-                {dice:[1,2],odds:13,leakHot:{leak:1,hot:1}},
-                {dice:[2,3],odds:13,leakHot:{leak:3,hot:2}},
-                {dice:[3,4],odds:13,leakHot:{leak:5,hot:4}},
-                {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
-                {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
-                {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
-                {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
-                {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
-                {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
-            ],
-            dices_3:[
-                {dice:[1],odds:2.1,leakHot:{leak:21,hot:14}},
-                {dice:[3],odds:2.1,leakHot:{leak:21,hot:14}},
-                {dice:[6],odds:2.1,leakHot:{leak:21,hot:14}},
-                {dice:[4],odds:2.1,leakHot:{leak:21,hot:14}},
-                {dice:[5],odds:2.1,leakHot:{leak:21,hot:14}},
-                {dice:[2],odds:2.1,leakHot:{leak:21,hot:14}},
-            ],
-            dices_4:[
+            ]
+            },
+            dices_2:{
+                type:'erbutonghao',
+                dices:[
+                    {dice:[1,2],odds:13,leakHot:{leak:1,hot:2}},
+                    {dice:[2,3],odds:13,leakHot:{leak:3,hot:2}},
+                    {dice:[3,4],odds:13,leakHot:{leak:5,hot:4}},
+                    {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
+                    {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
+                    {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
+                    {dice:[1,2],odds:13,leakHot:{leak:1,hot:1}},
+                    {dice:[2,3],odds:13,leakHot:{leak:3,hot:2}},
+                    {dice:[3,4],odds:13,leakHot:{leak:5,hot:4}},
+                    {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
+                    {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
+                    {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
+                    {dice:[4,5],odds:13,leakHot:{leak:4,hot:3}},
+                    {dice:[1,5],odds:13,leakHot:{leak:5,hot:4}},
+                    {dice:[4,6],odds:13,leakHot:{leak:4,hot:6}},
+                ]
+            },
+            dices_3:{
+                type:'sanjun',
+                dices:[
+                    {dice:[1],odds:2.1,leakHot:{leak:21,hot:14}},
+                    {dice:[3],odds:2.1,leakHot:{leak:21,hot:14}},
+                    {dice:[6],odds:2.1,leakHot:{leak:21,hot:14}},
+                    {dice:[4],odds:2.1,leakHot:{leak:21,hot:14}},
+                    {dice:[5],odds:2.1,leakHot:{leak:21,hot:14}},
+                    {dice:[2],odds:2.1,leakHot:{leak:21,hot:14}},
+                ]
+            },
+            dices_4:{
+                type:'hezhi',
+                dices:[
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:1},
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:2},
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:3},
@@ -151,37 +162,41 @@ export default {
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:15},
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:16},
                 {dice:[],odds:2.1,leakHot:{leak:21,hot:14},dicesum:17},
-            ],
-            dices_5:[
+            ]
+            },
+            dices_5:{
+                type:'baozi',
+                dices:[
                 {dice:[1,1,1],leakHot:{leak:'999+',}},
                 {dice:[2,2,2],leakHot:{leak:155,}},
                 {dice:[3,3,3],leakHot:{leak:71,}},
                 {dice:[4,4,4],leakHot:{leak:603,}},
                 {dice:[5,5,5],leakHot:{leak:359,}},
                 {dice:[6,6,6],leakHot:{leak:65,}},
-            ],
-            dices_6:[
-                {dice:[],leakHot:{leak:71,}},
-                {dice:[],leakHot:{leak:603,}},
-                {dice:[],leakHot:{leak:359,}},
-                {dice:[],leakHot:{leak:65,}},
-            ],
-            dices_7:[
+            ]
+            },
+            dices_7:{
+                type:'ertonghao',
+                dices:[
                 {dice:[1,1],leakHot:{}},
                 {dice:[2,2],leakHot:{}},
                 {dice:[3,3],leakHot:{}},
                 {dice:[4,4],leakHot:{}},
                 {dice:[5,5],leakHot:{}},
                 {dice:[6,6],leakHot:{}},
-            ],
-            dices_8:[
+            ]
+            },
+            dices_8:{
+                type:'danxuan',
+                dices:[
                 {dice:[1],leakHot:{}},
                 {dice:[2],leakHot:{}},
                 {dice:[3],leakHot:{}},
                 {dice:[4],leakHot:{}},
                 {dice:[5],leakHot:{}},
                 {dice:[6],leakHot:{}},
-            ],
+            ]
+            },
             r:['大','大','大','大','大','小','大']
         }
     },

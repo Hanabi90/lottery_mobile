@@ -2,14 +2,14 @@
     <div :class="[{popKeyboard:iskeyboardshow},'test']" @click="checkKeyboard">
         <div :class="[{display:isEditing},'bet-group-1']">
             <div class="bet-option">
-                <span>123, 124, 125, 126, 134, 135, 136, 145, 146, 156, 234, 235, 236, 245, 246, 256, 345, 346, 356, 456</span>
+                <span>{{betArr}}</span>
                 <span class="odds">@35</span>
             </div>
             <div class="bet-amount">
                 <span>注数</span>
                 <span>共 1 注</span>
             </div>
-            <a class="close" href="javascript:void(0);"></a>
+            <a class="close" href="javascript:void(0);" @click="closeMyPop()"></a>
         </div>
         <div :class="[{display:isEditing},'bet-group-2']">
             <div class="bet-detail">
@@ -76,7 +76,11 @@
                 <a href="javascript:void(0);"></a>
             </div>
         </div>
-        <a class="submit" href="javascript:void(0);" v-if="!isEditing">立即投注</a>
+        <a  class="submit"
+            @click="sendOrder"
+            href="javascript:void(0);" 
+            v-if="!isEditing&&!ispending">立即投注</a>
+        <a class="submit ispending" href="javascript:void(0);" v-else-if="!isEditing&&ispending">注单处理中</a>
         <a class="submit" href="javascript:void(0);" v-else @click="showKeyBoard('close')">设定完成</a>
         
     </div>
@@ -85,6 +89,7 @@
 <script>
 import { NumberKeyboard } from 'vant'
 import {mapMutations} from 'vuex'
+import {mapActions} from 'vuex'
 export default {
     data() {
         return {
@@ -96,14 +101,34 @@ export default {
             currentSelect:'zhuihao',
             selectedItem:'',
             isEditing:false,
-            currentChips:'0'
+            currentChips:'0',
+        }
+    },
+    computed:{
+        betArr(){
+            return this.$store.state.betArr
+        },
+        ispending(){
+            return this.$store.state.ispending
         }
     },
     props:{
         iskeyboardshow:Boolean
     },
     methods: {
-        ...mapMutations(['updateKeyboardshow']),
+        ...mapMutations(['updateKeyboardshow','myPopCtrl','updateIspending','updateIsPopResults']),
+        ...mapActions(['UPDATEDELAYTIMETOCLOSE']),
+        sendOrder(){
+            this.updateIspending(true)
+            setTimeout(() => {
+                this.updateIspending(false)
+                this.updateIsPopResults()
+            }, 3000);
+        },
+        closeMyPop(){
+            this.myPopCtrl(false)
+            this.updateKeyboardshow(false)
+        },
         showKeyBoard(selectedItem){
             /* console.log(selectedItem);
             this.selectedItem = selectedItem
@@ -252,6 +277,7 @@ export default {
         .bet-option
             display flex
             flex-direction column
+            padding-right 4px
             .odds
                 margin-top 10px
         .close
@@ -409,4 +435,25 @@ export default {
         position relative
         text-align center
         margin 20px 0px
+        &.ispending::before
+            content ''
+            position: absolute;
+            top 0
+            left 5px
+            background-image url('../../assets/images/btn_loading.png')
+            height 40px
+            width 30px
+            background-size: 70%;
+            background-repeat no-repeat
+            background-position center
+            animation loadingRotate 0.6s 0s infinite linear
+        @keyframes loadingRotate {
+            0%{
+                transform rotate(0deg)
+            }
+            100%{
+                transform rotate(360deg)
+            }
+        }
+            
 </style>

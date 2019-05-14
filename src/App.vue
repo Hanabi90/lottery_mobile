@@ -2,9 +2,12 @@
     <div id="app" @click="tab()">
         <router-view/>
         <transition name="fade">
-            <my-popup v-if="show1">
+            <my-popup v-if="myPopShow">
                 <template v-slot:footer>
                     <betSlip ref="betSlip" @showKeyBoard=showKeyBoard :iskeyboardshow = show></betSlip>
+                </template>
+                <template v-slot:betCallBack>
+                    <betCallBack></betCallBack>
                 </template>
             </my-popup>
         </transition>
@@ -20,20 +23,26 @@
 </template>
 <script>
 import myPopup from './components/lottery/popup'
+import betCallBack from './components/lottery/betCallBack'
 import Nav from '@/components/nav.vue'
 import Footer from '@/components/footer.vue'
 import betSlip from '@/components/lottery/betslip.vue'
 import { NumberKeyboard } from 'vant'
+import {mapState} from 'vuex'
+import {mapMutations} from 'vuex'
 export default {
     data() {
         return {
-            show1: true,
-            show: false,
             isHide:false
         }
     },
     computed:{
-        
+        myPopShow(){
+            return this.$store.state.myPopShow
+        },
+        show(){
+            return this.$store.state.keyboardshow
+        }
     },
     created() {
         this.tab()
@@ -41,19 +50,21 @@ export default {
     components: {
         'my-popup':myPopup,
         betSlip,
-        'van-number-keyboard': NumberKeyboard
+        'van-number-keyboard': NumberKeyboard,
+        betCallBack
     },
     methods: {
+        ...mapMutations([
+            'updateKeyboardshow'
+        ]),
         showKeyBoard(isShowOrNot){
             // console.log(selectedItem);
             // console.log('this.$refs.betSlip.selectedItem',this.$refs.betSlip.selectedItem);
-            this.show = isShowOrNot
-            if(isShowOrNot==false){
+            this.updateKeyboardshow(isShowOrNot)
 
-            }
         },
         closeKeyBoard(){
-            this.show = false
+            this.updateKeyboardshow(false)
         },
         tab() {
             // this.show = !this.show
