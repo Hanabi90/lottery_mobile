@@ -53,13 +53,15 @@
       </div>
       </div>
       <div class="main-content" @click="tabLeftMain">
-          <Dice></Dice>
+          <!-- <Dice></Dice> -->
+          <Pk10></Pk10>
       </div>
   </div>
 </template>
 
 <script>
 import Dice from '../components/lottery/Dice'
+import Pk10 from '../components/pk10/pk10'
 export default {
   data () {
     return {
@@ -186,7 +188,8 @@ export default {
       },
   },
   components:{
-      Dice
+      Dice,
+      Pk10
   }
 }
 </script>
