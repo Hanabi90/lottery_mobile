@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pk10">
         <header>
             <a class="icon icon-menu"></a>
             <div class="text">
@@ -16,6 +16,28 @@
                 <a class="icon icon-user"></a>
             </div>
         </header>
+        <myPopup v-if="show" :position="'top'"> 
+            <template v-slot:footer>
+                <div class="wraper">
+                    <van-tabs v-model="active" v-if="jsonData.data_label.length>0">
+                        <van-tab :title="item.title" v-for="(item,index) in jsonData.data_label">
+                            <div class="box">
+                                <div class="flexBox" v-for="inneritem in item.label" >
+                                    <span class="title">{{ inneritem.gtitle }}</span>
+                                    <ul class="label-wraper">
+                                        <li :class="[{active:isactive},'label-item'] " v-for="label in inneritem.label">
+                                            {{ label.desc }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </van-tab>
+                    </van-tabs>
+                </div>
+            </template>
+            
+        </myPopup>
+        
         <div class="slide-wrapper">
             <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
                 <swiper-slide class="slide-1">
@@ -60,22 +82,7 @@
                 </li>
             </ul>
         </div>
-        <div class="wraper">
-            <van-tabs v-model="active" v-if="testData1.length>0">
-                <van-tab v-if="item.crowdname!=='趣味'" :title="item.crowdname" v-for="(item,index) in testData1" :key="item.id">
-                    <div class="ww" v-if="testData2.length>0">
-                        <div style="display:flex" v-for="item2 in testData2[index]" :key="item2.menuName">
-                            <span class="title" style="color:red">
-                                {{item2.menuName}}
-                            </span>
-                            <div style="padding:4px 4px" class="caizhong" v-for="innerItem in item2.data" >
-                                {{ innerItem.title }}
-                            </div>
-                        </div>
-                    </div>
-                </van-tab>
-            </van-tabs>
-        </div>
+        
     </div>
 </template>
 
@@ -85,9 +92,15 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import FlipCountdown from 'vue2-flip-countdown'
 import {getmethod,MethodCrowd} from '../../Api/api'
+import jsonData from './test'
+import { Popup } from 'vant';
+import myPopup from '@/components/lottery/popup'
 export default {
     data() {
         return {
+            show: false,
+            isactive:true,
+            jsonData:{},
             active: 2,
             swiperOption: {
                 slidesPerView: 1,
@@ -111,6 +124,42 @@ export default {
             ],
             testData1:[],
             testData2:[],
+            formData:[
+    {
+        "type":"五星",
+        "games":[
+            {
+                "type":"直选复式",
+                "info":"从个、十、百、千、万位各选一个号码组成一注。",
+                "example":"投注方案：23456；<br/>开奖号码：23456，<br/>即中五星直选一等奖",
+                "explanation":"从万位、千位、百位、十位、个位中选择一个5位数号码组成一注，所选号码与开奖号码全部相同，且顺序一致，即为中奖。",
+                "form":[
+                    {"title":"万位","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true},
+                    {"title":"千位","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true},
+                    {"title":"百位","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true},
+                    {"title":"十位","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true},
+                    {"title":"个位","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true}
+                ]
+            },
+            {
+                "type":"直选单式",
+                "info":"手动输入号码，至少输入1个五位数号码组成一注。",
+                "example":"投注方案：23456；<br/>开奖号码：23456，<br/>即中五星直选一等奖",
+                "explanation":"手动输入一个5位数号码组成一注，所选号码的万位、千位、百位、十位、个位与开奖号码相同，且顺序一致，即为中奖。"
+            },
+            {
+                "type":"组120",
+                "info":"从0-9中任意选择5个号码。",
+                "example":"投注方案：26789；<br/>开奖号码：26789（顺序不限），即中五星组选120。",
+                "explanation":"从0-9中任选5个号码组成一注,所选号码与开奖号相同，顺序不限，即为中奖。",
+                "form":[
+                    {"title":"组120","nums":[0,1,2,3,4,5,6,7,8,9],"sort":true}
+                ]
+            },
+        ]
+    }
+]
+
         }
     },
     methods: {
@@ -149,7 +198,14 @@ export default {
             }
         }
     },
+    created(){
+        this.jsonData = jsonData
+    },
     mounted(){
+        setTimeout(() => {
+            this.show = true
+        }, 3000);
+        console.log(this.jsonData.data_label);
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
         MethodCrowd(33).then((res)=>{
             this.testData1 = res.data.data
@@ -167,12 +223,82 @@ export default {
         swiperSlide,
         FlipCountdown,
         'van-tab':Tab,
-        'van-tabs':Tabs
+        'van-tabs':Tabs,
+        myPopup
     }
 }
 </script>
 
 <style lang='stylus' >
+.pk10
+    width 100%
+    height: 100%;
+    position relative
+    top 0
+    left 0
+    overflow hidden
+    // .van-overlay
+    //     width 100%
+    // .van-popup
+    //     width 375px
+    // .van-popup--bottom,.van-popup--top
+    //     // transition: 1s all;
+    //     // left:50%
+    //     // transform: translate3d(0%,0,0);
+    // .van-overlay
+    //     left 50%
+.wraper
+    background: #fff;
+    width 375px
+    .van-tab--active
+        color #c32026
+    .van-tabs__wrap
+        border-bottom 1px solid #999
+
+.box
+    display flex
+    text-align center
+    margin-top: 10px;
+    width 375px
+    overflow hidden
+.flexBox
+    display flex
+    flex-direction column
+    width: 50%;
+    align-content: center;
+    .title
+        color #222
+    .label-wraper
+        display flex
+        flex-direction column
+        flex-wrap nowrap
+        width: 100%;
+        justify-content space-between
+        align-items: center;
+        height: 100%;
+        .label-item
+            color #222
+            width 80%
+            min-width 30px
+            border 1px solid #333
+            border-radius 4px
+            margin 6px 2px
+            padding 6px 0
+            &.active
+                background: #c32026;
+                color: #fff;
+                border-color: #c32026;
+                position relative
+                &::after
+                    content ''
+                    position absolute
+                    top -6px
+                    right -4px 
+                    width 14px
+                    height 14px
+                    bitvckground-image url('../../assets/images/uni_icon_check_001.png')
+                    background-size cover
+            
 .slide-container
     width 100%
     height 170px
@@ -388,6 +514,8 @@ header
                 font-style normal
                 &.active
                     background-color #c9443d
+                &.active::after
+                    content ''
             span
                 padding: 4px 4px;
                 overflow: hidden;

@@ -1,0 +1,343 @@
+{
+    "lotteryid": 1,
+    "menuid": 50,
+    "labels": [
+        {
+            "title": "五星",
+            "isdefault": false,
+            "isnew": false,
+            "labels": [
+                {
+                    "title": "五星直选",
+                    "labels": [
+                        {
+                            "menuid": 2180,
+                            "methodid": 2274,
+                            "name": "复式",
+                            "description": "复式",
+                            "maxcodecount": 0,
+                            "methoddesc": "从个、十、百、千、万位各选一个号码组成一注。",
+                            "methodhelp": "从万位、千位、百位、十位、个位中选择一个5位数号码组成一注，所选号码与开奖号码全部相同，且顺序一致，即为中奖。",
+                            "methodexample": "投注方案：23456；<br>开奖号码：23456，<br>即中五星直选",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "万位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "千位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "百位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 2,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "十位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 3,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "个位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 4,
+                                        "cols": 1
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2181,
+                            "methodid": 2274,
+                            "name": "单式",
+                            "description": "单式",
+                            "maxcodecount": 0,
+                            "methoddesc": "手动输入号码，至少输入1个五位数号码组成一注。",
+                            "methodhelp": "手动输入一个5位数号码组成一注，所选号码的万位、千位、百位、十位、个位与开奖号码相同，且顺序一致，即为中奖。",
+                            "methodexample": "投注方案：23456； 开奖号码：23456，即中五星直选一等奖",
+                            "selectarea": {
+                                "type": "input",
+                                "singletypetips": "三星123,234 五星12345"
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2182,
+                            "methodid": 2276,
+                            "name": "组合",
+                            "description": "组合",
+                            "maxcodecount": 0,
+                            "methoddesc": "从个、十、百、千、万位各选一个号码组成五注。",
+                            "methodhelp": "从万位、千位、百位、十位、个位中至少各选一个号码组成1-5星的组合，共五注，所选号码的个位与开奖号码相同，则中1个5等奖；所选号码的个位、十位与开奖号码相同，则中1个5等奖以及1个4等奖，依此类推，最高可中5个奖。",
+                            "methodexample": "五星组合示例，如购买：1+2+3+4+5，该票共10元，由以下5注：（12345）五星、1（2345）四星、12（345）三星、123（45）二星、1234（5）一星构成。开奖号码12345，即五星、四星、三星、二星、一星的一等奖各1注。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "万位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "千位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "百位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 2,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "十位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 3,
+                                        "cols": 1
+                                    },
+                                    {
+                                        "title": "个位",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 4,
+                                        "cols": 1
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "title": "五星组选",
+                    "labels": [
+                        {
+                            "menuid": 2193,
+                            "methodid": 2278,
+                            "name": "组选120",
+                            "description": "组选120",
+                            "maxcodecount": 0,
+                            "methoddesc": "从0-9中选择5个号码组成一注。",
+                            "methodhelp": "从0-9中任意选择5个号码组成一注，所选号码与开奖号码的万位、千位、百位、十位、个位相同，顺序不限，即为中奖。",
+                            "methodexample": "投注方案：02568，开奖号码的五个数字只要包含0、2、5、6、8，即可中五星组选120一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 5
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2194,
+                            "methodid": 2279,
+                            "name": "组选60 ",
+                            "description": "组选60 ",
+                            "maxcodecount": 0,
+                            "methoddesc": "从“二重号”选择一个号码，“单号”中选择三个号码组成一注。",
+                            "methodhelp": "选择1个二重号码和3个单号号码组成一注，所选的单号号码与开奖号码相同，且所选二重号码在开奖号码中出现了2次，即为中奖。",
+                            "methodexample": "投注方案：二重号：8，单号：0、2、5，只要开奖的5个数字包括 0、2、5、8、8，即可中五星组选60一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "二重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    },
+                                    {
+                                        "title": "单　号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1,
+                                        "minchosen": 3
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2195,
+                            "methodid": 2280,
+                            "name": "组选30",
+                            "description": "组选30",
+                            "maxcodecount": 0,
+                            "methoddesc": "从“二重号”选择两个号码，“单号”中选择一个号码组成一注。",
+                            "methodhelp": "选择2个二重号和1个单号号码组成一注，所选的单号号码与开奖号码相同，且所选的2个二重号码分别在开奖号码中出现了2次，即为中奖。",
+                            "methodexample": "投注方案：二重号：2、8，单号：0，只要开奖的5个数字包括 0、2、2、8、8，即可中五星组选30一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "二重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 2
+                                    },
+                                    {
+                                        "title": "单　号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2196,
+                            "methodid": 2281,
+                            "name": "组选20",
+                            "description": "组选20",
+                            "maxcodecount": 0,
+                            "methoddesc": "从“三重号”选择一个号码，“单号”中选择两个号码组成一注。",
+                            "methodhelp": "选择1个三重号码和2个单号号码组成一注，所选的单号号码与开奖号码相同，且所选三重号码在开奖号码中出现了3次，即为中奖。",
+                            "methodexample": "投注方案：三重号：8，单号：0、2，只要开奖的5个数字包括 0、2、8、8、8，即可中五星组选20一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "三重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    },
+                                    {
+                                        "title": "单　号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1,
+                                        "minchosen": 2
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2197,
+                            "methodid": 2282,
+                            "name": "组选10",
+                            "description": "组选10",
+                            "maxcodecount": 0,
+                            "methoddesc": "从“三重号”选择一个号码，“二重号”中选择一个号码组成一注。",
+                            "methodhelp": "选择1个三重号码和1个二重号码，所选三重号码在开奖号码中出现3次，并且所选二重号码在开奖号码中出现了2次，即为中奖。",
+                            "methodexample": "投注方案：三重号：8，二重号：2，只要开奖的5个数字包括 2、2、8、8、8，即可中五星组选10一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "三重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    },
+                                    {
+                                        "title": "二重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        },
+                        {
+                            "menuid": 2198,
+                            "methodid": 2283,
+                            "name": "组选5",
+                            "description": "组选5",
+                            "maxcodecount": 0,
+                            "methoddesc": "从“四重号”选择一个号码，“单号”中选择一个号码组成一注。",
+                            "methodhelp": "选择1个四重号码和1个单号号码组成一注，所选的单号号码与开奖号码相同，且所选四重号码在开奖号码中出现了4次，即为中奖。",
+                            "methodexample": "投注方案：四重号：8，单号：2，只要开奖的5个数字包括 2、8、8、8、8，即可中五星组选5一等奖。",
+                            "selectarea": {
+                                "type": "digital",
+                                "layout": [
+                                    {
+                                        "title": "四重号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 0,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    },
+                                    {
+                                        "title": "单　号",
+                                        "no": "0|1|2|3|4|5|6|7|8|9",
+                                        "place": 1,
+                                        "cols": 1,
+                                        "minchosen": 1
+                                    }
+                                ],
+                            },
+                            "money_modes": [
+                                { "modeid": 1, "name": "元", "rate": 1 },
+                                { "modeid": 2, "name": "角", "rate": 0.1 },
+                                { "modeid": 3, "name": "分", "rate": 0.01 }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

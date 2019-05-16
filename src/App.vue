@@ -82,7 +82,7 @@ export default {
 .van-key
     height 10.5vw
 #app
-    background-color #444
+    background-color #eee
     height 100%
     font-family 'Microsoft yahei'
     width 375px
