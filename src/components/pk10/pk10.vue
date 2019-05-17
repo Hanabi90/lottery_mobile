@@ -16,8 +16,7 @@
                 <a class="icon icon-user"></a>
             </div>
         </header>
-        <myPopup v-if="show" :position="'top'"> 
-            <template v-slot:footer>
+        <Popup ref="selectPopup" v-model="show" position="top" :overlay="true" :close-on-click-overlay="true" @closed='test' > 
                 <div class="wraper">
                     <van-tabs v-model="active" v-if="jsonData.data_label.length>0">
                         <van-tab :title="item.title" v-for="(item,index) in jsonData.data_label">
@@ -25,7 +24,7 @@
                                 <div class="flexBox" v-for="inneritem in item.label" >
                                     <span class="title">{{ inneritem.gtitle }}</span>
                                     <ul class="label-wraper">
-                                        <li :class="[{active:isactive},'label-item'] " v-for="label in inneritem.label">
+                                        <li @click="tabGameType(label,inneritem.gtitle)" :class="[{active:currentGameType==`${inneritem.gtitle}-${label.name}`},'label-item'] " v-for="(label,index) in inneritem.label">
                                             {{ label.desc }}
                                         </li>
                                     </ul>
@@ -34,16 +33,16 @@
                         </van-tab>
                     </van-tabs>
                 </div>
-            </template>
             
-        </myPopup>
+        </Popup>
         
         <div class="slide-wrapper">
             <swiper ref="mySwiper" :options="swiperOption" class="slide-container" @slideChange='haha'>
                 <swiper-slide class="slide-1">
-                    <div class="content-wrapper">
+                    <div class="selectGameType" @click="show = true">{{currentGameType}}</div>
+                    <div class="content-wrapper">   
                         <div v-if="1===0" class="market-name">超级快3(45秒)</div>
-                        <flip-countdown class="clock" deadline="2019-05-15 18:55:30"></flip-countdown>
+                        <flip-countdown class="clock" deadline="2019-05-20 18:55:30"></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
                     <div class="history">开奖历史</div>
@@ -82,7 +81,24 @@
                 </li>
             </ul>
         </div>
-        
+        <div class="selectarea" v-if="selectarea!==null">
+           <div class="wrap" v-for="layoutArr in selectarea.layout" >
+               <div v-if="layoutArr.title" class="group">{{layoutArr.title}}</div>
+                <ul  class="balls_box">
+                    <li @click="selectBalls({title:layoutArr.title,layoutItem})" class="ball_li" v-for="layoutItem in layoutArr.no.split('|')" >
+                        <a class="ball_a">{{layoutItem}}</a>
+                    </li>
+                </ul>
+                <ul class="autoSelect">
+                    <li><a>全</a></li>
+                    <li><a>大</a></li>
+                    <li><a>小</a></li>
+                    <li><a>清</a></li>
+                    <li><a>奇</a></li>
+                    <li><a>偶</a></li>
+                </ul>
+           </div>
+        </div>
     </div>
 </template>
 
@@ -98,8 +114,17 @@ import myPopup from '@/components/lottery/popup'
 export default {
     data() {
         return {
+            ballsMap:{
+                wan:'',
+                qian:'',
+                bai:'',
+                shi:'',
+                ge:'',
+            },
+            currentGameType:'五星直选-复式',
+            selectarea:null,
             show: false,
-            isactive:true,
+            isactive:1,
             jsonData:{},
             active: 2,
             swiperOption: {
@@ -171,6 +196,74 @@ export default {
             this.nowIndex = slideindex
         },
         test(){
+            this.$refs.selectPopup.inited = false
+        },
+        tabGameType(gameLabel,gtitle,index){
+            this.currentGameType = `${gtitle}-${gameLabel.name}`
+            this.show = false
+            this.isactive = index
+            this.selectarea = gameLabel.selectarea 
+            console.log(this.selectarea);
+        },
+        selectBalls(balls){
+            const {layoutItem,title} = {...balls}
+            switch (title) {
+                case '万位':
+                    console.log('万万');
+                    if(this.ballsMap.wan.indexOf(layoutItem)==-1){
+                        this.ballsMap.wan += layoutItem.toString()+'|'
+                        // if(this.ballsMap.wan.includes('|')){
+                        //     this.ballsMap.wan = this.ballsMap.wan.substring(0,this.ballsMap.wan.length-1)
+                        //     }else{
+
+                        // }
+                    }else{
+                        this.ballsMap.wan = this.ballsMap.wan.replace(layoutItem,'')
+                        this.ballsMap.wan = this.ballsMap.wan.substring(0,this.ballsMap.wan.length-1)
+                    }
+                    console.log(this.ballsMap.wan);
+                    break;
+                case '千位':
+                    if(this.ballsMap.qian.some((item)=>{return item==layoutItem})){
+                        this.$delete(this.ballsMap.qian,layoutItem)
+                        // console.log('if',this.ballsMap.qian);
+                    }else{
+                        this.ballsMap.qian.push(String(layoutItem))
+                        // console.log('else');
+                    }
+                    console.log(this.ballsMap.qian);
+                    break;
+                case '百位':
+                   if(this.ballsMap.bai.some((item)=>{return item==layoutItem})){
+                        this.$delete(this.ballsMap.bai,layoutItem)
+                        // console.log('if',this.ballsMap.bai);
+                    }else{
+                        this.ballsMap.bai.push(String(layoutItem))
+                        // console.log('else');
+                    }
+                    console.log(this.ballsMap.bai);
+                    break;
+                case '十位':
+                    console.log('十十');
+                    if(this.ballsMap.shi.some((item)=>{return item==layoutItem})){
+                        this.$delete(this.ballsMap.shi,layoutItem)
+                    }else{
+                        this.ballsMap.shi.push(String(layoutItem))
+                    }
+                    console.log(this.ballsMap.shi);
+                    break;
+                case '个位':
+                    if(this.ballsMap.ge.some((item)=>{return item==layoutItem})){
+                        this.$delete(this.ballsMap.ge,layoutItem)
+                    }else{
+                        this.ballsMap.ge.push(String(layoutItem))
+                    }
+                    console.log(this.ballsMap.ge);
+                    break;
+            
+                default:
+                    break;
+            }
         }
     },
     computed:{
@@ -202,10 +295,10 @@ export default {
         this.jsonData = jsonData
     },
     mounted(){
-        setTimeout(() => {
-            this.show = true
-        }, 3000);
-        console.log(this.jsonData.data_label);
+        // setTimeout(() => {
+        //     this.show = true
+        // }, 3000);
+        console.log('this.jsonData.data_label',this.jsonData.data_label[0].label[0].label[0].selectarea);
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
         MethodCrowd(33).then((res)=>{
             this.testData1 = res.data.data
@@ -224,19 +317,54 @@ export default {
         FlipCountdown,
         'van-tab':Tab,
         'van-tabs':Tabs,
-        myPopup
+        myPopup,
+        Popup
     }
 }
 </script>
 
 <style lang='stylus' >
+.selectGameType
+    text-align: center;
+    background: #fff;
+    border: 2px solid #d0bfbf;
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -2px 1px rgba(0, 0, 0, 0.5) inset;
+    border-radius: 17px;
+    color: #fff;
+    width: auto;
+    height: auto;
+    padding: 5px 10px 8px 10px;
+    margin: 0 auto;
+    font-size: 13px;
+    line-height: 13px;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 12px;
+    transform: translateX(-50%);
+    &::after
+        content ''
+        background: url(../../assets/images/ssc/uni_icon_001.png) no-repeat 0 -58px;
+        background-size: auto 100px;
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-left: 6px;
+.van-popup
+    width 375px
+    transform translate3d(0%, 0%, 0);
+    transition: .3s ease-out;
+.van-overlay
+    width 375px
+    transform: translateX(100%);
 .pk10
-    width 100%
-    height: 100%;
+    width 375px
     position relative
     top 0
     left 0
-    overflow hidden
+    background-color #4a4a4a
+    min-height: 100vh;
     // .van-overlay
     //     width 100%
     // .van-popup
@@ -250,6 +378,7 @@ export default {
 .wraper
     background: #fff;
     width 375px
+    min-height: 300px;
     .van-tab--active
         color #c32026
     .van-tabs__wrap
@@ -284,9 +413,12 @@ export default {
             border-radius 4px
             margin 6px 2px
             padding 6px 0
+            background: #c32026;
+            color: #fff;
+            border-color: #c32026;
             &.active
-                background: #c32026;
-                color: #fff;
+                background: #fff;
+                color: #000;
                 border-color: #c32026;
                 position relative
                 &::after
@@ -519,8 +651,56 @@ header
             span
                 padding: 4px 4px;
                 overflow: hidden;
-
-//bet-aera
+.selectarea
+    color #fff
+    .wrap
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #5d5d5d;
+        border-bottom: 1px solid #2f2d2d;
+        .group
+            padding 10px
+            font-weight: bold;
+        .autoSelect
+            width 100px
+            text-align center
+            display flex
+            flex-wrap wrap
+            li
+                color: #FFF !important;
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+                background: url(../../assets/images/ssc/betIcon-BG_001.png) repeat 0 0 #c32026;
+                background-size: 2px 2px;
+                box-shadow: 0 0 6px rgba(255, 255, 255, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.7) inset, 0 2px 1px rgba(255, 255, 255, 0.3) inset, 0 -2px 1px rgba(0, 0, 0, 0.3) inset;
+                border-radius: 50%;
+                height: 30px;
+                width: 30px;
+                text-align: center;
+                line-height: 30px;
+    .balls_box
+        display flex
+        justify-content: flex-start;
+        height: 120px;
+        flex-wrap: wrap;
+        align-content: space-around;
+        .ball_li
+            height 40px
+            width 20%
+            display flex
+            justify-content center
+            align-content center
+            .ball_a
+                font-size 20px
+                width 40px
+                height 40px
+                background-color: #f00;
+                color: #d8d8d8 !important;
+                text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+                background: url(../../assets/images/ssc/bg_pearl_001.png) no-repeat;
+                text-align center
+                line-height 40px
+                background-size: contain;
+        //bet-aera
 
             
                 

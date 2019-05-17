@@ -1,6 +1,6 @@
 <template>
     <div class="mask">
-        <div :class="[{top:position=='top'&&animReady},'box']">
+        <div :class="[{top:position=='top'},'box']">
             <slot name="footer" v-if="!isPopResults"></slot>
             <slot name="betCallBack" v-else></slot>
         </div>
@@ -11,7 +11,6 @@
 export default {
   data () {
     return {
-        animReady:false
     }
   },
   props:{
@@ -28,15 +27,7 @@ export default {
   methods: {
       transitionComplete(){
           console.log('asdasdasd');
-      },
-      animCtrl(flag){
-          this.animReady = flag
       }
-  },
-  mounted(){
-      setTimeout(() => {
-          this.animCtrl(true)
-      }, 2000);
   }
 }
 </script>
@@ -57,13 +48,11 @@ export default {
     .box
         display flex
         transition 1s all 
-        // animation pop 0.4s
+        animation pop 0.4s
         width 375px
         animation-delay 0.2
-        transform translateY(0%)
         &.top
-            animation none 
-            transform translateY(100%)
+            animation top
 @keyframes pop {
     0%{
         transform scale(0)
@@ -72,6 +61,13 @@ export default {
         transform scale(1)
     }
 }
-
+@keyframes top {
+    0%{
+        transform translateY(0)
+    }
+    100%{
+        transform translateY(100%)
+    }
+}
 
 </style>
