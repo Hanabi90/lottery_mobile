@@ -24,7 +24,7 @@
                                 <div class="flexBox" v-for="inneritem in item.label" >
                                     <span class="title">{{ inneritem.gtitle }}</span>
                                     <ul class="label-wraper">
-                                        <li @click="tabGameType(label,inneritem.gtitle)" :class="[{active:currentGameType==`${inneritem.gtitle}-${label.name}`},'label-item'] " v-for="(label,index) in inneritem.label">
+                                        <li @click="tabGameType(label,inneritem.gtitle,index,inneritem)" :class="[{active:currentGameType==`${inneritem.gtitle}-${label.name}`},'label-item'] " v-for="(label,index) in inneritem.label">
                                             {{ label.desc }}
                                         </li>
                                     </ul>
@@ -82,22 +82,30 @@
             </ul>
         </div>
         <div class="selectarea" v-if="selectarea!==null">
-           <div class="wrap" v-for="layoutArr in selectarea.layout" >
+           <div class="wrap" v-for="(layoutArr,layoutArrindex) in selectarea.layout" >
                <div v-if="layoutArr.title" class="group">{{layoutArr.title}}</div>
                 <ul  class="balls_box">
-                    <li @click="selectBalls({title:layoutArr.title,layoutItem})" class="ball_li" v-for="layoutItem in layoutArr.no.split('|')" >
-                        <a class="ball_a">{{layoutItem}}</a>
+                    <li @click="selectBalls({title:layoutArr.title,layoutItem,layoutArrindex:layoutArrindex})" class="ball_li" v-for="(layoutItem,index) in layoutArr.no.split('|')" >
+                        <a :class="[{active:classCtrl(layoutArr.title,layoutItem,layoutArrindex)},'ball_a']">{{layoutItem}}</a>
                     </li>
                 </ul>
-                <ul class="autoSelect">
-                    <li><a>全</a></li>
+                <ul class="autoSelect" v-if="!layoutArr.title.includes('和值')">
+                    <!-- <li><a>全</a></li>
                     <li><a>大</a></li>
                     <li><a>小</a></li>
                     <li><a>清</a></li>
                     <li><a>奇</a></li>
-                    <li><a>偶</a></li>
+                    <li><a>偶</a></li> -->
+                    <li v-for="type in ['全','大','小','清','奇','偶']" :key="type" @click="selectHelper(type,layoutArrindex,layoutArr.title,layoutArr.no.split('|'))">
+                        <a>{{type}}</a>
+                    </li>
                 </ul>
            </div>
+        </div>
+        <div class="test">
+            <div v-for="item in ballsMap.wan" :key="item">
+                {{ item }}
+            </div>
         </div>
     </div>
 </template>
@@ -111,15 +119,17 @@ import {getmethod,MethodCrowd} from '../../Api/api'
 import jsonData from './test'
 import { Popup } from 'vant';
 import myPopup from '@/components/lottery/popup'
+import {getCaizhong} from '../../Api/api'
 export default {
     data() {
         return {
+            newArr:[],
             ballsMap:{
-                wan:'',
-                qian:'',
-                bai:'',
-                shi:'',
-                ge:'',
+                wan:[],
+                qian:[],
+                bai:[],
+                shi:[],
+                ge:[],
             },
             currentGameType:'五星直选-复式',
             selectarea:null,
@@ -187,7 +197,59 @@ export default {
 
         }
     },
+    updated(){
+        console.log("object");
+    },
     methods: {
+        selectHelper(type,layoutArrindex,title,fullArr){
+            console.log(type,layoutArrindex,fullArr);
+            switch (type) {
+                case '全':
+                    this.$set(this.newArr,layoutArrindex,fullArr)
+                    break;
+                case '大':
+                    this.$set(this.newArr,layoutArrindex,fullArr)
+                    var newArr = this.newArr[layoutArrindex].filter((item)=>{
+                        return item>=5
+                    })
+                    this.$set(this.newArr,layoutArrindex,newArr)
+                    break;a
+                case '小':
+                    this.$set(this.newArr,layoutArrindex,fullArr)
+                    var newArr = this.newArr[layoutArrindex].filter((item)=>{
+                        return item<5
+                    })
+                    this.$set(this.newArr,layoutArrindex,newArr)
+                    break;
+                case '清':
+                    this.$set(this.newArr,layoutArrindex,[''])
+                    break;
+                case '奇':
+                    this.$set(this.newArr,layoutArrindex,fullArr)
+                    var newArr = this.newArr[layoutArrindex].filter((item)=>{
+                        return item%2!==0
+                    })
+                    this.$set(this.newArr,layoutArrindex,newArr)
+                    break;
+                case '偶':
+                    this.$set(this.newArr,layoutArrindex,fullArr)
+                    var newArr = this.newArr[layoutArrindex].filter((item)=>{
+                        return item%2==0
+                    })
+                    this.$set(this.newArr,layoutArrindex,newArr)
+                    break;
+            
+                default:
+                    break;
+            }
+        },
+        classCtrl(title,layoutItem,layoutArrindex){
+            if(this.newArr[layoutArrindex].indexOf(layoutItem)!=-1){
+                return true
+            }else{
+                return false
+            }
+        },
         haha(e){
             this.nowIndex = this.swiper.realIndex
         },
@@ -198,73 +260,81 @@ export default {
         test(){
             this.$refs.selectPopup.inited = false
         },
-        tabGameType(gameLabel,gtitle,index){
+        tabGameType(gameLabel,gtitle,index,labelArr){
+            console.log('labelArr',labelArr);
+            console.log('this.selectarea',gameLabel.selectarea.layout.length);
+            const newArrLength = gameLabel.selectarea.layout.length
+            this.newArr = []
+            for (let i = 0; i < newArrLength; i++) {
+                this.newArr.push([])
+            }
+            console.log(this.newArr);
             this.currentGameType = `${gtitle}-${gameLabel.name}`
             this.show = false
             this.isactive = index
             this.selectarea = gameLabel.selectarea 
-            console.log(this.selectarea);
         },
         selectBalls(balls){
-            const {layoutItem,title} = {...balls}
-            switch (title) {
-                case '万位':
-                    console.log('万万');
-                    if(this.ballsMap.wan.indexOf(layoutItem)==-1){
-                        this.ballsMap.wan += layoutItem.toString()+'|'
-                        // if(this.ballsMap.wan.includes('|')){
-                        //     this.ballsMap.wan = this.ballsMap.wan.substring(0,this.ballsMap.wan.length-1)
-                        //     }else{
-
-                        // }
-                    }else{
-                        this.ballsMap.wan = this.ballsMap.wan.replace(layoutItem,'')
-                        this.ballsMap.wan = this.ballsMap.wan.substring(0,this.ballsMap.wan.length-1)
-                    }
-                    console.log(this.ballsMap.wan);
-                    break;
-                case '千位':
-                    if(this.ballsMap.qian.some((item)=>{return item==layoutItem})){
-                        this.$delete(this.ballsMap.qian,layoutItem)
-                        // console.log('if',this.ballsMap.qian);
-                    }else{
-                        this.ballsMap.qian.push(String(layoutItem))
-                        // console.log('else');
-                    }
-                    console.log(this.ballsMap.qian);
-                    break;
-                case '百位':
-                   if(this.ballsMap.bai.some((item)=>{return item==layoutItem})){
-                        this.$delete(this.ballsMap.bai,layoutItem)
-                        // console.log('if',this.ballsMap.bai);
-                    }else{
-                        this.ballsMap.bai.push(String(layoutItem))
-                        // console.log('else');
-                    }
-                    console.log(this.ballsMap.bai);
-                    break;
-                case '十位':
-                    console.log('十十');
-                    if(this.ballsMap.shi.some((item)=>{return item==layoutItem})){
-                        this.$delete(this.ballsMap.shi,layoutItem)
-                    }else{
-                        this.ballsMap.shi.push(String(layoutItem))
-                    }
-                    console.log(this.ballsMap.shi);
-                    break;
-                case '个位':
-                    if(this.ballsMap.ge.some((item)=>{return item==layoutItem})){
-                        this.$delete(this.ballsMap.ge,layoutItem)
-                    }else{
-                        this.ballsMap.ge.push(String(layoutItem))
-                    }
-                    console.log(this.ballsMap.ge);
-                    break;
-            
-                default:
-                    break;
+            const {layoutItem,title,layoutArrindex} = {...balls}
+            console.log(layoutItem,title,layoutArrindex);
+            console.log('layoutArrindex',layoutArrindex);
+            if(this.newArr[layoutArrindex].indexOf(layoutItem)==-1){
+                this.newArr[layoutArrindex].push(layoutItem)
+                this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort((a,b)=>{
+                return a-b
+            })
+            }else{
+                this.newArr[layoutArrindex].splice(this.newArr[layoutArrindex].indexOf(layoutItem),1)
+                this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort((a,b)=>{
+                return a-b
+            })
             }
-        }
+            console.log(this.newArr);
+        },
+        // selectBalls(balls){
+        //     this.newSelectBalls(balls)
+        //     const {layoutItem,title,layoutArrindex} = {...balls}
+        //     switch (title) {
+        //         case '万位':
+        //         if(this.ballsMap.wan.indexOf(layoutItem)==-1){
+        //             this.ballsMap.wan.push(layoutItem)
+        //         }else{
+        //             this.ballsMap.wan.splice(this.ballsMap.wan.indexOf(layoutItem),1)
+        //         }
+        //             break;
+        //         case '千位':
+        //             if(this.ballsMap.qian.indexOf(layoutItem)==-1){
+        //             this.ballsMap.qian.push(layoutItem)
+        //         }else{
+        //             this.ballsMap.qian.splice(this.ballsMap.qian.indexOf(layoutItem),1)
+        //         }
+        //             break;
+        //         case '百位':
+        //            if(this.ballsMap.bai.indexOf(layoutItem)==-1){
+        //             this.ballsMap.bai.push(layoutItem)
+        //         }else{
+        //             this.ballsMap.bai.splice(this.ballsMap.bai.indexOf(layoutItem),1)
+        //         }
+        //             break;
+        //         case '十位':
+        //             if(this.ballsMap.shi.indexOf(layoutItem)==-1){
+        //             this.ballsMap.shi.push(layoutItem)
+        //         }else{
+        //             this.ballsMap.shi.splice(this.ballsMap.shi.indexOf(layoutItem),1)
+        //         }
+        //             break;
+        //         case '个位':
+        //            if(this.ballsMap.ge.indexOf(layoutItem)==-1){
+        //             this.ballsMap.ge.push(layoutItem)
+        //         }else{
+        //             this.ballsMap.ge.splice(this.ballsMap.ge.indexOf(layoutItem),1)
+        //         }
+        //             break;
+            
+        //         default:
+        //             break;
+        //     }
+        // }
     },
     computed:{
         swiper() {
@@ -295,6 +365,11 @@ export default {
         this.jsonData = jsonData
     },
     mounted(){
+        getCaizhong().then((res)=>{
+            console.log('afsfasf',res);
+        }).catch((err)=>{
+            console.log(err);
+        })
         // setTimeout(() => {
         //     this.show = true
         // }, 3000);
@@ -324,6 +399,10 @@ export default {
 </script>
 
 <style lang='stylus' >
+.test
+    position fixed
+    z-index 9999999999999
+    top 0
 .selectGameType
     text-align: center;
     background: #fff;
@@ -700,6 +779,8 @@ header
                 text-align center
                 line-height 40px
                 background-size: contain;
+                &.active
+                    background-image url(../../assets/images/ssc/bg_pearl_on_001.png)
         //bet-aera
 
             

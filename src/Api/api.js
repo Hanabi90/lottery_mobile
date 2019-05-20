@@ -1,6 +1,5 @@
-import service from 'axios'
+import service from './axios'
 import qs from 'qs'
-service.defaults.baseURL = 'http://192.168.254.210';
 //登录
 export const login = formData =>
     service.request({
@@ -35,17 +34,17 @@ export const updatenickname = formData =>
         data: qs.stringify({ nickname: 'test001' })
     })
 //查询银行卡
-
 export const getbankinfo = formData =>
     service.request({
         method: 'post',
-        url: 'getbankinfo'
+        url: 'getbankinfo',
+        data: qs.stringify(formData)
     })
 //获取彩票菜单
 export const getMenu = formData =>
     service.request({
-        method: 'get',
-        url: 'menu/get/1'
+        method: 'post',
+        url: 'lottery/menu/get'
     })
 //獲取指定彩種的玩法羣組
 export const MethodCrowd = formData =>
@@ -54,11 +53,40 @@ export const MethodCrowd = formData =>
         url: `method/crowd/get/${formData}`
     })
 //獲取指定羣組下的玩法
-export const getmethod = (formData) =>{
-    return service.request({
+export const getmethod = formData =>
+    service.request({
         method: 'get',
-        // url: `method/crowd/getmethod/1/33/138`
-        url: `method/crowd/getmethod/1/${formData.lotteryid}/${formData.crowdid}`
+        url: `method/crowd/getmethod/1/${formData}`
     })
-    
-}
+//获取系统通知
+export const getnotice = formData =>
+    service.request({
+        method: 'get',
+        url: `notice/get/${formData}`
+    })
+//获取行政区列表
+export const getprovincelist = formData =>
+    service.request({
+        method: 'post',
+        url: 'getprovincelist',
+        data: qs.stringify(formData)
+    })
+//获取城市列表
+export const getcitylist = formData =>
+    service.request({
+        method: 'post',
+        url: 'getcitylist',
+        data: qs.stringify(formData)
+    })
+//获取银行列表
+export const getbanklist = formData =>
+    service.request({
+        method: 'post',
+        url: 'getbanklist',
+        data: qs.stringify(formData)
+    })
+export const getCaizhong = formData =>
+service.request({
+    method: 'post',
+    url: 'lottery/info/get/3535',
+})

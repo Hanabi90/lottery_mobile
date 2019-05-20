@@ -58,10 +58,10 @@
             <div class="form">
                 <form>
                     <div class="form_group">
-                        <input type="text" placeholder="用户名" value="">
+                        <input type="text" placeholder="用户名" value="" v-model="userInfo.username">
                     </div>
                     <div class="form_group pwd_group">
-                        <input type="password" placeholder="密码" value="">
+                        <input type="password" placeholder="密码" value="" v-model="userInfo.password">
                         <a class="check_btn material-icons"></a>
                     </div>
                     <div class="form_tip"></div>
@@ -75,7 +75,7 @@
                         </label>
                         <a class="fr forget_pwd">找回密码</a>
                     </div>
-                    <button type="button" class="button submit" style="visibility:initial">登录</button>
+                    <button type="button" class="button submit" style="visibility:initial" @click="login()">登录</button>
                 </form>
             </div>
              <div class="login_foot">没有账号？<router-link to="/">请新建一个账号</router-link></div>
@@ -90,9 +90,15 @@ import MarqueeText from 'vue-marquee-text-component'
 import GameList from '../components/home/GameList'
 import { Popup } from 'vant'
 import 'vant/lib/popup/style/'
+import {login,config} from '../Api/api'
+import {mapMutations} from 'vuex'
 export default {
     data() {
         return {
+            userInfo:{
+                username:'devpeter',
+                loginpass:'1234qwer'
+            },
             isCheckBoxActive:false,
             show: false,
             swiperOption: {
@@ -117,6 +123,17 @@ export default {
         }
     },
     methods:{
+        ...mapMutations([
+            'updateToken',
+        ]),
+        login(){
+            login(this.userInfo).then((res)=>{
+                console.log(res);
+                this.updateToken(res.data.token)
+                this.show = false
+            })
+
+        },
         fixPop(){
             setTimeout(() => {
                 this.$refs.popup.inited = false

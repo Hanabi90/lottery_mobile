@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        token:null,
         hotOrLeak:'leak',
         keyboardshow:false,
         myPopShow:false,
@@ -49,6 +50,9 @@ export default new Vuex.Store({
                 state.myPopShow = false
             }, 3000);
         },
+        updateToken(state,token){
+            state.token = token
+        }
     },
     actions: {
         'UPDATEDELAYTIMETOCLOSE'(){
