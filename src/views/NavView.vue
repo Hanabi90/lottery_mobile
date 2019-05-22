@@ -208,6 +208,7 @@ export default {
         height 100%
     .main-content
         width: 100vw;
+        overflow: auto;
         // background: #000;
     
 .tab

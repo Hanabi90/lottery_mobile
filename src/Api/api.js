@@ -4,7 +4,7 @@ import qs from 'qs'
 export const login = formData =>
     service.request({
         method: 'post',
-        url: 'UserLogin',
+        url: 'default/userlogin',
         data: qs.stringify(formData)
     })
 //登出
@@ -86,7 +86,47 @@ export const getbanklist = formData =>
         data: qs.stringify(formData)
     })
 export const getCaizhong = formData =>
-service.request({
-    method: 'post',
-    url: 'lottery/info/get/3535',
-})
+    service.request({
+        method: 'post',
+        url: 'lottery/getinfo',
+        data: qs.stringify(formData)
+    })
+
+export const betting = formData =>
+    service.request({
+        method: 'post',
+        url: 'lottery/betting',
+        data: qs.stringify(formData)
+    })
+export const getissue = formData =>
+    service.request({
+        method: 'post',
+        url: 'getissue',
+        data: qs.stringify(formData)//lotteryid:33
+    })
+/* {
+    "betparams": {
+        "iWalletType": 1,
+        "curmid": 3535,
+        "lt_issue_start": "20190522-33",
+        "lt_project": {
+        "type": "digital",
+        "methodid": 3364,
+        "point": 0,
+        "codes": "5&6&7&8&9",
+        "nums": 5,
+        "times": 1,
+        "money": 10,
+        "mode": 1,
+        "desc": "[特殊_一帆风顺] 5,6,7,8,9",
+        "buqsno": "buqsno5ce3a094c4706"
+        }
+    },
+    "bettraceparams": {
+        "lt_trace_if": "no",
+        "lt_trace_stop": "",
+        "lt_trace_money": "",
+        "lt_trace_issues": ""
+    }
+    }
+ */

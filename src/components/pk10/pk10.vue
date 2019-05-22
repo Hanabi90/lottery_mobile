@@ -82,14 +82,16 @@
             </ul>
         </div>
         <div class="selectarea" v-if="selectarea!==null">
-           <div class="wrap" v-for="(layoutArr,layoutArrindex) in selectarea.layout" >
-               <div v-if="layoutArr.title" class="group">{{layoutArr.title}}</div>
+           <div class="wrap" v-for="(layoutArr,layoutArrindex) in computedSelectarea" >
+               <div v-if="layoutArr.title&&!currentGameType.includes('和值')" class="group">{{layoutArr.title}}</div>
                 <ul  class="balls_box">
-                    <li @click="selectBalls({title:layoutArr.title,layoutItem,layoutArrindex:layoutArrindex})" class="ball_li" v-for="(layoutItem,index) in layoutArr.no.split('|')" >
+                    <li @click="selectBalls({title:layoutArr.title,layoutItem,layoutArrindex:layoutArrindex})"
+                        class="ball_li" 
+                        v-for="(layoutItem,index) in layoutArr.no.split('|')" >
                         <a :class="[{active:classCtrl(layoutArr.title,layoutItem,layoutArrindex)},'ball_a']">{{layoutItem}}</a>
                     </li>
                 </ul>
-                <ul class="autoSelect" v-if="!layoutArr.title.includes('和值')">
+                <ul class="autoSelect" v-if="!currentGameType.includes('和值')&&!currentGameType.includes('特殊')">
                     <!-- <li><a>全</a></li>
                     <li><a>大</a></li>
                     <li><a>小</a></li>
@@ -102,27 +104,73 @@
                 </ul>
            </div>
         </div>
-        <div class="test">
-            <div v-for="item in ballsMap.wan" :key="item">
-                {{ item }}
+        <div class="selectarea flex" v-if="selectarea=='input'">
+            <div class="cleartext">
+                <v-button type="danger">删除重复及错误项</v-button>
+                <v-button type="warning">清空</v-button>
+            </div>
+            <div class="wrap danshi">
+                <textarea :value="inputVal" @input="inputVal=$event.target.value" ></textarea>
             </div>
         </div>
+        <shop :newArr=newArr :betinfo=betinfo></shop>
     </div>
 </template>
 
 <script>
-import { Tab, Tabs } from 'vant';
+import { Tab, Tabs,Field,Button  } from 'vant';
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import FlipCountdown from 'vue2-flip-countdown'
-import {getmethod,MethodCrowd} from '../../Api/api'
+import {getmethod,MethodCrowd,getissue} from '../../Api/api'
 import jsonData from './test'
 import { Popup } from 'vant';
 import myPopup from '@/components/lottery/popup'
 import {getCaizhong} from '../../Api/api'
+import shop from './shop'
+import divtext from './1'
 export default {
+    watch:{
+        inputVal(nVal, oVal) {
+            this.inputVal = this.test1(nVal)
+            // console.log('旧数据',nVal);//监听当前value
+            // console.log('新数据',oVal);//监听当前value
+        //改变input框中的内容
+    //    console.log(nVal,oVal);
+        // console.log(nVal);
+        // console.log(oVal);
+      }
+    },
     data() {
         return {
+            betinfo:{
+            "betparams": {
+                "iWalletType": 1,
+                "curmid": 3535,
+                "lt_issue_start": "20190522-108",
+                "lt_project": {
+                "type": "digital",
+                "methodid": 3364,
+                "point": 0,
+                "codes": "5&6&7&8&9",
+                "nums": 5,
+                "times": 1,
+                "money": 10,
+                "mode": 1,
+                "desc": "[特殊_一帆风顺] 5,6,7,8,9",
+                "buqsno": "buqsno5ce3a094c4706"
+                }
+            },
+            "bettraceparams": {
+                "lt_trace_if": "no",
+                "lt_trace_stop": "",
+                "lt_trace_money": "",
+                "lt_trace_issues": ""
+            }
+            },
+            value2:'',
+            inputVal:'',
+            message:'',
             newArr:[],
             ballsMap:{
                 wan:[],
@@ -198,9 +246,51 @@ export default {
         }
     },
     updated(){
-        console.log("object");
     },
     methods: {
+        test1(val){
+            
+            // if(isNaN(event.data)){
+            //     var str= String(event.target.value)
+            //     str = str.substring(0,str.length-1)
+            //     event.target.value= str
+            //     return
+            // }else{
+            //     console.log(isNaN(event.data));
+            //     this.inputVal = event.target.value
+            // }
+            
+console.log('valvalvalval',val);
+            if (!val) {
+          return
+        }
+
+            function insertStr(soure, start, newStr){   
+
+            return soure.slice(0, start) + newStr + soure.slice(start);
+            }
+        //处理only的方式
+          val = val.replace(/[^\d]/g, '')
+
+          var temp = val.split('')
+          for (let i = 0; i < val.length; i++) {
+              if(i%5==0){
+                  insertStr(val,i,',')
+              }
+          }
+        //处理clear正则替换
+        // if (this.clear.length>0) {//正则数组
+        //   for (let i = 0; i < this.clear.length; i++) {
+        //     val = val.replace(this.clear[i], '');
+        //   }
+        // } else {//空的数组或单个正表达式
+        //   if (this.clear.length !== 0) {
+        //     val = val.replace(this.clear, '');
+        //   }
+        // }
+
+        return val;
+        },
         selectHelper(type,layoutArrindex,title,fullArr){
             console.log(type,layoutArrindex,fullArr);
             switch (type) {
@@ -261,23 +351,34 @@ export default {
             this.$refs.selectPopup.inited = false
         },
         tabGameType(gameLabel,gtitle,index,labelArr){
-            console.log('labelArr',labelArr);
-            console.log('this.selectarea',gameLabel.selectarea.layout.length);
-            const newArrLength = gameLabel.selectarea.layout.length
-            this.newArr = []
-            for (let i = 0; i < newArrLength; i++) {
-                this.newArr.push([])
+            // console.log('labelArr',labelArr);
+            // console.log('this.selectarea',gameLabel.selectarea.layout.length);
+            if(gameLabel.selectarea.type=='input'){
+                this.currentGameType = `${gtitle}-${gameLabel.name}`
+                this.show = false
+                this.selectarea = 'input'
+            }else{
+                const newArrLength = gameLabel.selectarea.layout.length
+                this.newArr = []
+                for (let i = 0; i < newArrLength; i++) {
+                    this.newArr.push([])
+                }
+                // console.log(this.newArr);
+                this.currentGameType = `${gtitle}-${gameLabel.name}`
+                this.show = false
+                this.isactive = index
+                this.selectarea = gameLabel.selectarea
+                this.$set(this.betinfo.betparams,'curmid',gameLabel.menuid)
+                this.$set(this.betinfo.betparams.lt_project,'methodid',gameLabel.methodid)
+                this.$set(this.betinfo.betparams.lt_project,'desc',this.currentGameType)
+
             }
-            console.log(this.newArr);
-            this.currentGameType = `${gtitle}-${gameLabel.name}`
-            this.show = false
-            this.isactive = index
-            this.selectarea = gameLabel.selectarea 
+            
         },
         selectBalls(balls){
             const {layoutItem,title,layoutArrindex} = {...balls}
-            console.log(layoutItem,title,layoutArrindex);
-            console.log('layoutArrindex',layoutArrindex);
+            // console.log(layoutItem,title,layoutArrindex);
+            // console.log('layoutArrindex',layoutArrindex);
             if(this.newArr[layoutArrindex].indexOf(layoutItem)==-1){
                 this.newArr[layoutArrindex].push(layoutItem)
                 this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort((a,b)=>{
@@ -289,7 +390,7 @@ export default {
                 return a-b
             })
             }
-            console.log(this.newArr);
+            // console.log(this.newArr);
         },
         // selectBalls(balls){
         //     this.newSelectBalls(balls)
@@ -335,11 +436,34 @@ export default {
         //             break;
         //     }
         // }
+        sendOrder(){
+            getissue({lotteryid:33}).then((res)=>{
+                this.$set(this.betinfo.betparams,lt_issue_start,res.data.data.issue)
+                console.log(res.data.data.issue);
+            })
+            this.$set(this.betinfo.betparams.lt_project,desc,this.currentGameType)
+            this.$set(this.betinfo.betparams.lt_project,methodid,'33')
+        }
     },
     computed:{
         swiper() {
             return this.$refs.mySwiper.swiper
         },
+        computedSelectarea(){
+            if(this.currentGameType.includes('和值')){
+                var str = ''
+                for (const item of this.selectarea.layout) {
+                    str+=item.no + '|'
+                }
+                if(str[str.length-1]=='|'){
+                    str = str.substring(0,str.length-1)
+                }
+                return [{cols:1,no:str,place:0,title:''}]
+            }else{
+                return this.selectarea.layout
+            }
+            console.log('this.selectarea.layout',this.selectarea.layout);
+        }
         // formatData(){
         //     var arr = []
         //     for (const item of this.testData2) {
@@ -365,26 +489,26 @@ export default {
         this.jsonData = jsonData
     },
     mounted(){
-        getCaizhong().then((res)=>{
-            console.log('afsfasf',res);
+        getCaizhong({memnuid:33}).then((res)=>{
+            this.jsonData.data_label = res.data.data
         }).catch((err)=>{
-            console.log(err);
+           
         })
-        // setTimeout(() => {
-        //     this.show = true
-        // }, 3000);
-        console.log('this.jsonData.data_label',this.jsonData.data_label[0].label[0].label[0].selectarea);
+        getissue({lotteryid:33}).then((res)=>{
+            // this.currentIssue = res.data.issue
+            this.$set(this.betinfo.betparams,'lt_issue_start',res.data.data.issue)
+            console.log(res.data.data.issue);
+        })
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
         MethodCrowd(33).then((res)=>{
             this.testData1 = res.data.data
             for (const item of res.data.data) {
                 getmethod(item).then((res)=>{
-                    console.log(res.data.data);
+                    // console.log(res.data.data);
                     this.testData2.push(res.data.data)
                 })
             }
         })
-
     },
     components: {
         swiper,
@@ -392,17 +516,31 @@ export default {
         FlipCountdown,
         'van-tab':Tab,
         'van-tabs':Tabs,
+        Field,
+        'vButton':Button,
+        shop,
         myPopup,
-        Popup
+        Popup,
+        divtext
     }
 }
 </script>
 
-<style lang='stylus' >
+<style lang="stylus" >
+.flex
+    display flex
+    justify-content center
+    align-items: center;
+    flex-direction: column;
 .test
     position fixed
     z-index 9999999999999
     top 0
+.cleartext
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top 10px
 .selectGameType
     text-align: center;
     background: #fff;
@@ -444,6 +582,7 @@ export default {
     left 0
     background-color #4a4a4a
     min-height: 100vh;
+    height: calc(100% + 200px);
     // .van-overlay
     //     width 100%
     // .van-popup
@@ -732,11 +871,28 @@ header
                 overflow: hidden;
 .selectarea
     color #fff
+    background #4a4a4a
     .wrap
         display: flex;
         align-items: center;
         border-top: 1px solid #5d5d5d;
         border-bottom: 1px solid #2f2d2d;
+        justify-content: space-around;
+        &.danshi
+            overflow: hidden;
+            width: 80%;
+            height: 200px;
+            display: flex;
+            background: #9a9a9a;
+            margin: 0 .3rem .3rem;
+            border: 1px solid #adadad;
+            border-radius: 5px;
+            padding: .2rem .2rem .2rem;
+            margin-top: 10px;
+            textarea
+                color #000
+                width 100%
+                height 100%
         .group
             padding 10px
             font-weight: bold;
@@ -759,17 +915,18 @@ header
     .balls_box
         display flex
         justify-content: flex-start;
-        height: 120px;
+        height: 100%;
         flex-wrap: wrap;
         align-content: space-around;
         .ball_li
             height 40px
             width 20%
+            min-width 40px
             display flex
             justify-content center
             align-content center
             .ball_a
-                font-size 20px
+                font-size 16px
                 width 40px
                 height 40px
                 background-color: #f00;

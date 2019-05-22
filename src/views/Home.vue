@@ -75,7 +75,7 @@
                         </label>
                         <a class="fr forget_pwd">找回密码</a>
                     </div>
-                    <button type="button" class="button submit" style="visibility:initial" @click="login()">登录</button>
+                    <button type="button" class="button submit" style="visibility:initial" @click="handlelogin()">登录</button>
                 </form>
             </div>
              <div class="login_foot">没有账号？<router-link to="/">请新建一个账号</router-link></div>
@@ -126,14 +126,36 @@ export default {
         ...mapMutations([
             'updateToken',
         ]),
-        login(){
-            login(this.userInfo).then((res)=>{
-                console.log(res);
-                this.updateToken(res.data.token)
-                this.show = false
-            })
+        // login(){
+        //     login(this.userInfo).then((res)=>{
+        //         console.log(res);
+        //         this.updateToken(res.data.token)
+        //         this.show = false
+        //     })
 
+        // },
+        handlelogin() {
+            login(this.userInfo).then((res) => {
+                if (res.data.code == 0) {
+                    sessionStorage.setItem('token', res.data.data.token)
+                    sessionStorage.setItem('nickname', res.data.data.nickname)
+                    this.show = false
+                    this.updateToken(res.data.data.token)
+                    // this.$store.dispatch('handleNickName', res.data.nickname)
+                    // this.$Message.info('登录成功')
+                    // getbalance().then(res => {
+                    //     this.$store.dispatch('handleMoney', res.data)
+                    // })
+                } else {
+                    // this.$Message.error(res.msg)
+                    this.login = {
+                        username: '',
+                        loginpass: ''
+                    }
+                }
+            })
         },
+
         fixPop(){
             setTimeout(() => {
                 this.$refs.popup.inited = false
