@@ -62,6 +62,7 @@
 <script>
 import Dice from '../components/lottery/Dice'
 import Pk10 from '../components/pk10/pk10'
+import {getMenu} from '../Api/api'
 export default {
   data () {
     return {
@@ -154,6 +155,11 @@ export default {
     }
   },
   methods: {
+      getMenu(){
+          getMenu().then((res)=>{
+              console.log(res);
+          })
+      },
       tabLeftMain(){
           this.isLeftOrMain = false
       },
@@ -186,6 +192,9 @@ export default {
               this.count = 0
           }
       },
+  },
+  created(){
+      this.getMenu()
   },
   components:{
       Dice,

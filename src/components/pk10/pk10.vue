@@ -144,6 +144,8 @@ export default {
     data() {
         return {
             betinfo:{
+                postdata:{
+                    
             "betparams": {
                 "iWalletType": 1,
                 "curmid": 3535,
@@ -167,6 +169,7 @@ export default {
                 "lt_trace_money": "",
                 "lt_trace_issues": ""
             }
+                }
             },
             value2:'',
             inputVal:'',
@@ -368,9 +371,9 @@ console.log('valvalvalval',val);
                 this.show = false
                 this.isactive = index
                 this.selectarea = gameLabel.selectarea
-                this.$set(this.betinfo.betparams,'curmid',gameLabel.menuid)
-                this.$set(this.betinfo.betparams.lt_project,'methodid',gameLabel.methodid)
-                this.$set(this.betinfo.betparams.lt_project,'desc',this.currentGameType)
+                this.$set(this.betinfo.postdata.betparams,'curmid',gameLabel.menuid)
+                this.$set(this.betinfo.postdata.betparams.lt_project,'methodid',gameLabel.methodid)
+                this.$set(this.betinfo.postdata.betparams.lt_project,'desc',this.currentGameType)
 
             }
             
@@ -438,11 +441,11 @@ console.log('valvalvalval',val);
         // }
         sendOrder(){
             getissue({lotteryid:33}).then((res)=>{
-                this.$set(this.betinfo.betparams,lt_issue_start,res.data.data.issue)
+                this.$set(this.betinfo.postdata.betparams,lt_issue_start,res.data.data.issue)
                 console.log(res.data.data.issue);
             })
-            this.$set(this.betinfo.betparams.lt_project,desc,this.currentGameType)
-            this.$set(this.betinfo.betparams.lt_project,methodid,'33')
+            this.$set(this.betinfo.postdata.betparams.lt_project,desc,this.currentGameType)
+            this.$set(this.betinfo.postdata.betparams.lt_project,methodid,'33')
         }
     },
     computed:{
@@ -489,18 +492,18 @@ console.log('valvalvalval',val);
         this.jsonData = jsonData
     },
     mounted(){
-        getCaizhong({memnuid:33}).then((res)=>{
+        getCaizhong({memnuid:3535}).then((res)=>{
             this.jsonData.data_label = res.data.data
         }).catch((err)=>{
            
         })
-        getissue({lotteryid:33}).then((res)=>{
+        getissue({lotteryid:3535}).then((res)=>{
             // this.currentIssue = res.data.issue
-            this.$set(this.betinfo.betparams,'lt_issue_start',res.data.data.issue)
+            this.$set(this.betinfo.postdata.betparams,'lt_issue_start',res.data.data.issue)
             console.log(res.data.data.issue);
         })
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
-        MethodCrowd(33).then((res)=>{
+        MethodCrowd(3535).then((res)=>{
             this.testData1 = res.data.data
             for (const item of res.data.data) {
                 getmethod(item).then((res)=>{

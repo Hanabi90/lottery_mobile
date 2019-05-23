@@ -43,7 +43,7 @@
                     <i class="icon"></i>
                     <span>优惠</span>
                 </router-link>
-                <router-link class="navItem navItem_register" to="/" tag="li">注册</router-link>
+                <router-link class="navItem navItem_register" to="/register" tag="li">注册</router-link>
                 <router-link class="navItem navItem_wallet" to="/" tag="li">
                     <i class="icon"></i>
                     <span>钱包</span>
@@ -78,7 +78,7 @@
                     <button type="button" class="button submit" style="visibility:initial" @click="handlelogin()">登录</button>
                 </form>
             </div>
-             <div class="login_foot">没有账号？<router-link to="/">请新建一个账号</router-link></div>
+             <div class="login_foot">没有账号？<router-link to="/register">请新建一个账号</router-link></div>
         </Popup>
     </div>
 </template>
@@ -88,10 +88,11 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import MarqueeText from 'vue-marquee-text-component'
 import GameList from '../components/home/GameList'
-import { Popup } from 'vant'
+import { Popup,Notify } from 'vant'
 import 'vant/lib/popup/style/'
 import {login,config} from '../Api/api'
 import {mapMutations} from 'vuex'
+
 export default {
     data() {
         return {
@@ -141,11 +142,11 @@ export default {
                     sessionStorage.setItem('nickname', res.data.data.nickname)
                     this.show = false
                     this.updateToken(res.data.data.token)
-                    // this.$store.dispatch('handleNickName', res.data.nickname)
-                    // this.$Message.info('登录成功')
-                    // getbalance().then(res => {
-                    //     this.$store.dispatch('handleMoney', res.data)
-                    // })
+                    Notify({
+                        message: '登录成功',
+                        duration: 2000,
+                        background: '#c32026'
+                    });
                 } else {
                     // this.$Message.error(res.msg)
                     this.login = {
@@ -170,7 +171,8 @@ export default {
         swiperSlide,
         MarqueeText,
         GameList,
-        Popup
+        Popup,
+        Notify
     }
 }
 </script>

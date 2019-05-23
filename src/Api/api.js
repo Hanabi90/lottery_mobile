@@ -44,7 +44,7 @@ export const getbankinfo = formData =>
 export const getMenu = formData =>
     service.request({
         method: 'post',
-        url: 'lottery/menu/get'
+        url: 'lottery/getmenu/'
     })
 //獲取指定彩種的玩法羣組
 export const MethodCrowd = formData =>
@@ -92,12 +92,14 @@ export const getCaizhong = formData =>
         data: qs.stringify(formData)
     })
 
-export const betting = formData =>
+export const betting = (formData) =>{
     service.request({
         method: 'post',
         url: 'lottery/betting',
-        data: qs.stringify(formData)
+        data:qs.stringify(formData)
     })
+    console.log(formData);
+}
 export const getissue = formData =>
     service.request({
         method: 'post',

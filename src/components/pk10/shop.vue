@@ -69,8 +69,8 @@ export default {
                 str += item.join('&')+'|'
             }
             str = str.substring(0,str.length-1)
-            this.$set(this.betinfo.betparams.lt_project,'codes',str)
-            console.log(this.betinfo.betparams);
+            this.$set(this.betinfo.postdata.betparams.lt_project,'codes',str)
+            console.log(this.betinfo);
             betting(this.betinfo).then((res)=>{
                 console.log(res);
             })
