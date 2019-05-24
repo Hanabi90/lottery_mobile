@@ -1,0 +1,19 @@
+.clock
+    position absolute
+    top 60px
+    left 50%
+    transform translateX(-50%)
+    z-index 1
+    width 375px
+    .flip-card__top,.flip-card__back-bottom
+        color #eee !important
+        &::after
+            color #eee !important
+    .flip-card__bottom::after
+        color #eee !important
+    .flip-card__bottom::before,.flip-card__back::before
+        color #eee !important
+    &>span:nth-child(1)
+        display none !important
+    .flip-clock__slot
+        display none !important

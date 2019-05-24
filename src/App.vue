@@ -96,6 +96,7 @@ export default {
     margin 0 2px !important
 
 @import 'styles/rest.styl'
+@import 'styles/common.styl'
 
 .fade-enter-active, .fade-leave-active
     transition opacity 0.5s

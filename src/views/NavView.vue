@@ -4,9 +4,9 @@
           <div class="tab">
           <router-link to="/" class="goHome"></router-link>
           <ul class="tabList">
-              <li @click="tabActive(index)"  :class="[{'active':tabitem.active},'tabItem']" v-for="(tabitem,index) in tablist" :key="tabitem.name + index">
+              <li @click="tabActive(index)"  :class="[{'active':tabitem.active},'tabItem']" v-for="(tabitem,index) in gameMenu" :key="tabitem.title + index">
                   <i :style="{'background-position': `-${index*30}px 0`}" :class="{'active':tabitem.active}"></i>
-                  <span :class="{'active':tabitem.active}">{{tabitem.name}}</span>
+                  <span :class="{'active':tabitem.active}">{{tabitem.title}}</span>
               </li>    
           </ul>
       </div>
@@ -16,16 +16,15 @@
               <div class="back" @click="tabLeftMain"></div>
           </div>
           <div class="list-container">
-                <template v-for="(listitem,outerIndex) in tablist" >
-                    
-                        <div v-if="listitem.active">
-                            <transition-group name="bounce" v-on:enter="enter" v-bind:css="false">
-                            <ul class="outerWrap" v-for="(gameitem,index) in listitem.gamelist" :key="gameitem.name">
-                                <li class="gameitem">
-                                    <a @click="openList(outerIndex,index)">
+                <template v-for="(listitem,outerIndex) in gameMenu" >
+                            <transition-group name="bounce" v-on:enter="enter" v-bind:css="false" :key="listitem.title">
+                        <div v-if="listitem.active" :key="listitem.title">
+                            <ul class="outerWrap" v-for="(gameitem,index) in listitem.lottery_data" :key="listitem.title+index">
+                                <li class="gameitem" :key="gameitem.title" @click="getCaizhong(gameitem)">
+                                    <a>
                                         <div>
                                             <i class="icon"></i>
-                                            <span>{{gameitem.name}}</span>
+                                            <span>{{gameitem.title}}</span>
                                         </div>
                                         <div>
                                             <span class="rest">{{gameitem.rest}}</span>
@@ -45,8 +44,8 @@
                                     </ul>
                                 </li>
                             </ul>
-                            </transition-group>
                         </div>
+                            </transition-group>
                     
                 </template>
             </div>
@@ -62,12 +61,12 @@
 <script>
 import Dice from '../components/lottery/Dice'
 import Pk10 from '../components/pk10/pk10'
-import {getMenu} from '../Api/api'
+import {getMenu,getCaizhong} from '../Api/api'
 export default {
   data () {
     return {
         count:0,
-        title:'体育',
+        title:'时时彩',
         isLeftOrMain:true,
       tablist:[
           {name:'体育',active:true,gamelist:[
@@ -151,30 +150,46 @@ export default {
       ],
       gamelist:[
           {}
-      ]
+      ],
+      gameMenu:[]
     }
   },
   methods: {
       getMenu(){
           getMenu().then((res)=>{
               console.log(res);
+              var gameMenu = res.data.data
+              for (const gameitem in gameMenu) {
+                  if (gameMenu.hasOwnProperty(gameitem)) {
+                      const element = gameMenu[gameitem];
+                      this.$set(element,'active',false)
+                      this.gameMenu.push(element)
+                  }
+              }
+          })
+      },
+      getCaizhong(i){
+          console.log('object',i.menuid);
+          getCaizhong({memnuid:i.menuid}).then((res)=>{
+              console.log(res.data);
           })
       },
       tabLeftMain(){
           this.isLeftOrMain = false
       },
       tabActive(i){
-          for (let i = 0; i < this.tablist.length; i++) {
-              const item = this.tablist[i];
+          for (let i = 0; i < this.gameMenu.length; i++) {
+              const item = this.gameMenu[i];
               item.active = false
           }
-            this.tablist[i].active = true
-            this.title = this.tablist[i].name
+            this.$set(this.gameMenu[i],'active',true)
+            this.title = this.gameMenu[i].title
       },
       openList(oi,i){
           this.tablist[oi].gamelist[i].active = !this.tablist[oi].gamelist[i].active
       },
       enter(el,done){
+          console.log(el);
           var len = el.parentNode.childNodes.length
           var title = this.$refs.title
           title.style.transform = `translateX(-100%)`
@@ -185,8 +200,13 @@ export default {
                   title.style.transition = 'all 0.4s ease-out'
                   title.style.transform = `translateX(-0%)`
               }
-                  el.style.transform=`translateX(0)`
+            for (let i = 0; i < el.childNodes.length; i++) {
+                setTimeout(() => {
+                    el.childNodes[i].style.transform = `translateX(0%)`
+                }, i*100);
+            }
           },this.count*100);
+
               this.count+=1
           if (this.count>=len) {
               this.count = 0

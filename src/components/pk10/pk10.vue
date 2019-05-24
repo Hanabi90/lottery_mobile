@@ -492,18 +492,18 @@ console.log('valvalvalval',val);
         this.jsonData = jsonData
     },
     mounted(){
-        getCaizhong({memnuid:3535}).then((res)=>{
+        getCaizhong({memnuid:2779}).then((res)=>{
             this.jsonData.data_label = res.data.data
         }).catch((err)=>{
            
         })
-        getissue({lotteryid:3535}).then((res)=>{
+        getissue({lotteryid:2779}).then((res)=>{
             // this.currentIssue = res.data.issue
             this.$set(this.betinfo.postdata.betparams,'lt_issue_start',res.data.data.issue)
             console.log(res.data.data.issue);
         })
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
-        MethodCrowd(3535).then((res)=>{
+        MethodCrowd(2779).then((res)=>{
             this.testData1 = res.data.data
             for (const item of res.data.data) {
                 getmethod(item).then((res)=>{
@@ -529,7 +529,7 @@ console.log('valvalvalval',val);
 }
 </script>
 
-<style lang="stylus" >
+<style lang="stylus" scoped>
 .flex
     display flex
     justify-content center
@@ -813,25 +813,6 @@ header
     position relative
     top 0
     left 0
-    .clock
-        position absolute
-        top 60px
-        left 50%
-        transform translateX(-50%)
-        z-index 1
-        width 375px
-        .flip-card__top,.flip-card__back-bottom
-            color #eee
-            &::after
-                color #eee
-        .flip-card__bottom::after
-            color #eee
-        .flip-card__bottom::before,.flip-card__back::before
-            color #eee
-        &>span:nth-child(1)
-            display none
-        .flip-clock__slot
-            display none
     .slide-content-title
         font-size 12px
         position absolute
