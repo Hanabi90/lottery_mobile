@@ -13,7 +13,10 @@ export default new Vuex.Store({
         ispending:false,
         delayTimeToClose:3000,
         isPopResults:false,
-        timer:null
+        timer:null,
+        userInfo:{
+            availablebalance:''
+        }
     },
     mutations: {
         tabHotOrLeak(state,status) {
@@ -52,6 +55,12 @@ export default new Vuex.Store({
         },
         updateToken(state,token){
             state.token = token
+        },
+        updateUserInfo(state,params){
+            const userBalance = {...params}
+            if(userBalance){
+                state.userInfo.availablebalance = 10000
+            }
         }
     },
     actions: {

@@ -28,6 +28,18 @@ export default new Router({
             component: () =>
                 import(/* webpackChunkName: "about" */ './views/Register.vue')
         },
+        {
+            path: '/pk10',
+            name: 'pk10',
+            component: () =>
+                import(/* webpackChunkName: "about" */ './components/pk10/pk10.vue')
+        },
+        {
+            path: '/usercenter',
+            name: 'usercenter',
+            component: () =>
+                import(/* webpackChunkName: "about" */ './views/UserCenter.vue')
+        },
 
     ]
 })

@@ -33,27 +33,7 @@
             </div>
         </div>
         <GameList></GameList>
-        <div class="footer">
-            <ul class="footer-box">
-                <router-link class="navItem navItem_home" to="/" tag="li">
-                    <i class="icon"></i>
-                    <span>首页</span>
-                </router-link>
-                <router-link class="navItem navItem_activity" to="/" tag="li">
-                    <i class="icon"></i>
-                    <span>优惠</span>
-                </router-link>
-                <router-link class="navItem navItem_register" to="/register" tag="li">注册</router-link>
-                <router-link class="navItem navItem_wallet" to="/" tag="li">
-                    <i class="icon"></i>
-                    <span>钱包</span>
-                </router-link>
-                <li class="navItem navItem_login" @click="show=true">
-                    <i class="icon"></i>
-                    <span >登录</span>
-                </li>
-            </ul>
-        </div>
+        <my-fotter></my-fotter>
         <Popup ref="popup" @closed="fixPop" class="popup" v-model="show" position="bottom">
             <div class="form">
                 <form>
@@ -90,9 +70,9 @@ import MarqueeText from 'vue-marquee-text-component'
 import GameList from '../components/home/GameList'
 import { Popup,Notify } from 'vant'
 import 'vant/lib/popup/style/'
-import {login,config} from '../Api/api'
+import {login,config,getbalance} from '../Api/api'
 import {mapMutations} from 'vuex'
-
+import fotter from '../components/common/footer'
 export default {
     data() {
         return {
@@ -126,15 +106,15 @@ export default {
     methods:{
         ...mapMutations([
             'updateToken',
+            'updateUserInfo'
         ]),
-        // login(){
-        //     login(this.userInfo).then((res)=>{
-        //         console.log(res);
-        //         this.updateToken(res.data.token)
-        //         this.show = false
-        //     })
-
-        // },
+        getbalance(){
+            getbalance().then((res)=>{
+                const userBalance = res.data.data
+                console.log(res.data.data);
+                this.updateUserInfo(userBalance)
+            })
+        },
         handlelogin() {
             login(this.userInfo).then((res) => {
                 if (res.data.code == 0) {
@@ -147,6 +127,7 @@ export default {
                         duration: 2000,
                         background: '#c32026'
                     });
+                    
                 } else {
                     // this.$Message.error(res.msg)
                     this.login = {
@@ -154,6 +135,7 @@ export default {
                         loginpass: ''
                     }
                 }
+                this.getbalance()
             })
         },
 
@@ -172,7 +154,8 @@ export default {
         MarqueeText,
         GameList,
         Popup,
-        Notify
+        Notify,
+        "myFotter":fotter
     }
 }
 </script>

@@ -1,25 +1,25 @@
 <template>
     <div class="pk10">
         <header>
-            <a class="icon icon-menu"></a>
+            <router-link class="icon icon-menu" to="/navview" tag="a"></router-link>
             <div class="text">
                 <a class="logo">
                     <!-- <img src="../../assets/images/logo.png" width="107.5px" height="28px"> -->
                 </a>
                 <div class="balance">
                     <span class="userId">Guest</span>
-                    <span class="balance">5000.0</span>
+                    <span class="balance">{{userInfo.availablebalance}}</span>
                 </div>
             </div>
             <div class="login">
                 <a class="icon icon-alert"></a>
-                <a class="icon icon-user"></a>
+                <router-link  class="icon icon-user" to="/usercenter"></router-link>
             </div>
         </header>
         <Popup ref="selectPopup" v-model="show" position="top" :overlay="true" :close-on-click-overlay="true" @closed='test' > 
                 <div class="wraper">
-                    <van-tabs v-model="active" v-if="jsonData.data_label.length>0">
-                        <van-tab :title="item.title" v-for="(item,index) in jsonData.data_label">
+                    <van-tabs v-model="active" v-if="jsonData.length>0">
+                        <van-tab :title="item.title" v-for="(item,index) in jsonData">
                             <div class="box">
                                 <div class="flexBox" v-for="inneritem in item.label" >
                                     <span class="title">{{ inneritem.gtitle }}</span>
@@ -129,6 +129,7 @@ import myPopup from '@/components/lottery/popup'
 import {getCaizhong} from '../../Api/api'
 import shop from './shop'
 import divtext from './1'
+import {mapState} from 'vuex'
 export default {
     watch:{
         inputVal(nVal, oVal) {
@@ -354,6 +355,10 @@ console.log('valvalvalval',val);
             this.$refs.selectPopup.inited = false
         },
         tabGameType(gameLabel,gtitle,index,labelArr){
+            console.log('gameLabel',gameLabel);
+            console.log('gtitle',gtitle);
+            console.log('index',index);
+            console.log('labelArr',labelArr);
             // console.log('labelArr',labelArr);
             // console.log('this.selectarea',gameLabel.selectarea.layout.length);
             if(gameLabel.selectarea.type=='input'){
@@ -440,7 +445,7 @@ console.log('valvalvalval',val);
         //     }
         // }
         sendOrder(){
-            getissue({lotteryid:33}).then((res)=>{
+            getissue({lotteryid:3535}).then((res)=>{
                 this.$set(this.betinfo.postdata.betparams,lt_issue_start,res.data.data.issue)
                 console.log(res.data.data.issue);
             })
@@ -449,6 +454,9 @@ console.log('valvalvalval',val);
         }
     },
     computed:{
+        ...mapState([
+            'userInfo'
+        ]),
         swiper() {
             return this.$refs.mySwiper.swiper
         },
@@ -489,29 +497,33 @@ console.log('valvalvalval',val);
         }
     },
     created(){
-        this.jsonData = jsonData
+        console.log('this.$route.query.data',this.$route.params.data.data);
+        this.jsonData = this.$route.params.data.data
+        this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${this.jsonData[0].label[0].label[0].name}`
+        this.tabGameType(this.jsonData[0].label[0].label[0],this.jsonData[0].label[0].gtitle,0,this.jsonData[0].label[0].label)
     },
     mounted(){
-        getCaizhong({memnuid:2779}).then((res)=>{
-            this.jsonData.data_label = res.data.data
-        }).catch((err)=>{
+        // getCaizhong({memnuid:3535}).then((res)=>{
+        //     this.jsonData.data_label = res.data.data
+        // }).catch((err)=>{
            
-        })
-        getissue({lotteryid:2779}).then((res)=>{
+        // })
+        console.log('this.$store.state.userInfo',this.userInfo.availablebalance);
+        getissue({lotteryid:3535}).then((res)=>{
             // this.currentIssue = res.data.issue
+            console.log('res.data.data.issue',res.data.data.issue);
             this.$set(this.betinfo.postdata.betparams,'lt_issue_start',res.data.data.issue)
-            console.log(res.data.data.issue);
         })
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
-        MethodCrowd(2779).then((res)=>{
-            this.testData1 = res.data.data
-            for (const item of res.data.data) {
-                getmethod(item).then((res)=>{
-                    // console.log(res.data.data);
-                    this.testData2.push(res.data.data)
-                })
-            }
-        })
+        // MethodCrowd(3535).then((res)=>{
+        //     this.testData1 = res.data.data
+        //     for (const item of res.data.data) {
+        //         getmethod(item).then((res)=>{
+        //             // console.log(res.data.data);
+        //             this.testData2.push(res.data.data)
+        //         })
+        //     }
+        // })
     },
     components: {
         swiper,
@@ -571,14 +583,15 @@ console.log('valvalvalval',val);
         width: 14px;
         height: 14px;
         margin-left: 6px;
-.van-popup
-    width 375px
-    transform translate3d(0%, 0%, 0);
-    transition: .3s ease-out;
+// .van-popup
+//     width 375px
+//     transform translate3d(0%, 0%, 0);
+//     transition: .3s ease-out;
 .van-overlay
     width 375px
     transform: translateX(100%);
 .pk10
+    padding-top 50px
     width 375px
     position relative
     top 0
@@ -770,7 +783,10 @@ header
     background-color #c32026
     height 50px
     text-align center
-    position relative
+    position fixed
+    top 0 
+    left 0
+    z-index 999
     width 100%
     display flex
     justify-content space-between

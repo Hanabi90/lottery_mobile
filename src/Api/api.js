@@ -18,7 +18,7 @@ export const loginOut = formData =>
 export const getbalance = formData =>
     service.request({
         method: 'post',
-        url: 'getbalance'
+        url: 'user/getbalance'
     })
 //查询资金密码
 export const getsecpass = formData =>
