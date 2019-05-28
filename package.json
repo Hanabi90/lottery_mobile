@@ -10,6 +10,8 @@
     "dependencies": {
         "axios": "^0.18.0",
         "core-js": "^2.6.5",
+        "js-md5": "^0.7.3",
+        "jsencrypt": "^3.0.0-rc.1",
         "swiper": "^4.5.0",
         "vant": "^1.6.17",
         "vue": "^2.6.10",

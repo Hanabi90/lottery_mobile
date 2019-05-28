@@ -70,9 +70,13 @@
                 <van-icon class="item_icon" name="service" color="#ffc168"/>
                 <span>在线客服</span>
             </div>
+            <div class="box" @click="logout">
+                <van-icon class="item_icon" name="logistics" color="#000"/>
+                <span>登出</span>
+            </div>
         </div>
         <my-fotter></my-fotter>
-        <van-popup v-model="show" position="right">
+        <van-popup v-model="show" :overlay="false" position="right" >
             <div class="popwrap">
                 <bank @closePop=closePop></bank>  
             </div>
@@ -81,7 +85,8 @@
 </template>
 
 <script>
-import { Icon,Popup,Field} from 'vant';
+import {logout} from '../Api/api'
+import { Icon,Popup,Field,Notify} from 'vant';
 import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
 export default {
@@ -94,6 +99,13 @@ export default {
         closePop(){
             console.log('object');
             this.show = false
+        },
+        logout(){
+            logout().then((res)=>{
+                this.$router.push('/')
+                Notify('您已经登出')
+                console.log(res);
+            })
         }
     },
     components:{

@@ -14,11 +14,11 @@
                 <i class="icon"></i>
                 <span>钱包</span>
             </router-link>
-            <li v-if="isLogin" class="navItem navItem_login" @click="show=true">
+            <li v-if="isLogin==null" class="navItem navItem_login" @click="$emit('popCtrl',true)">
                 <i class="icon"></i>
                 <span>登录</span>
             </li>
-            <router-link to="/usercenter" v-esle="isLogin" class="navItem navItem_login">
+            <router-link to="/usercenter" v-else class="navItem navItem_login">
                 <i class="icon"></i>
                 <span>个人中心</span>
             </router-link>

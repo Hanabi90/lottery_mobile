@@ -33,7 +33,7 @@
             </div>
         </div>
         <GameList></GameList>
-        <my-fotter></my-fotter>
+        <my-fotter @popCtrl=popCtrl></my-fotter>
         <Popup ref="popup" @closed="fixPop" class="popup" v-model="show" position="bottom">
             <div class="form">
                 <form>
@@ -146,6 +146,9 @@ export default {
         },
         rememberInfo(){
             this.isCheckBoxActive = !this.isCheckBoxActive
+        },
+        popCtrl(param){
+            this.show = param
         }
     },
     components: {

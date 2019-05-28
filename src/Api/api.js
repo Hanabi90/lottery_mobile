@@ -8,10 +8,10 @@ export const login = formData =>
         data: qs.stringify(formData)
     })
 //登出
-export const loginOut = formData =>
+export const logout = formData =>
     service.request({
         method: 'post',
-        url: 'logout'
+        url: 'default/logout'
     })
 
 //获取金额
@@ -20,26 +20,8 @@ export const getbalance = formData =>
         method: 'post',
         url: 'user/getbalance'
     })
-//查询资金密码
-export const getsecpass = formData =>
-    service.request({
-        method: 'post',
-        url: 'getsecpass'
-    })
-//修改昵称
-export const updatenickname = formData =>
-    service.request({
-        method: 'post',
-        url: 'updatenickname',
-        data: qs.stringify({ nickname: 'test001' })
-    })
-//查询银行卡
-export const getbankinfo = formData =>
-    service.request({
-        method: 'post',
-        url: 'getbankinfo',
-        data: qs.stringify(formData)
-    })
+
+
 //获取彩票菜单
 export const getMenu = formData =>
     service.request({
@@ -64,27 +46,7 @@ export const getnotice = formData =>
         method: 'get',
         url: `notice/get/${formData}`
     })
-//获取行政区列表
-export const getprovincelist = formData =>
-    service.request({
-        method: 'post',
-        url: 'getprovincelist',
-        data: qs.stringify(formData)
-    })
-//获取城市列表
-export const getcitylist = formData =>
-    service.request({
-        method: 'post',
-        url: 'getcitylist',
-        data: qs.stringify(formData)
-    })
-//获取银行列表
-export const getbanklist = formData =>
-    service.request({
-        method: 'post',
-        url: 'getbanklist',
-        data: qs.stringify(formData)
-    })
+
 export const getCaizhong = formData =>
     service.request({
         method: 'post',
@@ -106,6 +68,105 @@ export const getissue = formData =>
         url: 'getissue',
         data: qs.stringify(formData)//lotteryid:33
     })
+    
+export const getbankreporthistory = formData =>//非遊戲帳變記錄
+    service.request({
+        method: 'post',
+        url: 'report/getbankreporthistory',
+        data: qs.stringify(formData)
+    })
+export const checksecpassexist = formData =>//查询有无资金密码
+    service.request({
+        method: 'post',
+        url: 'security/checksecpassexist',
+        data: qs.stringify(formData)
+    })
+export const setsecpass = formData =>//设定资金密码
+    service.request({
+        method: 'post',
+        url: 'security/setsecpass',
+        data: qs.stringify(formData)
+    })
+export const checksecpass = formData =>//验证资金密码是否正确
+    service.request({
+        method: 'post',
+        url: 'security/checksecpass',
+        data: qs.stringify(formData)
+    })
+export const getbanklist = formData =>//获取银行列表
+    service.request({
+        method: 'post',
+        url: 'bankmanage/getbanklist',
+        data: qs.stringify(formData)
+    })
+export const getprovincelist = formData =>//获取行政区列表
+    service.request({
+        method: 'post',
+        url: 'area/getprovincelist',
+        data: qs.stringify(formData)
+    })
+export const getcitylist = formData =>//获取城市列表
+    service.request({
+        method: 'post',
+        url: 'area/getcitylist',
+        data: qs.stringify(formData)
+    })
+export const getuserbankinfo = formData =>//查询银行卡
+    service.request({
+        method: 'post',
+        url: 'user/getuserbankinfo',
+        data: qs.stringify(formData)
+    })
+export const updatenickname = formData =>//修改昵称
+    service.request({
+        method: 'post',
+        url: 'user/updatenickname',
+        data: qs.stringify(formData)
+    })
+export const adduserbank = formData =>//添加银行卡
+    service.request({
+        method: 'post',
+        url: 'user/adduserbank',
+        data: qs.stringify(formData)
+    })
+export const changeuserloginpass = formData =>//修改登入密码
+    service.request({
+        method: 'post',
+        url: 'user/changeuserloginpass',
+        data: qs.stringify(formData)
+    })
+export const changeusersecpass = formData =>//资金密码重置
+    service.request({
+        method: 'post',
+        url: 'user/changeusersecpass',
+        data: qs.stringify(formData)
+    })
+export const setsequestion = formData =>//设置密保问题
+    service.request({
+        method: 'post',
+        url: 'user/setsequestion',
+        data: qs.stringify(formData)
+    })
+export const checksequestion = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'security/checksequestion',
+        data: qs.stringify(formData)
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* {
     "betparams": {
         "iWalletType": 1,
