@@ -9,24 +9,26 @@
         </div> -->
         <div class="middle">
             <div class="wrap">
-                <Stepper v-model="beishu" />
+                <Stepper v-model="beishu" @change="$emit('getPrize')"/>
                 <span>倍</span>
             </div>
             <div class="wrap">
-                <Stepper 
+                <Stepper
+                @change="$emit('getPrize')"
+                ref="stepper" 
                 v-model="jiangjinzu"
                 integer
-                :min="1960"
-                :max="1980"
+                :min="1000"
+                :max="currentLabel.nowPrizeGroup"
                 :step="2"
-                :default-value="1980" />
+                :default-value="parseInt(currentLabel.nowPrizeGroup)" />
                 <span>奖金组</span>
             </div>
             <div class="wrap">
-                <select class="danwei" name="" id="">
-                    <option value="">2元</option>
-                    <option value="">2角</option>
-                    <option value="">2分</option>
+                <select class="danwei" v-model="mode" @change="$emit('getPrize')">
+                    <option value="1">2元</option>
+                    <option value="2">2角</option>
+                    <option value="3">2分</option>
                 </select>
             </div>
         </div>
@@ -53,15 +55,21 @@ export default {
     data() {
         return {
             radio: '',
-            beishu:'',
-            jiangjinzu:1980
+            beishu:'1',
+            jiangjinzu:'',
+            mode:'1',
         }
     },
     props:[
         'newArr',
-        'betinfo'
+        'betinfo',
+        'currentLabel'
     ],
     methods: {
+        init(){
+            console.log(this.$refs);
+            this.jiangjinzu = this.currentLabel.nowPrizeGroup
+        },
         sendOrder(){
             var str = ''
             var arr = []
@@ -74,7 +82,13 @@ export default {
             betting(this.betinfo).then((res)=>{
                 console.log(res);
             })
-        }
+        },
+    },
+    created(){
+        this.init()
+    },
+    mounted(){
+        this.$refs.stepper.currentValue = 1970
     },
     components:{
         Stepper,

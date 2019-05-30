@@ -11,8 +11,7 @@
                         :key="tabitem.title + index"
                     >
                         <i
-                            :style="{'background-position': `-${index*30}px 0`}"
-                            :class="{'active':tabitem.active}"
+                            :class="[{'active':tabitem.active},'left_icon']"
                         ></i>
                         <span :class="{'active':tabitem.active}">{{tabitem.title}}</span>
                     </li>
@@ -243,12 +242,22 @@ export default {
                     }
                 }
                 this.tabActive(0)
+                setTimeout(() => {
+                    this.enter(this.$refs.asd[0])
+                }, 200);
+                // console.log(this.$refs.asd);
+                
+                // console.log(this.$refs.asd);
             })
         },
         getCaizhong(i) {
             getCaizhong({ memnuid: i.menuid }).then(res => {
-                const data = res.data
-                if (data.code == 0) {
+                const data = {
+                    data:res.data,
+                    menuid:i.lotteryid
+                    }
+                console.log(data);
+                if (data.data.code == 0) {
                     this.$router.push({
                         name: 'pk10',
                         params: {
@@ -280,7 +289,6 @@ export default {
                 .active
         },
         enter(el, done) {
-            console.log(el)
             var len = el.parentNode.childNodes.length
             var title = this.$refs.title
             title.style.transform = `translateX(-100%)`
@@ -296,7 +304,7 @@ export default {
                         el.childNodes[i].style.transform = `translateX(0%)`
                     }, i * 100)
                 }
-            }, this.count * 100)
+            }, this.count * 50)
 
             this.count += 1
             if (this.count >= len) {
@@ -309,8 +317,8 @@ export default {
     },
     mounted() {
         setTimeout(() => {
-            this.enter(this.$refs.asd[0])
-        }, 1000)
+            
+        }, 50)
     },
     components: {
         Dice,
@@ -367,6 +375,18 @@ export default {
             color #fff
             font-size 12px
             margin-left 2px
+            &:nth-child(1)
+                .left_icon
+                    background-position 0
+            &:nth-child(2)
+                .left_icon
+                    background-position -30px
+            &:nth-child(3)
+                .left_icon
+                    background-position -60px
+            &:nth-child(4)
+                .left_icon
+                    background-position -90px
             &.active
                 border-radius 6px 0 0 6px
                 background-color #fff
@@ -449,7 +469,7 @@ export default {
         width calc(100vw - 50px)
         position fixed
         top 0
-        transform translateX(0%)
+        transform translateX(-100%)
         .gamename
             text-indent 16px
         .back

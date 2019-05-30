@@ -42,7 +42,7 @@
                     <div class="selectGameType" @click="show = true">{{currentGameType}}</div>
                     <div class="content-wrapper">   
                         <div v-if="1===0" class="market-name">超级快3(45秒)</div>
-                        <flip-countdown class="clock" deadline="2019-05-20 18:55:30"></flip-countdown>
+                        <flip-countdown v-if="countdown!==''" class="clock" :deadline="countdown"></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
                     <div class="history">开奖历史</div>
@@ -69,10 +69,6 @@
                         </li>
                     </ul>
                 </swiper-slide>
-                <!-- <div class="swiper-pagination" slot="pagination"></div> -->
-                
-                <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
-                <!-- <div class="swiper-button-next" slot="button-next"></div> -->
             </swiper>
             <ul class="slide-content-title">
                 <li v-for="(item, index) in lotteryState" :key="item.num" @click="tabSlide(index)">
@@ -80,6 +76,16 @@
                     <span class="jiangqi">{{item.num | etc(nowIndex==index)}}</span>
                 </li>
             </ul>
+        </div>
+        <div class="prize_refound">
+            <div>
+                <span>当前奖金：</span>
+                <span>{{prize}}</span>
+            </div>
+            <div>
+                <span>返点：</span>
+                <span>{{point}}%</span>
+            </div>
         </div>
         <div class="selectarea" v-if="selectarea!==null">
            <div class="wrap" v-for="(layoutArr,layoutArrindex) in computedSelectarea" >
@@ -92,12 +98,6 @@
                     </li>
                 </ul>
                 <ul class="autoSelect" v-if="!currentGameType.includes('和值')&&!currentGameType.includes('特殊')">
-                    <!-- <li><a>全</a></li>
-                    <li><a>大</a></li>
-                    <li><a>小</a></li>
-                    <li><a>清</a></li>
-                    <li><a>奇</a></li>
-                    <li><a>偶</a></li> -->
                     <li v-for="type in ['全','大','小','清','奇','偶']" :key="type" @click="selectHelper(type,layoutArrindex,layoutArr.title,layoutArr.no.split('|'))">
                         <a>{{type}}</a>
                     </li>
@@ -113,20 +113,39 @@
                 <textarea :value="inputVal" @input="inputVal=$event.target.value" ></textarea>
             </div>
         </div>
-        <shop :newArr=newArr :betinfo=betinfo></shop>
+        <shop ref="shop" @getPrize=getPrizeCtrl :currentLabel=currentLabel :newArr=newArr :betinfo=betinfo></shop>
     </div>
 </template>
 
 <script>
-import { Tab, Tabs,Field,Button  } from 'vant';
+Date.prototype.format = function(fmt) { 
+    var o = { 
+       "M+" : this.getMonth()+1,                 //月份 
+       "d+" : this.getDate(),                    //日 
+       "h+" : this.getHours(),                   //小时 
+       "m+" : this.getMinutes(),                 //分 
+       "s+" : this.getSeconds(),                 //秒 
+       "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+       "S"  : this.getMilliseconds()             //毫秒 
+   }; 
+   if(/(y+)/.test(fmt)) {
+           fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+   }
+    for(var k in o) {
+       if(new RegExp("("+ k +")").test(fmt)){
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        }
+    }
+   return fmt; 
+}
+import { Tab, Tabs,Field,Button,Notify} from 'vant';
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import FlipCountdown from 'vue2-flip-countdown'
-import {getmethod,MethodCrowd,getissue} from '../../Api/api'
+import {getmethod,MethodCrowd,getissue,getCaizhong} from '../../Api/api'
 import jsonData from './test'
 import { Popup } from 'vant';
 import myPopup from '@/components/lottery/popup'
-import {getCaizhong} from '../../Api/api'
 import shop from './shop'
 import divtext from './1'
 import {mapState} from 'vuex'
@@ -172,6 +191,10 @@ export default {
             }
                 }
             },
+            prize:'',
+            point:'',
+            countdown:'',
+            currentLabel:{},
             value2:'',
             inputVal:'',
             message:'',
@@ -249,9 +272,74 @@ export default {
 
         }
     },
-    updated(){
-    },
     methods: {
+        init(initData,menuid){
+            this.jsonData = initData
+            this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${this.jsonData[0].label[0].label[0].name}`
+            console.log('initData',initData);
+            this.tabGameType(this.jsonData[0].label[0].label[0],this.jsonData[0].label[0].gtitle,0,this.jsonData[0].label[0])
+            getissue({lotteryid:Number(menuid)}).then((res)=>{
+                // this.currentIssue = res.data.issue
+                var ctime = res.data.data.curr_time
+                var stime = res.data.data.saleend
+                stime = new Date(stime).getTime()
+                ctime = new Date(ctime).getTime()
+                var diff = stime-ctime
+                var localTime = new Date().getTime()
+                var countdownTimeStamp = localTime + diff
+                var countdown = new Date(countdownTimeStamp).format('yyyy-MM-dd hh:mm:ss')
+                this.countdown = countdown
+                this.$set(this.betinfo.postdata.betparams,'lt_issue_start',res.data.data.issue)
+            })
+        },
+        getCaizhong(id) {
+            getCaizhong({ memnuid: id }).then(res => {
+                const data = res.data
+                    this.init(data.data,1)
+                if (data.data.code !== 0) {
+                    Notify({
+                        message: data.msg,
+                        duration: 1000,
+                        background: '#1abc9c'
+                    })
+                } 
+            })
+        },
+        getPrize(price){
+            var price = price
+            var modes = this.$refs.shop!==undefined ? this.$refs.shop.mode:1
+            var times = this.$refs.shop!==undefined ? this.$refs.shop.beishu:1
+            var prizegroup = this.$refs.shop!==undefined ? this.$refs.shop.jiangjinzu:this.currentLabel.nowPrizeGroup
+            var rate=prizegroup/2000;
+            var price_l = price*rate;
+            this.point=(this.currentLabel.nowPrizeGroup-prizegroup)/20;
+            this.point=this.point.toFixed(1);
+            price_l=Math.floor(price_l*100)/100;
+            if (modes == 1) {
+                price_l = price_l.toFixed(2) * 1 * times;
+            } else if (modes == 2) {
+                price_l = price_l.toFixed(2) * 0.1 * times;
+            } else if (modes == 3) {
+                price_l = price_l.toFixed(2) * 0.01 * times;
+            } else {
+                price_l=0;
+            }
+            console.log('price_l.toFixed(4)',price_l.toFixed(4));
+            return price_l.toFixed(4);
+        },
+        getPrizeCtrl(){
+            const prizeArr = this.currentLabel.prize_level_special
+            console.log('prizeArr.length',prizeArr.length)
+            if(prizeArr.length>1){
+                const maxprice = prizeArr.sort((a,b)=>a-b)[prizeArr.length-1]
+                const minprice = prizeArr.sort((a,b)=>a-b)[0]
+                const maxPrize = this.getPrize(maxprice)
+                const minPrize = this.getPrize(minprice)
+                this.prize = minPrize + '~' + maxPrize
+            }else{
+                this.prize = this.getPrize(prizeArr[0])
+            }
+        },
         test1(val){
             
             // if(isNaN(event.data)){
@@ -355,12 +443,8 @@ console.log('valvalvalval',val);
             this.$refs.selectPopup.inited = false
         },
         tabGameType(gameLabel,gtitle,index,labelArr){
-            console.log('gameLabel',gameLabel);
-            console.log('gtitle',gtitle);
-            console.log('index',index);
-            console.log('labelArr',labelArr);
-            // console.log('labelArr',labelArr);
-            // console.log('this.selectarea',gameLabel.selectarea.layout.length);
+            this.currentLabel = labelArr.label[index]
+            this.getPrizeCtrl()
             if(gameLabel.selectarea.type=='input'){
                 this.currentGameType = `${gtitle}-${gameLabel.name}`
                 this.show = false
@@ -445,10 +529,10 @@ console.log('valvalvalval',val);
         //     }
         // }
         sendOrder(){
-            getissue({lotteryid:3535}).then((res)=>{
-                this.$set(this.betinfo.postdata.betparams,lt_issue_start,res.data.data.issue)
-                console.log(res.data.data.issue);
-            })
+            // getissue({lotteryid:3535}).then((res)=>{
+            //     this.$set(this.betinfo.postdata.betparams,lt_issue_start,res.data.data.issue)
+            //     console.log(res.data.data.issue);
+            // })
             this.$set(this.betinfo.postdata.betparams.lt_project,desc,this.currentGameType)
             this.$set(this.betinfo.postdata.betparams.lt_project,methodid,'33')
         }
@@ -497,33 +581,17 @@ console.log('valvalvalval',val);
         }
     },
     created(){
-        console.log('this.$route.query.data',this.$route.params.data.data);
-        this.jsonData = this.$route.params.data.data
-        this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${this.jsonData[0].label[0].label[0].name}`
-        this.tabGameType(this.jsonData[0].label[0].label[0],this.jsonData[0].label[0].gtitle,0,this.jsonData[0].label[0].label)
+        // this.getCaizhong(3535)
+        if(this.$route.params.data!=undefined){
+            this.init(this.$route.params.data.data.data,this.$route.params.data.menuid)
+        }else{
+            this.getCaizhong(3535)
+        }
+        
     },
     mounted(){
-        // getCaizhong({memnuid:3535}).then((res)=>{
-        //     this.jsonData.data_label = res.data.data
-        // }).catch((err)=>{
-           
-        // })
         console.log('this.$store.state.userInfo',this.userInfo.availablebalance);
-        getissue({lotteryid:3535}).then((res)=>{
-            // this.currentIssue = res.data.issue
-            console.log('res.data.data.issue',res.data.data.issue);
-            this.$set(this.betinfo.postdata.betparams,'lt_issue_start',res.data.data.issue)
-        })
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
-        // MethodCrowd(3535).then((res)=>{
-        //     this.testData1 = res.data.data
-        //     for (const item of res.data.data) {
-        //         getmethod(item).then((res)=>{
-        //             // console.log(res.data.data);
-        //             this.testData2.push(res.data.data)
-        //         })
-        //     }
-        // })
     },
     components: {
         swiper,
@@ -533,6 +601,7 @@ console.log('valvalvalval',val);
         'van-tabs':Tabs,
         Field,
         'vButton':Button,
+        Notify,
         shop,
         myPopup,
         Popup,
@@ -599,6 +668,17 @@ console.log('valvalvalval',val);
     background-color #4a4a4a
     min-height: 100vh;
     height: calc(100% + 200px);
+    .prize_refound
+        display flex
+        padding 5px 10px
+        div
+            padding-right 10px
+            span
+                color #fff
+                font-size 14px
+                &:nth-child(2)
+                    color #ffd800
+                    font-weight bold
     // .van-overlay
     //     width 100%
     // .van-popup

@@ -26,59 +26,15 @@
             </div>
         </header>
         <div class="nav_box flex_box">
-            <div class="box" @click="show= true">
-                <van-icon class="item_icon" name="friends-o" color="#0099e5" />
-                <span>账户设置与团队管理</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="orders-o" color="#ff4c4c"/>
-                <span>游戏帐变记录</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="bill" color="#34bf49"/>
-                <span>非游戏帐变记录</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="after-sale" color="#be0027"/>
-                <span>个人盈亏记录</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="refund-o" color="#00a98f"/>
-                <span>团队盈亏报表</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="bill-o" color="#cf8d2e"/>
-                <span>投注记录</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="aim" color="#e4e932"/>
-                <span>追号记录</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="medel-o" color="#371777"/>
-                <span>活动管理</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="bullhorn-o" color="#f47721"/>
-                <span>平台公告</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="envelop-o" color="#ff4f81"/>
-                <span>重要消息</span>
-            </div>
-            <div class="box">
-                <van-icon class="item_icon" name="service" color="#ffc168"/>
-                <span>在线客服</span>
-            </div>
-            <div class="box" @click="logout">
-                <van-icon class="item_icon" name="logistics" color="#000"/>
-                <span>登出</span>
+            <div class="box" @click="tabNav(index)" v-for="(navitem,index) in navlist" :key="navitem.title">
+                <van-icon class="item_icon" :name="navitem.icon" :color="navitem.color" />
+                <span>{{navitem.title}}</span>
             </div>
         </div>
         <my-fotter></my-fotter>
         <van-popup v-model="show" :overlay="false" position="right" >
             <div class="popwrap">
-                <bank @closePop=closePop></bank>  
+                <bank @closePop=closePop v-if="navlist[0].active"></bank>
             </div>
         </van-popup>
     </div>
@@ -92,10 +48,32 @@ import bank from '../components/usercenter/bank.vue'
 export default {
     data() {
         return {
-            show:false
+            show:false,
+            navlist:[
+                {title:'账户设置与团队管理',icon:'friends-o',color:'#0099e5',active:false},
+                {title:'游戏帐变记录',icon:'orders-o',color:'#ff4c4c',active:false},
+                {title:'非游戏帐变记录',icon:'bill',color:'#34bf49',active:false},
+                {title:'个人盈亏记录',icon:'after-sale',color:'#be0027',active:false},
+                {title:'团队盈亏报表',icon:'refund-o',color:'#00a98f',active:false},
+                {title:'投注记录',icon:'bill-o',color:'#cf8d2e',active:false},
+                {title:'追号记录',icon:'aim',color:'#e4e932',active:false},
+                {title:'活动管理',icon:'medel-o',color:'#371777',active:false},
+                {title:'平台公告',icon:'bullhorn-o',color:'#f47721',active:false},
+                {title:'重要消息',icon:'envelop-o',color:'#ff4f81',active:false},
+                {title:'在线客服',icon:'service',color:'#ffc168',active:false},
+                {title:'登出',icon:'logistics',color:'#000',active:false},
+            ]
         }
     },
     methods: {
+        tabNav(index){
+            for (let i = 0; i < this.navlist.length; i++) {
+                const item = this.navlist[i];
+                this.$set(this.navlist[i],'active',false)
+            }
+            this.$set(this.navlist[index],'active',true)
+            this.show = true
+        },
         closePop(){
             console.log('object');
             this.show = false
