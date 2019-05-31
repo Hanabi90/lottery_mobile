@@ -1,12 +1,5 @@
 <template>
     <div class="shop">
-        <!-- <div class="top">
-            <RadioGroup v-model="radio" class="radio">
-                <Radio checked-color="#c32127" name="1">元</Radio>
-                <Radio checked-color="#c32127" name="2">角</Radio>
-                <Radio checked-color="#c32127" name="3">分</Radio>
-            </RadioGroup>
-        </div> -->
         <div class="middle">
             <div class="wrap">
                 <Stepper v-model="beishu" @change="$emit('getPrize')"/>
@@ -14,14 +7,15 @@
             </div>
             <div class="wrap">
                 <Stepper
-                @change="$emit('getPrize')"
-                ref="stepper" 
-                v-model="jiangjinzu"
-                integer
-                :min="1000"
-                :max="currentLabel.nowPrizeGroup"
-                :step="2"
-                :default-value="parseInt(currentLabel.nowPrizeGroup)" />
+                    @change="$emit('getPrize')"
+                    ref="stepper"
+                    v-model="jiangjinzu"
+                    integer
+                    :min="1000"
+                    :max="currentLabel.nowPrizeGroup"
+                    :step="2"
+                    :default-value="parseInt(currentLabel.nowPrizeGroup)"
+                />
                 <span>奖金组</span>
             </div>
             <div class="wrap">
@@ -37,9 +31,16 @@
                 <span>投注记录</span>
             </div>
             <div class="info">
-                <p><span>1</span>注</p>
-                <p><span>0.02</span>元</p>
-                <p class="moneyremain">余额<span>10947</span>元</p>
+                <p>
+                    <span>1</span>注
+                </p>
+                <p>
+                    <span>0.02</span>元
+                </p>
+                <p class="moneyremain">
+                    余额
+                    <span>10947</span>元
+                </p>
             </div>
             <div class="betnow" @click="sendOrder()">
                 <span>立即投注</span>
@@ -49,48 +50,46 @@
 </template>
 
 <script>
-import { Stepper,RadioGroup,Radio } from 'vant';
-import { betting } from '../../Api/api';
+import { Stepper, RadioGroup, Radio } from 'vant'
+import { betting } from '../../Api/api'
 export default {
     data() {
         return {
             radio: '',
-            beishu:'1',
-            jiangjinzu:'',
-            mode:'1',
+            beishu: '1',
+            jiangjinzu: '',
+            mode: '1',
         }
     },
-    props:[
-        'newArr',
-        'betinfo',
-        'currentLabel'
-    ],
+    props: ['newArr', 'betinfo', 'currentLabel','curmid'],
     methods: {
-        init(){
-            console.log(this.$refs);
+        init() {
+            console.log(this.$refs)
             this.jiangjinzu = this.currentLabel.nowPrizeGroup
         },
-        sendOrder(){
+        sendOrder() {
             var str = ''
             var arr = []
             for (const item of this.newArr) {
-                str += item.join('&')+'|'
+                str += item.join('&') + '|'
             }
-            str = str.substring(0,str.length-1)
-            this.$set(this.betinfo.postdata.betparams.lt_project,'codes',str)
-            console.log(this.betinfo);
-            betting(this.betinfo).then((res)=>{
-                console.log(res);
+            str = str.substring(0, str.length - 1)
+
+            this.$set(this.betinfo.betparams.lt_project, 'codes', str)
+            this.$set(this.betinfo.betparams, 'curmid', this.curmid)
+            this.$set(this.betinfo.betparams, 'lt_issue_start', this.curmid)
+            betting({postdata:JSON.stringify(this.betinfo)}).then(res => {
+                console.log(res)
             })
-        },
+        }
     },
-    created(){
+    created() {
         this.init()
     },
-    mounted(){
+    mounted() {
         this.$refs.stepper.currentValue = 1970
     },
-    components:{
+    components: {
         Stepper,
         RadioGroup,
         Radio,
@@ -108,8 +107,8 @@ export default {
     background-color #fff
     z-index 100
     color #999
-    border-top: 1px solid #5d5d5d;
-    background: linear-gradient(to right,#c32026,#49343d);
+    border-top 1px solid #5d5d5d
+    background linear-gradient(to right, #c32026, #49343d)
     .top
         padding-top 10px
         height 40px
@@ -125,16 +124,16 @@ export default {
         display flex
         justify-content space-around
         align-items center
-        padding-top: 12px;
+        padding-top 12px
         .wrap
             display flex
             align-items center
             span
                 color #fff
-                margin-left: 4px;
+                margin-left 4px
             .danwei
-                height: 27px;
-                border-radius: 4px;
+                height 27px
+                border-radius 4px
     .bottom
         height 60px
         display flex
@@ -145,36 +144,31 @@ export default {
             text-align center
             height 100%
             display flex
-            align-items: center;
+            align-items center
             justify-content center
             color #fff
             // background-color #c32026
         // .bethistory
-        //     // background-color #fff
-        //     // background-color #4a4a4a
+        // // background-color #fff
+        // // background-color #4a4a4a
         // .addtocart
-        //     // background-color #fff
-        // .editcart   
-        //     // background-color #fff
-        // .betnow 
+        // // background-color #fff
+        // .editcart
+        // // background-color #fff
+        // .betnow
         .info
             // background-color #fff
-            flex-direction: column;
+            flex-direction column
             p
                 display flex
                 width 100%
                 justify-content center
                 // position relative
                 // &.moneyremain::before
-                //     content "余额"
-                //     position absolute
-                //     top: 0;
-                //     left: 0;
-                span 
+                // content "余额"
+                // position absolute
+                // top: 0;
+                // left: 0;
+                span
                     color #ffd800
-                
-            // background-color #fff
-            // background-color #c32026
-
-        // background-color #4a4a4a
 </style>

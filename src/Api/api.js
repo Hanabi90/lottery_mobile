@@ -55,12 +55,12 @@ export const getCaizhong = formData =>
     })
 
 export const betting = (formData) =>{
-    service.request({
+    console.log(formData);
+    return service.request({
         method: 'post',
         url: 'lottery/betting',
         data:qs.stringify(formData)
     })
-    console.log(formData);
 }
 export const getissue = formData =>
     service.request({
