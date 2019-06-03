@@ -169,6 +169,9 @@
             :newArr="newArr"
             :betinfo="betinfo"
             :curmid="curmid"
+            :currentGameType="currentGameType"
+            :point="point"
+            :currentIssue="currentIssue"
         ></shop>
     </div>
 </template>
@@ -213,6 +216,7 @@ import myPopup from '@/components/lottery/popup'
 import shop from './shop'
 import divtext from './1'
 import { mapState } from 'vuex'
+import {checkNum} from '../../utils/checkNum'
 export default {
     watch: {
         inputVal(nVal, oVal) {
@@ -227,12 +231,14 @@ export default {
     },
     data() {
         return {
+            currentIssue:'',
+            zhushu:'',
             betinfo: {
                 "betparams": {
-                    "prizegroup": 1970,
+                    "prizegroup": "",
                     "iWalletType": 1,
-                    "curmid": 3535,
-                    "lt_issue_start": "20190531-037",
+                    "curmid": "",
+                    "lt_issue_start": "",
                     "lt_project": [
                     {
                         "type": "digital",
@@ -246,18 +252,6 @@ export default {
                         "desc": "[五星组选_组5] 4,56",
                         "buqsno": "buqsno5ce3a094c4706"
                     },
-                    {
-                        "type": "digital",
-                        "methodid": 3508,
-                        "point": 0,
-                        "codes": "1|2",
-                        "nums": 1,
-                        "times": 1,
-                        "money": 0.02,
-                        "mode": 3,
-                        "desc": "[五星组选_组5] 1,2",
-                        "buqsno": "buqsno5ce3a094c4706"
-                    }
                     ]
                 },
                 "bettraceparams": {
@@ -383,7 +377,8 @@ export default {
         }
     },
     methods: {
-        init(initData, menuid) {
+        init(initData, menuid,lotteryid) {
+            console.log('initData',initData);
             this.jsonData = initData
             this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${
                 this.jsonData[0].label[0].label[0].name
@@ -391,7 +386,7 @@ export default {
             console.log('initData', initData)
             console.log('menuid',menuid);
             console.log('this.curmid',this.curmid);
-            this.getissue({ lotteryid: Number(menuid) })
+            this.getissue({ lotteryid: Number(lotteryid) })
             this.tabGameType(
                 this.jsonData[0].label[0].label[0],
                 this.jsonData[0].label[0].gtitle,
@@ -402,8 +397,9 @@ export default {
         },
         getissue(params){
             getissue(params).then(res => {
-                // this.currentIssue = res.data.issue
-                var ctime = res.data.data.curr_time
+                console.log("res",res);
+                this.currentIssue = res.data.data.issue
+                var ctime = res.data.data.nowtime
                 var stime = res.data.data.saleend
                 stime = new Date(stime).getTime()
                 ctime = new Date(ctime).getTime()
@@ -415,11 +411,6 @@ export default {
                     'yyyy-MM-dd hh:mm:ss'
                 )
                 this.countdown = countdown
-                this.$set(
-                    this.betinfo.betparams,
-                    'lt_issue_start',
-                    res.data.data.issue
-                )
                 this.timer = null
                 this.timer = setTimeout(() => {
                     this.$refs.flip.init()
@@ -600,21 +591,6 @@ export default {
                 this.show = false
                 this.isactive = index
                 this.selectarea = gameLabel.selectarea
-                this.$set(
-                    this.betinfo.betparams,
-                    'curmid',
-                    gameLabel.menuid
-                )
-                this.$set(
-                    this.betinfo.betparams.lt_project,
-                    'methodid',
-                    gameLabel.methodid
-                )
-                this.$set(
-                    this.betinfo.betparams.lt_project,
-                    'desc',
-                    this.currentGameType
-                )
             }
         },
         selectBalls(balls) {
@@ -622,7 +598,7 @@ export default {
             // console.log(layoutItem,title,layoutArrindex);
             // console.log('layoutArrindex',layoutArrindex);
             if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {
-                this.newArr[layoutArrindex].push(layoutItem)
+                this.newArr[layoutArrindex].push(String(layoutItem))
                 this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort(
                     (a, b) => {
                         return a - b
@@ -746,14 +722,26 @@ export default {
     created() {
         // this.getCaizhong(3535)
         if (this.$route.params.data != undefined) {
+            const data = this.$route.params.data.data.data
+            const menuid = this.$route.params.data.menuid
+            const lotteryid = this.$route.params.data.lotteryid
+            
+            if(localStorage.getItem(menuid)==null){
+                localStorage.setItem(menuid,JSON.stringify({lotteryid:lotteryid,data:data}))
+            }
             this.init(
-                this.$route.params.data.data.data,
-                this.$route.params.data.menuid
+                data,
+                menuid,
+                lotteryid
             )
+            sessionStorage.setItem("lotteryid",this.$route.params.data.lotteryid)
+            sessionStorage.setItem("menuid",this.$route.params.data.menuid)
+            sessionStorage.setItem("lotteryid",this.$route.params.data.lotteryid)
             console.log('this.$route.params.data.menuid',this.$route.params.data.menuid);
             this.curmid = this.$route.params.data.menuid
         } else {
-            this.getCaizhong(this.curmid)
+            console.log(object);
+            // this.getCaizhong(this.curmid)
         }
     },
     mounted() {

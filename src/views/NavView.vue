@@ -251,12 +251,31 @@ export default {
             })
         },
         getCaizhong(i) {
-            getCaizhong({ memnuid: i.menuid }).then(res => {
+            var lotteryData = localStorage.getItem(i.menuid)
+            lotteryData = JSON.parse(lotteryData)
+            console.log(lotteryData);
+            if(lotteryData!==null){
+                const data = {
+                    data:lotteryData.data,
+                    lotteryid:i.lotteryid,
+                    menuid:i.menuid
+                    }
+                this.$router.push({
+                    name: 'pk10',
+                    params: {
+                        data: data
+                    }
+                })
+            }else{
+                getCaizhong({ memnuid: i.menuid }).then(res => {
+                    if(res.data.code==0){
+                        localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data}))
+                    }
                 const data = {
                     data:res.data,
-                    menuid:i.lotteryid
+                    lotteryid:i.lotteryid,
+                    menuid:i.menuid
                     }
-                console.log(data);
                 if (data.data.code == 0) {
                     this.$router.push({
                         name: 'pk10',
@@ -272,6 +291,8 @@ export default {
                     })
                 }
             })
+            }
+            
         },
         tabLeftMain() {
             this.isLeftOrMain = false
