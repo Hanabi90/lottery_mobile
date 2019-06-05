@@ -28,7 +28,7 @@
         </div>
         <div class="bottom">
             <div class="bethistory">
-                <span>投注记录</span>
+                <span>追号模式</span>
             </div>
             <div class="info">
                 <p>
@@ -50,10 +50,10 @@
 </template>
 
 <script>
-import { Stepper, RadioGroup, Radio,Notify } from 'vant'
+import { Stepper, RadioGroup, Radio, Notify } from 'vant'
 import { betting } from '../../Api/api'
-import {checkNum} from '../../utils/checkNum'
-console.log(checkNum('WXZU60',[["0", "2"],["0", "1", "4", "3", "5"]]));
+import { checkNum } from '../../utils/checkNum'
+console.log(checkNum('WXZU60', [['0', '2'], ['0', '1', '4', '3', '5']]))
 export default {
     data() {
         return {
@@ -61,21 +61,36 @@ export default {
             beishu: '1',
             jiangjinzu: '',
             mode: '1',
-            zhushu:''
+            zhushu: ''
         }
     },
-    props: ['newArr', 'betinfo', 'currentLabel','curmid','currentGameType','point','currentIssue'],
-    computed:{
-        money(){
+    props: [
+        'newArr',
+        'betinfo',
+        'currentLabel',
+        'curmid',
+        'currentGameType',
+        'point',
+        'currentIssue'
+    ],
+    computed: {
+        money() {
             var money
-            console.log(this.currentLabel.modes);
-            if(this.currentLabel.modes!==undefined){
-                money = Math.round((this.currentLabel.modes[Number(this.mode)-1].rate*1000)* 2 * Number(this.beishu)* this.zhushu)/1000 
-            }else{
+            console.log(this.currentLabel.modes)
+            if (this.currentLabel.modes !== undefined) {
+                money =
+                    Math.round(
+                        this.currentLabel.modes[Number(this.mode) - 1].rate *
+                            1000 *
+                            2 *
+                            Number(this.beishu) *
+                            this.zhushu
+                    ) / 1000
+            } else {
                 money = 0
             }
             return money
-            
+
             // var money = Math.round(times * nums * 2 * ($.lt_method_data.modes[modes].rate * 1000)) / 1000;//倍数*注数*单价 * 模式
             // return money
             // switch (this.mode) {
@@ -101,52 +116,69 @@ export default {
         sendOrder() {
             var str = ''
             var arr = []
+            console.log(this.newArr);
             for (const item of this.newArr) {
                 str += item.join('&') + '|'
             }
             str = str.substring(0, str.length - 1)
-            console.log(str);
+            console.log(str)
             // this.zhushu = checkNum(this.currentLabel.methodname,this.newArr)
             // console.log(this.currentLabel.methodname,this.zhushu);
             var obj = {
-                "betparams": {
-                    "prizegroup": parseInt(this.currentLabel.nowPrizeGroup),
-                    "iWalletType": 1,
-                    "curmid": Number(this.curmid),
-                    "lt_issue_start": this.currentIssue,
-                    "lt_project": [
-                    {
-                        "type": this.currentLabel.selectarea.type,
-                        "methodid": Number(this.currentLabel.methodid),
-                        "point": Number(this.point),
-                        "codes": str,
-                        "nums": Number(this.zhushu),
-                        "times": Number(this.beishu),
-                        "money": parseFloat(this.money),
-                        "mode": Number(this.mode),
-                        "desc": this.currentGameType,
-                        "buqsno": "buqsno5ce3a094c4706"
-                    },
+                betparams: {
+                    // prizegroup: parseInt(this.currentLabel.nowPrizeGroup),
+                    iWalletType: 1,
+                    curmid: Number(this.curmid),
+                    lt_issue_start: this.currentIssue,
+                    lt_project: [
+                        {
+                            type: this.currentLabel.selectarea.type,
+                            methodid: String(this.currentLabel.methodid),
+                            point: Number(this.point),
+                            codes: str,
+                            nums: Number(this.zhushu),
+                            times: Number(this.beishu),
+                            money: parseFloat(this.money),
+                            mode: Number(this.mode),
+                            desc: this.currentGameType,
+                            buqsno: 'buqsno5ce3a094c4706'
+                        }
                     ]
                 },
-                "bettraceparams": {
-                    "lt_trace_if": "no",
-                    "lt_trace_stop": "",
-                    "lt_trace_money": '',
-                    "lt_trace_issues": ''
+                bettraceparams: {
+                    lt_trace_if: 'no',
+                    lt_trace_stop: 'no',
+                    zhuihao: 2,
+                    lt_trace_count_input: 10,
+                    lt_trace_money: 0.1,
+                    lt_trace_times_margin: 1,
+                    lt_trace_margin: 50,
+                    lt_trace_times_same: 1,
+                    lt_trace_diff: 1,
+                    lt_trace_times_diff: 2,
+                    lt_trace_issues: [
+                        {
+                            lt_trace_issues: '20190531-048',
+                            lt_trace_times: 1
+                        },
+                        {
+                            lt_trace_issues: '20190531-047',
+                            lt_trace_times: 1
+                        }
+                    ]
                 }
             }
-            console.log(obj);
-            betting({postdata:JSON.stringify(obj)}).then(res => {
-                console.log(res)
-                Notify({
-                    message: res.data.msg.content[0],
-                    duration: 5000,
-                    background: '#1abc9c'
+            console.log(obj)
+            betting({ postdata: JSON.stringify(obj) })
+                .then(res => {
+                    console.log(res)
+                    Notify({
+                        message: res.data.msg.content[0] || res.data.msg,
+                        duration: 5000,
+                        background: '#1abc9c'
+                    })
                 })
-            }).catch((err)=>{
-                
-            })
+                .catch(err => {})
         }
     },
     created() {
@@ -163,10 +195,14 @@ export default {
         Notify
     },
     watch: {
-        newArr(){
-            this.zhushu = checkNum(this.currentLabel.methodname,this.newArr,this.currentLabel.selectarea.layout.length-1)
+        newArr() {
+            this.zhushu = checkNum(
+                this.currentLabel.methodname,
+                this.newArr,
+                this.currentLabel.selectarea.layout.length - 1
+            )
         }
-    },
+    }
 }
 </script>
 

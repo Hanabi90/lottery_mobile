@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="usercenter">
         <header>
             <div class="top flex_box">
                 <i class="icon avatar"></i>
@@ -32,9 +32,11 @@
             </div>
         </div>
         <my-fotter></my-fotter>
-        <van-popup v-model="show" :overlay="false" position="right" >
+        <van-popup v-model="show" :overlay="false" position="right">
+            <my-header></my-header>
             <div class="popwrap">
                 <bank @closePop=closePop v-if="navlist[0].active"></bank>
+                <bethistory v-if="navlist[5].active"></bethistory>
             </div>
         </van-popup>
     </div>
@@ -45,10 +47,11 @@ import {logout} from '../Api/api'
 import { Icon,Popup,Field,Notify} from 'vant';
 import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
+import bethistory from '../components/usercenter/bethistory'
+import myHeader from '../components/usercenter/header'
 export default {
     data() {
         return {
-            show:false,
             navlist:[
                 {title:'账户设置与团队管理',icon:'friends-o',color:'#0099e5',active:false},
                 {title:'游戏帐变记录',icon:'orders-o',color:'#ff4c4c',active:false},
@@ -65,6 +68,11 @@ export default {
             ]
         }
     },
+    computed:{
+        show(){
+            return this.$store.state.userCenterPop
+        }
+    },
     methods: {
         tabNav(index){
             for (let i = 0; i < this.navlist.length; i++) {
@@ -72,11 +80,10 @@ export default {
                 this.$set(this.navlist[i],'active',false)
             }
             this.$set(this.navlist[index],'active',true)
-            this.show = true
+            this.$store.commit('UpdateCenterPop',true)
         },
         closePop(){
-            console.log('object');
-            this.show = false
+            this.$store.commit('UpdateCenterPop',false)
         },
         logout(){
             logout().then((res)=>{
@@ -91,12 +98,16 @@ export default {
         'myFotter':fotter,
         'vanPopup':Popup,
         'vanField':Field,
-        bank
+        bethistory,
+        bank,
+        myHeader
     }
 }
 </script>
 
 <style lang="stylus" scoped>
+.popupWrap
+    margin-bottom 20px
 .text
     color #fff
     &.username
@@ -172,6 +183,7 @@ header
             color #4a84da
             margin-bottom 8px
 .popwrap
+    margin-top 45px
     width 375px
     background-color #fff
     min-height 100vh

@@ -177,34 +177,7 @@
 </template>
 
 <script>
-Date.prototype.format = function(fmt) {
-    var o = {
-        'M+': this.getMonth() + 1, //月份
-        'd+': this.getDate(), //日
-        'h+': this.getHours(), //小时
-        'm+': this.getMinutes(), //分
-        's+': this.getSeconds(), //秒
-        'q+': Math.floor((this.getMonth() + 3) / 3), //季度
-        S: this.getMilliseconds() //毫秒
-    }
-    if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(
-            RegExp.$1,
-            (this.getFullYear() + '').substr(4 - RegExp.$1.length)
-        )
-    }
-    for (var k in o) {
-        if (new RegExp('(' + k + ')').test(fmt)) {
-            fmt = fmt.replace(
-                RegExp.$1,
-                RegExp.$1.length == 1
-                    ? o[k]
-                    : ('00' + o[k]).substr(('' + o[k]).length)
-            )
-        }
-    }
-    return fmt
-}
+
 import { Tab, Tabs, Field, Button, Notify, Tag } from 'vant'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
@@ -377,15 +350,12 @@ export default {
         }
     },
     methods: {
-        init(initData, menuid,lotteryid) {
-            console.log('initData',initData);
-            this.jsonData = initData
+        init(params) {
+            const { data, menuid, lotteryid } = { ...params }
+            this.jsonData = data
             this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${
                 this.jsonData[0].label[0].label[0].name
             }`
-            console.log('initData', initData)
-            console.log('menuid',menuid);
-            console.log('this.curmid',this.curmid);
             this.getissue({ lotteryid: Number(lotteryid) })
             this.tabGameType(
                 this.jsonData[0].label[0].label[0],
@@ -400,11 +370,11 @@ export default {
                 console.log("res",res);
                 this.currentIssue = res.data.data.issue
                 var ctime = res.data.data.nowtime
-                var stime = res.data.data.saleend
+                var stime = res.data.data.opentime
                 stime = new Date(stime).getTime()
                 ctime = new Date(ctime).getTime()
                 var diff = stime - ctime
-                
+                console.log(diff);
                 var localTime = new Date().getTime()
                 var countdownTimeStamp = localTime + diff
                 var countdown = new Date(countdownTimeStamp).format(
@@ -414,7 +384,8 @@ export default {
                 this.timer = null
                 this.timer = setTimeout(() => {
                     this.$refs.flip.init()
-                    this.getissue({ lotteryid: Number(this.curmid) })
+                    const lotteryid = localStorage.getItem("lotteryid")
+                    this.getissue({ lotteryid: Number(lotteryid) })
                 }, diff);
             })
         },
@@ -422,7 +393,7 @@ export default {
             getCaizhong({ memnuid: id }).then(res => {
                 const data = res.data
                 this.init(data.data, 1)
-                if (data.data.code !== 0) {
+                if (data.data.code == 1) {
                     Notify({
                         message: data.msg,
                         duration: 1000,
@@ -720,28 +691,31 @@ export default {
         }
     },
     created() {
-        // this.getCaizhong(3535)
         if (this.$route.params.data != undefined) {
             const data = this.$route.params.data.data.data
             const menuid = this.$route.params.data.menuid
             const lotteryid = this.$route.params.data.lotteryid
-            
+            localStorage.setItem('last_menuid',menuid)
+            localStorage.setItem('lotteryid',lotteryid)
+            localStorage.setItem('data',JSON.stringify(data))
             if(localStorage.getItem(menuid)==null){
                 localStorage.setItem(menuid,JSON.stringify({lotteryid:lotteryid,data:data}))
             }
             this.init(
-                data,
+                {data,
                 menuid,
-                lotteryid
+                lotteryid}
             )
-            sessionStorage.setItem("lotteryid",this.$route.params.data.lotteryid)
-            sessionStorage.setItem("menuid",this.$route.params.data.menuid)
-            sessionStorage.setItem("lotteryid",this.$route.params.data.lotteryid)
-            console.log('this.$route.params.data.menuid',this.$route.params.data.menuid);
             this.curmid = this.$route.params.data.menuid
         } else {
-            console.log(object);
-            // this.getCaizhong(this.curmid)
+            const data = JSON.parse(localStorage.getItem('data'))
+            const menuid = localStorage.getItem('menuid')
+            const lotteryid =  localStorage.getItem('lotteryid')
+            this.init(
+                {data,
+                menuid,
+                lotteryid}
+            )
         }
     },
     mounted() {
@@ -764,7 +738,7 @@ export default {
         shop,
         myPopup,
         Popup,
-        divtext
+        divtext,
     }
 }
 </script>

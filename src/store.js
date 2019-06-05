@@ -16,9 +16,14 @@ export default new Vuex.Store({
         timer:null,
         userInfo:{
             availablebalance:''
-        }
+        },
+
+        userCenterPop:false
     },
     mutations: {
+        UpdateCenterPop(state,flag){
+            state.userCenterPop = flag
+        },
         tabHotOrLeak(state,status) {
             if (status == 'hot') {
                 state.hotOrLeak = 'hot'

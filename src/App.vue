@@ -1,6 +1,8 @@
 <template>
     <div id="app" @click="tab()">
-        <router-view/>
+        <transition name="slide">
+            <router-view/>
+        </transition>
         <transition name="fade">
             <my-popup v-if="myPopShow">
                 <template v-slot:footer>
@@ -99,7 +101,18 @@ export default {
 @import 'styles/common.styl'
 
 .fade-enter-active, .fade-leave-active
-    transition opacity 0.5s
+    transition transform 0.5s
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-    opacity 0
+    transform translateX(0) 
+.slide-enter-active {
+  transition: all .3s ease;
+}
+.slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to
+{
+  transform: translateX(375px);
+  opacity: 0;
+}
 </style>

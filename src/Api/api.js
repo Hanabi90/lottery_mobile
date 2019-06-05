@@ -153,12 +153,30 @@ export const checksequestion = formData =>//验证密保问题
         url: 'security/checksequestion',
         data: qs.stringify(formData)
     })
-
-
-
-
-
-
+export const getbethistory = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'gameinfo/getbethistory',
+        data: qs.stringify(formData)
+    })
+export const getuserlottery = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getuserlottery',
+        data: qs.stringify(formData)
+    })
+export const getuserlotterymethod = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getuserlotterymethod',
+        data: qs.stringify(formData)
+    })
+export const getchildlist = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getchildlist',
+        data: qs.stringify(formData)
+    })
 
 
 
