@@ -110,18 +110,18 @@ export default {
         ]),
         getbalance(){
             getbalance().then((res)=>{
-                const userBalance = res.data.data
-                console.log(res.data.data);
-                this.updateUserInfo(userBalance)
+                const userBalance = res.data.data.availablebalance
+                console.log(userBalance);
+                this.updateUserInfo({userBalance})
             })
         },
         handlelogin() {
             login(this.userInfo).then((res) => {
+                console.log(res);
                 if (res.data.code == 0) {
-                    sessionStorage.setItem('token', res.data.data.token)
-                    sessionStorage.setItem('nickname', res.data.data.nickname)
                     this.show = false
-                    this.updateToken(res.data.data.token)
+                    const token = res.data.data.token
+                    this.updateToken({token,method:'login',nickname:res.data.data.nickname})
                     Notify({
                         message: '登录成功',
                         duration: 2000,

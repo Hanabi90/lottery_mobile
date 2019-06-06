@@ -268,15 +268,13 @@ export default {
                 })
             }else{
                 getCaizhong({ memnuid: i.menuid }).then(res => {
-                    if(res.data.code==0){
-                        localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data}))
-                    }
                 const data = {
                     data:res.data,
                     lotteryid:i.lotteryid,
                     menuid:i.menuid
                     }
                 if (data.data.code == 0) {
+                    localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data}))
                     this.$router.push({
                         name: 'pk10',
                         params: {

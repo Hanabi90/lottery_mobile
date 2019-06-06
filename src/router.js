@@ -40,6 +40,12 @@ export default new Router({
             component: () =>
                 import(/* webpackChunkName: "about" */ './views/UserCenter.vue')
         },
+        {
+            path: '/zhuihao',
+            name: 'zhuihao  ',
+            component: () =>
+                import(/* webpackChunkName: "about" */ './components/common/zhuiHao.vue')
+        },
 
     ]
 })

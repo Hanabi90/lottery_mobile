@@ -184,6 +184,7 @@ export default {
         overflow hidden
         margin-bottom 0.3125rem
         position relative
+        width 100%
         .register_form
             padding 30px 30px
         .form_group

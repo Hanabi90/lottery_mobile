@@ -39,7 +39,7 @@
                 </p>
                 <p class="moneyremain">
                     余额
-                    <span>10947</span>元
+                    <span>{{userinfo.availablebalance}}</span>元
                 </p>
             </div>
             <div class="betnow" @click="sendOrder()">
@@ -61,7 +61,7 @@ export default {
             beishu: '1',
             jiangjinzu: '',
             mode: '1',
-            zhushu: ''
+            zhushu: '0'
         }
     },
     props: [
@@ -74,6 +74,9 @@ export default {
         'currentIssue'
     ],
     computed: {
+        userinfo(){
+            return this.$store.state.userInfo
+        },
         money() {
             var money
             console.log(this.currentLabel.modes)

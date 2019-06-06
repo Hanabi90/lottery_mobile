@@ -141,7 +141,7 @@
                 </ul>
                 <ul
                     class="autoSelect"
-                    v-if="!currentGameType.includes('和值')&&!currentGameType.includes('特殊')"
+                    v-if="!currentGameType.includes('和值')&&!currentGameType.includes('特殊')&&!isNaN(layoutArr.no.split('|')[0])"
                 >
                     <li
                         v-for="type in ['全','大','小','清','奇','偶']"
@@ -193,13 +193,8 @@ import {checkNum} from '../../utils/checkNum'
 export default {
     watch: {
         inputVal(nVal, oVal) {
+            console.log(oVal);
             this.inputVal = this.test1(nVal)
-            // console.log('旧数据',nVal);//监听当前value
-            // console.log('新数据',oVal);//监听当前value
-            //改变input框中的内容
-            //    console.log(nVal,oVal);
-            // console.log(nVal);
-            // console.log(oVal);
         }
     },
     data() {
@@ -444,26 +439,17 @@ export default {
             }
         },
         test1(val) {
-            // if(isNaN(event.data)){
-            //     var str= String(event.target.value)
-            //     str = str.substring(0,str.length-1)
-            //     event.target.value= str
-            //     return
-            // }else{
-            //     console.log(isNaN(event.data));
-            //     this.inputVal = event.target.value
-            // }
-
-            console.log('valvalvalval', val)
             if (!val) {
                 return
             }
-
             function insertStr(soure, start, newStr) {
                 return soure.slice(0, start) + newStr + soure.slice(start)
             }
             //处理only的方式
-            val = val.replace(/[^\d]/g, '')
+            if(val!=' '){
+                console.log('object');
+                val = val.replace(/[^\d]/g, '')
+            }
 
             var temp = val.split('')
             for (let i = 0; i < val.length; i++) {

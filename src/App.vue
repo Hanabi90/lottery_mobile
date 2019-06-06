@@ -105,13 +105,14 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
     transform translateX(0) 
 .slide-enter-active {
-  transition: all .3s ease;
+  transition: opacity .3s ease;
 }
 .slide-leave-active {
   transition: all .3s ease;
 }
 .slide-enter, .slide-leave-to
 {
+    position: absolute;
   transform: translateX(375px);
   opacity: 0;
 }

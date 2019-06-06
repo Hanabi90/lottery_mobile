@@ -3,10 +3,10 @@
         <header>
             <div class="top flex_box">
                 <i class="icon avatar"></i>
-                <span class="text username">sid1234</span>
+                <span class="text username">{{userinfo.nickname}}</span>
                 <div class="text userbalance">
                     <p>信用余额：0.000</p>
-                    <p>现金余额：0.000</p>
+                    <p>现金余额：{{userinfo.availablebalance}}</p>
                 </div>
             </div>
             <div class="bottom flex_box">
@@ -26,7 +26,7 @@
             </div>
         </header>
         <div class="nav_box flex_box">
-            <div class="box" @click="tabNav(index)" v-for="(navitem,index) in navlist" :key="navitem.title">
+            <div class="box" @click="tabNav(index,navitem.event)" v-for="(navitem,index) in navlist" :key="navitem.title">
                 <van-icon class="item_icon" :name="navitem.icon" :color="navitem.color" />
                 <span>{{navitem.title}}</span>
             </div>
@@ -49,32 +49,51 @@ import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
 import bethistory from '../components/usercenter/bethistory'
 import myHeader from '../components/usercenter/header'
+import {mapMutations} from 'vuex'
+
 export default {
     data() {
         return {
             navlist:[
-                {title:'账户设置与团队管理',icon:'friends-o',color:'#0099e5',active:false},
-                {title:'游戏帐变记录',icon:'orders-o',color:'#ff4c4c',active:false},
-                {title:'非游戏帐变记录',icon:'bill',color:'#34bf49',active:false},
-                {title:'个人盈亏记录',icon:'after-sale',color:'#be0027',active:false},
-                {title:'团队盈亏报表',icon:'refund-o',color:'#00a98f',active:false},
-                {title:'投注记录',icon:'bill-o',color:'#cf8d2e',active:false},
-                {title:'追号记录',icon:'aim',color:'#e4e932',active:false},
-                {title:'活动管理',icon:'medel-o',color:'#371777',active:false},
-                {title:'平台公告',icon:'bullhorn-o',color:'#f47721',active:false},
-                {title:'重要消息',icon:'envelop-o',color:'#ff4f81',active:false},
-                {title:'在线客服',icon:'service',color:'#ffc168',active:false},
-                {title:'登出',icon:'logistics',color:'#000',active:false},
+                {title:'账户设置与团队管理',icon:'friends-o',color:'#0099e5',active:false,event:false},
+                {title:'游戏帐变记录',icon:'orders-o',color:'#ff4c4c',active:false,event:false},
+                {title:'非游戏帐变记录',icon:'bill',color:'#34bf49',active:false,event:false},
+                {title:'个人盈亏记录',icon:'after-sale',color:'#be0027',active:false,event:false},
+                {title:'团队盈亏报表',icon:'refund-o',color:'#00a98f',active:false,event:false},
+                {title:'投注记录',icon:'bill-o',color:'#cf8d2e',active:false,event:false},
+                {title:'追号记录',icon:'aim',color:'#e4e932',active:false,event:false},
+                {title:'活动管理',icon:'medel-o',color:'#371777',active:false,event:false},
+                {title:'平台公告',icon:'bullhorn-o',color:'#f47721',active:false,event:false},
+                {title:'重要消息',icon:'envelop-o',color:'#ff4f81',active:false,event:false},
+                {title:'在线客服',icon:'service',color:'#ffc168',active:false,event:false},
+                {title:'登出',icon:'logistics',color:'#000',active:false,event:'logout'},
             ]
         }
     },
     computed:{
         show(){
             return this.$store.state.userCenterPop
+        },
+        userinfo(){
+            return this.$store.state.userInfo
         }
     },
     methods: {
-        tabNav(index){
+        ...mapMutations([
+            'updateToken',
+            'updateUserInfo'
+        ]),
+        tabNav(index,event){
+            switch (event) {
+                case 'logout':
+                    console.log('登出');
+                    this.logout()
+                    return
+                    break;
+            
+                default:
+                    break;
+            }
             for (let i = 0; i < this.navlist.length; i++) {
                 const item = this.navlist[i];
                 this.$set(this.navlist[i],'active',false)
@@ -87,6 +106,7 @@ export default {
         },
         logout(){
             logout().then((res)=>{
+                this.updateToken({token:null,method:'logout',nickname:''})
                 this.$router.push('/')
                 Notify('您已经登出')
                 console.log(res);

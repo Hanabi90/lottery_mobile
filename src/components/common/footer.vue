@@ -9,7 +9,8 @@
                 <i class="icon"></i>
                 <span>优惠</span>
             </router-link>
-            <router-link class="navItem navItem_register" to="/register" tag="li">注册</router-link>
+            <router-link v-if="isLogin==null" class="navItem navItem_register" to="/register" tag="li">注册</router-link>
+            <router-link v-else class="navItem navItem_register" to="/register" tag="li" @click="$emit('popCtrl',true)">存款</router-link>
             <router-link class="navItem navItem_wallet" to="/usercenter" tag="li">
                 <i class="icon"></i>
                 <span>钱包</span>

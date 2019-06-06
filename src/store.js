@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         token:null,
+        islogin:true,
         hotOrLeak:'leak',
         keyboardshow:false,
         myPopShow:false,
@@ -15,7 +16,8 @@ export default new Vuex.Store({
         isPopResults:false,
         timer:null,
         userInfo:{
-            availablebalance:''
+            nickname:'',
+            availablebalance:'0'
         },
 
         userCenterPop:false
@@ -58,13 +60,34 @@ export default new Vuex.Store({
                 state.myPopShow = false
             }, 3000);
         },
-        updateToken(state,token){
-            state.token = token
+        updateToken(state,params){
+            const { token,method,nickname } = { ...params }
+            var newToken = null
+            var newNickname = ''
+            switch (method) {
+                case 'login':
+                    newNickname = nickname
+                    newToken = token
+                    state.token = newToken
+                    state.islogin = true
+                    break;
+                case 'logout':
+                    newNickname = ''
+                    newToken = null
+                    state.token = newToken
+                    state.islogin = false
+                    break;
+                default:
+                    break;
+            }
+            state.userInfo['nickname'] = newNickname
+            sessionStorage.setItem('token', newToken)
+            sessionStorage.setItem('nickname', newNickname)
         },
         updateUserInfo(state,params){
-            const userBalance = {...params}
+            const {userBalance} = {...params}
             if(userBalance){
-                state.userInfo.availablebalance = 10000
+                state.userInfo.availablebalance = parseInt(userBalance)
             }
         }
     },

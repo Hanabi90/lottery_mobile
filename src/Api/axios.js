@@ -13,7 +13,7 @@ service.interceptors.request.use(
     config => {
         // 在请求先展示加载框
         const token = sessionStorage.getItem('token')
-        if (token) {
+        if (token&&token!='null') {
             config.headers['Authorization'] = token
         }
         return config
