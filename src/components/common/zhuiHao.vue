@@ -3,15 +3,15 @@
         <myHeader></myHeader>
         <div class="list_wrap">
             <ul class="list_ul">
-                <li v-for="(item, index) in zhuitouArr" :key="index">
+                <li v-for="(item, index) in zhuitouArr[zhuihao_type-1]" :key="index">
                     <div class="left">
-                        <Checkbox v-model="item.checked"></Checkbox>
+                        <Checkbox @click="fixUpdate" v-model="item.checked"></Checkbox>
                     </div>
                     <div class="right">
                         <p>
                             <span>{{item.issue}}期</span>
                             <span>
-                                <van-stepper v-model="item.beishu" min="0" max="10"/>倍
+                                <van-stepper v-model="item.beishu" min="1" max="1024"/>倍
                             </span>
                         </p>
                         <p>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
@@ -38,17 +38,17 @@
                 <div>
                     追
                     <span>
-                        <van-stepper v-show="zhuihao_type==1" v-model="lt_trace_count_input_1" min="0" max="50"/>
-                        <van-stepper v-show="zhuihao_type==2" v-model="lt_trace_count_input_2" min="0" max="50"/>
-                        <van-stepper v-show="zhuihao_type==3" v-model="lt_trace_count_input_3" min="0" max="50"/>
+                        <van-stepper v-show="zhuihao_type==1" v-model="lt_trace_count_input_1" min="1" max="50"/>
+                        <van-stepper v-show="zhuihao_type==2" v-model="lt_trace_count_input_2" min="1" max="50"/>
+                        <van-stepper v-show="zhuihao_type==3" v-model="lt_trace_count_input_3" min="1" max="50"/>
                     </span>期
                 </div>
                 <div>
                     投
                     <span>
-                        <van-stepper v-show="zhuihao_type==1" v-model="beishu_1" min="0" max="1000"/>
-                        <van-stepper v-show="zhuihao_type==2" v-model="beishu_2" min="0" max="1000"/>
-                        <van-stepper v-show="zhuihao_type==3" v-model="beishu_3" min="0" max="1000"/>
+                        <van-stepper v-show="zhuihao_type==1" v-model="beishu_1" min="1" max="1000"/>
+                        <van-stepper v-show="zhuihao_type==2" v-model="beishu_2" min="1" max="1000"/>
+                        <van-stepper v-show="zhuihao_type==3" v-model="beishu_3" min="1" max="1000"/>
                     </span>倍
                 </div>
             </div>
@@ -56,14 +56,22 @@
                 <div>
                     隔
                     <span>
-                        <van-stepper v-model="geqi_lt_trace_count_input" min="0" max="10"/>
+                        <van-stepper v-model="geqi_lt_trace_count_input" min="1" max="1024"/>
                     </span>期
                 </div>
                 <div>
                     翻
                     <span>
-                        <van-stepper v-model="geqi_beishu" min="0" max="10"/>
+                        <van-stepper v-model="geqi_beishu" min="1" max="1024"/>
                     </span>倍
+                </div>
+            </div>
+            <div v-show="zhuihao_type==1">
+                <div>
+                    最低收益率
+                    <span>
+                        <van-stepper v-model="limt_profit" min="0" />
+                    </span>%
                 </div>
             </div>
             <Checkbox class="stopzhui" v-model="lt_trace_stop">中奖后停止追号</Checkbox>
@@ -92,17 +100,11 @@ export default {
         return {
             checked: false,
             lt_trace_stop: true,
-            zhuihao_type:1,
+            zhuihao_type:2,
+            limt_profit:50,
             issue: '20190606-039',
             zhuitouArr: [
-                {
-                    issue: '20190606-039',
-                    beishu: 0,
-                    now_money: 1000,
-                    total_money: 10000,
-                    checked: false,
-                    profit: 100
-                }
+                [],[],[]
             ],
             lt_trace_count_input_1:1,
             lt_trace_count_input_2:1,
@@ -111,10 +113,11 @@ export default {
             beishu_1:1,
             beishu_2:1,
             beishu_3:1,
-            geqi_beishu: 1,
+            geqi_beishu: 2,
             tabNavArr: [
                 { title: '同倍追号', active: true,type:2 },
-                { title: '翻倍追号', active: false,type:3 }
+                { title: '翻倍追号', active: false,type:3 },
+                { title: '利润率追号', active: false,type:1 },
             ],
             bettraceparams: {
                 lt_trace_if: 'no',//是否追号 *
@@ -141,6 +144,11 @@ export default {
         }
     },
     methods: {
+        fixUpdate(){
+            setTimeout(()=>{
+                this.$forceUpdate()
+            })
+        },
         tabNav(index,type) {
             for (let i = 0; i < this.tabNavArr.length; i++) {
                 this.$set(this.tabNavArr[i], 'active', false)
@@ -150,8 +158,7 @@ export default {
             this.zhuihao_type = type
         },
         createList(){
-            zhuitouArr: [
-                {
+            var obj = {
                     issue: '20190606-039',
                     beishu: 0,
                     now_money: 1000,
@@ -159,8 +166,55 @@ export default {
                     checked: false,
                     profit: 100
                 }
-            ]
-            console.log('object');
+            if(this.zhuihao_type==2){
+                const lt_trace_count_input = this.lt_trace_count_input_2
+                const beishu = this.beishu_2 
+                const issueStr = this.issue.split('-')[0]
+                var issue = parseInt(this.issue.split('-')[1])
+                const now_money = 2
+                var zhuitouArr = []
+                for (let i = 1; i <= lt_trace_count_input; i++) {
+                    const total_money = now_money * i
+                    zhuitouArr.push({
+                        issue:issueStr + '-'+ issue,
+                        beishu:beishu,
+                        now_money:now_money,
+                        total_money:total_money,
+                        checked:true,
+                        profit:''
+                    })
+                    issue++
+                }
+            }else if(this.zhuihao_type==3){
+                var zhuitouArr = []
+                var lt_trace_count_input = this.lt_trace_count_input_3
+                const geqi_lt_trace_count_input = this.geqi_lt_trace_count_input
+                const geqi_beishu = this.geqi_beishu
+                const issueStr = this.issue.split('-')[0]
+                var beishu = this.beishu_3
+                var issue = parseInt(this.issue.split('-')[1])
+                var now_money = 2
+                var total_money = 0
+                for (let i = 1; i <=this.lt_trace_count_input_3; i++) {
+                    var now_money_1 = now_money * beishu
+                    total_money += now_money_1
+                    zhuitouArr.push({
+                        issue:issueStr + '-'+ issue,
+                        beishu:beishu,
+                        now_money:now_money_1,
+                        total_money:total_money,
+                        checked:true,
+                        profit:''
+                    })
+                    if(i%geqi_lt_trace_count_input==0){
+                        beishu*=geqi_beishu
+                    }
+                    issue++
+                }
+            }
+            this.zhuitouArr[this.zhuihao_type-1] = zhuitouArr
+            this.zhuitouArr.splice(this.zhuihao_type-1,1,zhuitouArr)
+            this.$forceUpdate()
         }
     }
 }
@@ -170,7 +224,10 @@ export default {
 .zhuihao
     padding-top 54px
     padding 54px 16px 0 16px
-.list_wrap, .list_ul
+.list_wrap 
+    .list_ul
+        padding-bottom 230px
+
     li
         height 125px
         width 100%
@@ -209,6 +266,7 @@ export default {
     box-shadow 0 0 5px rgba(107, 111, 120, 0.3)
     position fixed
     bottom 0
+    left 0
     background-color #fff
     width 100%
     display flex
