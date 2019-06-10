@@ -50,10 +50,9 @@
 </template>
 
 <script>
-import { Stepper, RadioGroup, Radio, Notify } from 'vant'
+import { Stepper, RadioGroup, Radio, Notify, Dialog} from 'vant'
 import { betting } from '../../Api/api'
 import { checkNum } from '../../utils/checkNum'
-console.log(checkNum('WXZU60', [['0', '2'], ['0', '1', '4', '3', '5']]))
 export default {
     data() {
         return {
@@ -66,6 +65,7 @@ export default {
     },
     props: [
         'newArr',
+        'loc',
         'betinfo',
         'currentLabel',
         'curmid',
@@ -117,14 +117,20 @@ export default {
             this.jiangjinzu = this.currentLabel.nowPrizeGroup
         },
         sendOrder() {
+            if(this.zhushu<=0){
+                Dialog({ message: '选择号码不完整，请重新选择' });
+                return
+            }
             var str = ''
             var arr = []
-            console.log(this.newArr);
             for (const item of this.newArr) {
                 str += item.join('&') + '|'
             }
+            if(this.currentGameType.includes('和值')){
+                str = str.substring(0, str.length - 1)
+            }
             str = str.substring(0, str.length - 1)
-            console.log(str)
+            console.log(str);
             // this.zhushu = checkNum(this.currentLabel.methodname,this.newArr)
             // console.log(this.currentLabel.methodname,this.zhushu);
             var obj = {
@@ -174,12 +180,19 @@ export default {
             console.log(obj)
             betting({ postdata: JSON.stringify(obj) })
                 .then(res => {
-                    console.log(res)
-                    Notify({
-                        message: res.data.msg.content[0] || res.data.msg,
-                        duration: 5000,
-                        background: '#1abc9c'
-                    })
+                    if(res.data.code==0){
+                        Notify({
+                            message:'投注成功',
+                            duration: 3000,
+                            background: '#1abc9c'
+                        })
+                    }else{
+                        Notify({
+                            message: res.data.msg.content[0] || res.data.msg,
+                            duration: 3000,
+                            background: '#1abc9c'
+                        })
+                    }
                 })
                 .catch(err => {})
         }
@@ -195,14 +208,23 @@ export default {
         RadioGroup,
         Radio,
         Stepper,
-        Notify
+        Notify,
     },
     watch: {
         newArr() {
             this.zhushu = checkNum(
                 this.currentLabel.methodname,
                 this.newArr,
-                this.currentLabel.selectarea.layout.length - 1
+                this.currentLabel.selectarea.layout.length - 1,
+                this.loc
+            )
+        },
+        loc(){
+            this.zhushu = checkNum(
+                this.currentLabel.methodname,
+                this.newArr,
+                this.currentLabel.selectarea.layout.length - 1,
+                this.loc
             )
         }
     }

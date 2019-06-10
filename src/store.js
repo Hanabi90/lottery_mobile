@@ -87,7 +87,7 @@ export default new Vuex.Store({
         updateUserInfo(state,params){
             const {userBalance} = {...params}
             if(userBalance){
-                state.userInfo.availablebalance = parseInt(userBalance)
+                state.userInfo.availablebalance = userBalance
             }
         }
     },

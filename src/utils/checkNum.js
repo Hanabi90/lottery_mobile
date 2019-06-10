@@ -78,11 +78,10 @@ var _inputCheck_Num = function (l, e, fun, sort) {
     return nums;
 };
 
-export function checkNum(methodname,data_sel,max_place) {
+export function checkNum(methodname,data_sel,max_place,loc) {
     console.log(max_place);
     var nums = 0;
     var times = 1    //倍数
-    var loc = 0    //不知道
     var otype = 'dxds'    //
     // var modes = parseInt($($.lt_id_data.name_selected_mode).val(), 10);//投注模式
     // var loc=$($.lt_id_data.name_selected_location).length;

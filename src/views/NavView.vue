@@ -258,7 +258,8 @@ export default {
                 const data = {
                     data:lotteryData.data,
                     lotteryid:i.lotteryid,
-                    menuid:i.menuid
+                    menuid:i.menuid,
+                    title:lotteryData.title
                     }
                 this.$router.push({
                     name: 'pk10',
@@ -267,14 +268,16 @@ export default {
                     }
                 })
             }else{
+                console.log(i);
                 getCaizhong({ memnuid: i.menuid }).then(res => {
                 const data = {
                     data:res.data,
                     lotteryid:i.lotteryid,
-                    menuid:i.menuid
+                    menuid:i.menuid,
+                    title:i.title
                     }
                 if (data.data.code == 0) {
-                    localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data}))
+                    localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data,title:i.title}))
                     this.$router.push({
                         name: 'pk10',
                         params: {
@@ -283,7 +286,7 @@ export default {
                     })
                 } else {
                     Notify({
-                        message: data.msg,
+                        message: data.data.msg,
                         duration: 1000,
                         background: '#1abc9c'
                     })

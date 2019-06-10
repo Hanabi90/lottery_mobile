@@ -122,9 +122,10 @@ export default {
         Cell
     },
     created(){
-        setInterval(() => {
-            console.log(this.listLoading);
-        }, 1000);
+        if(this.lotteryid!==undefined){
+            this.value1 = this.lotteryid
+            this.getbethistory(false)
+        }
         getuserlottery().then((res)=>{
             console.log(res);
             this.userlottery = res.data.data
@@ -140,6 +141,7 @@ export default {
             }
         })
     },
+    props:['lotteryid'],
     data() {
         return {
             activeNames:"1",
@@ -188,6 +190,7 @@ export default {
 
             lock:false,
             page_index:1,
+            firsttime:true
         }
     },
     computed: {

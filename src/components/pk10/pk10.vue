@@ -17,10 +17,11 @@
             </div>
         </header>
         <Popup
+            class="popwrap"
             ref="selectPopup"
             v-model="show"
             position="top"
-            :overlay="true"
+            :overlay="false"
             :close-on-click-overlay="true"
             @closed="test"
         >
@@ -59,6 +60,20 @@
                 </li>
             </ul>
         </Popup>
+            <Popup class="betHistory_pop"
+                v-model="betHistoryShow"
+                ref="betHistoryPop"
+                position="right"
+                :overlay="false"
+                :close-on-click-overlay="true"
+                @closed="test"
+               >
+                <my-header @close="bethistoryCtrl(true)"></my-header>
+                <div class="popwrap">
+                    <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
+                    <bethistory v-else :lotteryid="lotteryid" ></bethistory>
+                </div>
+        </Popup>
         <div class="slide-wrapper">
             <swiper
                 ref="mySwiper"
@@ -67,13 +82,15 @@
                 @slideChange="haha"
             >
                 <swiper-slide class="slide-1">
+                    <div class="gametitle">{{gameTitle}}</div>
                     <div class="selectGameType" @click="show = true">{{currentGameType}}</div>
                     <div class="content-wrapper">
                         <div v-if="1===0" class="market-name">超级快3(45秒)</div>
                         <flip-countdown ref="flip" v-if="countdown!==''" class="clock" :deadline="countdown"></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
-                    <div class="history">开奖历史</div>
+                    <div class="history left" @click="bethistoryCtrl(false,'prizeHistory')">开奖历史</div>
+                    <div class="history right" @click="bethistoryCtrl(false)">投注历史</div>
                 </swiper-slide>
                 <swiper-slide class="slide-2">
                     <div class="lotteryInfo">
@@ -123,9 +140,22 @@
             </div>
         </div>
         <div class="selectarea" v-if="selectarea!==null">
+            <div class="checkGroup" v-if="isShowCheckGroup">
+                <checkbox-group v-model="result">
+                    <checkbox
+                        shape="square"
+                        checked-color="#c32026"
+                        v-for="(item, index) in list"
+                        :key="item"
+                        :name="item"
+                    >
+                         {{ item }}
+                    </checkbox>
+                </checkbox-group>
+            </div>
             <div class="wrap" v-for="(layoutArr,layoutArrindex) in computedSelectarea">
                 <div
-                    v-if="layoutArr.title&&!currentGameType.includes('和值')"
+                    v-if="layoutArr.title&&!currentGameType.includes('和值')&&!currentGameType.includes('龙虎和')"
                     class="group"
                 >{{layoutArr.title}}</div>
                 <ul class="balls_box">
@@ -172,17 +202,18 @@
             :currentGameType="currentGameType"
             :point="point"
             :currentIssue="currentIssue"
+            :loc="result.length"
         ></shop>
     </div>
 </template>
 
 <script>
 
-import { Tab, Tabs, Field, Button, Notify, Tag } from 'vant'
+import { Tab, Tabs, Field, Button, Notify, Tag,Checkbox,CheckboxGroup } from 'vant'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import FlipCountdown from '../../utils/flip'
-import { getmethod, MethodCrowd, getissue, getCaizhong } from '../../Api/api'
+import { getmethod, MethodCrowd, getissue, getCaizhong,getbethistory } from '../../Api/api'
 import jsonData from './test'
 import { Popup } from 'vant'
 import myPopup from '@/components/lottery/popup'
@@ -190,6 +221,9 @@ import shop from './shop'
 import divtext from './1'
 import { mapState } from 'vuex'
 import {checkNum} from '../../utils/checkNum'
+import bethistory from '../usercenter/bethistory'
+import myHeader from '../usercenter/header'
+import prize from '../common/prize'
 export default {
     watch: {
         inputVal(nVal, oVal) {
@@ -199,6 +233,11 @@ export default {
     },
     data() {
         return {
+            prizeHistoryShow:false,
+            lotteryid:'',
+            betHistoryShow:false,
+            list: ['万', '千', '百','十','个'],
+            result: [],
             currentIssue:'',
             zhushu:'',
             betinfo: {
@@ -230,6 +269,7 @@ export default {
                 }
             },
             curmid:'3535',
+            gameTitle:"",
             explanation_show:false,
             prize: '',
             point: '',
@@ -346,7 +386,8 @@ export default {
     },
     methods: {
         init(params) {
-            const { data, menuid, lotteryid } = { ...params }
+            const { data, menuid, lotteryid,title } = { ...params }
+            this.gameTitle = title
             this.jsonData = data
             this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${
                 this.jsonData[0].label[0].label[0].name
@@ -359,6 +400,18 @@ export default {
                 this.jsonData[0].label[0]
             )
             
+        },
+        bethistoryCtrl(flag,name){
+            if(flag){
+                this.betHistoryShow = false
+            }else{
+                this.betHistoryShow = true
+            }
+            if(name=="prizeHistory"){
+                this.prizeHistoryShow = true
+            }else{
+                this.prizeHistoryShow = false
+            }
         },
         getissue(params){
             getissue(params).then(res => {
@@ -637,6 +690,21 @@ export default {
     },
     computed: {
         ...mapState(['userInfo']),
+        isShowCheckGroup(){
+            var renxuan = this.currentGameType.includes('任')
+            if(renxuan){
+                var zhixuan = this.currentGameType.includes('直')
+                var fushi = this.currentGameType.includes('复')
+                if(renxuan&&zhixuan&&fushi){
+                    return false
+                }else{
+                    return true
+                }
+            }else{
+                return false
+            }
+            
+        },
         swiper() {
             return this.$refs.mySwiper.swiper
         },
@@ -680,27 +748,34 @@ export default {
         if (this.$route.params.data != undefined) {
             const data = this.$route.params.data.data.data
             const menuid = this.$route.params.data.menuid
-            const lotteryid = this.$route.params.data.lotteryid
+            const lotteryid = this.lotteryid = this.$route.params.data.lotteryid
+            const title = this.$route.params.data.title
             localStorage.setItem('last_menuid',menuid)
             localStorage.setItem('lotteryid',lotteryid)
             localStorage.setItem('data',JSON.stringify(data))
+            localStorage.setItem('title',title)
             if(localStorage.getItem(menuid)==null){
-                localStorage.setItem(menuid,JSON.stringify({lotteryid:lotteryid,data:data}))
+                localStorage.setItem(menuid,JSON.stringify({lotteryid:lotteryid,data:data,title:title}))
             }
             this.init(
                 {data,
                 menuid,
-                lotteryid}
+                lotteryid,
+                title}
             )
             this.curmid = this.$route.params.data.menuid
         } else {
             const data = JSON.parse(localStorage.getItem('data'))
-            const menuid = localStorage.getItem('menuid')
-            const lotteryid =  localStorage.getItem('lotteryid')
+            const menuid = localStorage.getItem('last_menuid')
+            const lotteryid = this.lotteryid= localStorage.getItem('lotteryid')
+            const title =  localStorage.getItem('title')
+            this.curmid = menuid
+            console.log('menuid',menuid,menuid,menuid);
             this.init(
                 {data,
                 menuid,
-                lotteryid}
+                lotteryid,
+                title}
             )
         }
     },
@@ -712,6 +787,7 @@ export default {
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
     },
     components: {
+        Checkbox,CheckboxGroup,
         swiper,
         swiperSlide,
         FlipCountdown,
@@ -725,6 +801,9 @@ export default {
         myPopup,
         Popup,
         divtext,
+        bethistory,
+        myHeader,
+        prize
     }
 }
 </script>
@@ -744,6 +823,17 @@ export default {
     justify-content space-around
     width 100%
     margin-top 10px
+.gametitle
+    width:auto
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+    font-weight: 700;
+    color #fff
+    font-size: 20px
+    font-style: oblique;
 .selectGameType
     text-align center
     background #fff
@@ -761,7 +851,7 @@ export default {
     display inline-block
     position absolute
     left 50%
-    top 12px
+    top 44px
     transform translateX(-50%)
     &::after
         content ''
@@ -897,7 +987,7 @@ export default {
         .content-wrapper
             color #fff
             position absolute
-            top 0
+            top 27px
             left 50%
             transform translateX(-50%)
             padding-top 40px
@@ -920,7 +1010,6 @@ export default {
                 margin-top 5px
         .history
             position absolute
-            right 12px
             bottom 28px
             display block
             border-radius 18px
@@ -931,6 +1020,10 @@ export default {
             background-color #fff
             color #c32026
             z-index 99
+            &.left
+                left 12px
+            &.right
+                right 12px
         .dice
             display flex
             width 140px
@@ -1135,4 +1228,13 @@ header
                 background-size contain
                 &.active
                     background-image url('../../assets/images/ssc/bg_pearl_on_001.png')
+.checkGroup
+    .van-checkbox-group
+        display: flex;
+        justify-content: center;
+.popwrap
+    margin-top 45px
+    width 375px
+    background-color #fff
+    min-height 100vh
 </style>

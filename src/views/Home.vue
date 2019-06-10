@@ -111,7 +111,6 @@ export default {
         getbalance(){
             getbalance().then((res)=>{
                 const userBalance = res.data.data.availablebalance
-                console.log(userBalance);
                 this.updateUserInfo({userBalance})
             })
         },

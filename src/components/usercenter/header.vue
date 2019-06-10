@@ -19,6 +19,7 @@ export default {
     methods: {
         close() {
             this.$store.commit('UpdateCenterPop',false)
+            this.$emit('close')
         },
     }
 }
