@@ -60,19 +60,20 @@
                 </li>
             </ul>
         </Popup>
-            <Popup class="betHistory_pop"
-                v-model="betHistoryShow"
-                ref="betHistoryPop"
-                position="right"
-                :overlay="false"
-                :close-on-click-overlay="true"
-                @closed="test"
-               >
-                <my-header @close="bethistoryCtrl(true)"></my-header>
-                <div class="popwrap">
-                    <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                    <bethistory v-else :lotteryid="lotteryid" ></bethistory>
-                </div>
+        <Popup
+            class="betHistory_pop"
+            v-model="betHistoryShow"
+            ref="betHistoryPop"
+            position="right"
+            :overlay="false"
+            :close-on-click-overlay="true"
+            @closed="test"
+        >
+            <my-header @close="bethistoryCtrl(true)"></my-header>
+            <div class="popwrap">
+                <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
+                <bethistory v-else :lotteryid="lotteryid"></bethistory>
+            </div>
         </Popup>
         <div class="slide-wrapper">
             <swiper
@@ -86,7 +87,12 @@
                     <div class="selectGameType" @click="show = true">{{currentGameType}}</div>
                     <div class="content-wrapper">
                         <div v-if="1===0" class="market-name">超级快3(45秒)</div>
-                        <flip-countdown ref="flip" v-if="countdown!==''" class="clock" :deadline="countdown"></flip-countdown>
+                        <flip-countdown
+                            ref="flip"
+                            v-if="countdown!==''"
+                            class="clock"
+                            :deadline="countdown"
+                        ></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
                     <div class="history left" @click="bethistoryCtrl(false,'prizeHistory')">开奖历史</div>
@@ -97,30 +103,33 @@
                         <span>极速</span>
                         <span>No.101587437</span>
                     </div>
-                    <ul class="lotteryResults">
-                        <li
+                    <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
+                        <li 
                             class="ball"
-                            v-for="result in String(lotteryHistory[0].result)"
-                            :key="result.num"
-                        >{{ result }}</li>
+                            :class="[{['ball_'+index]:result.active},{anim:result.anim}]"
+                            ref="balls"
+                            v-for="(result,index) in lotteryHistory[1].result"
+                            v-if="result.num!= ''"
+                        >{{ result.num }}</li>
                     </ul>
                 </swiper-slide>
                 <swiper-slide class="slide-3">
                     <div class="lotteryInfo">
                         <span>极速</span>
-                        <span>No.101587437</span>
+                        <span>{{currentIssue}}</span>
                     </div>
-                    <ul class="lotteryResults">
+                    <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
                         <li
                             class="ball"
-                            v-for="result in String(lotteryHistory[1].result)"
-                            :key="result.num"
-                        >{{ result }}</li>
+                            :class="[{static:result.num},'ball_'+index]"
+                            v-for="(result,index) in lotteryHistory[2].result"
+                            v-if="result.num!= ''"
+                        >{{result.num}}</li>
                     </ul>
                 </swiper-slide>
             </swiper>
             <ul class="slide-content-title">
-                <li v-for="(item, index) in lotteryState" :key="item.num" @click="tabSlide(index)">
+                <li v-for="(item, index) in lotteryHistory" :key="item.num +'as'" @click="tabSlide(index)">
                     <i :class="{active:nowIndex==index}">{{item.state}}</i>
                     <span class="jiangqi">{{item.num | etc(nowIndex==index)}}</span>
                 </li>
@@ -148,9 +157,7 @@
                         v-for="(item, index) in list"
                         :key="item"
                         :name="item"
-                    >
-                         {{ item }}
-                    </checkbox>
+                    >{{ item }}</checkbox>
                 </checkbox-group>
             </div>
             <div class="wrap" v-for="(layoutArr,layoutArrindex) in computedSelectarea">
@@ -208,69 +215,86 @@
 </template>
 
 <script>
-
-import { Tab, Tabs, Field, Button, Notify, Tag,Checkbox,CheckboxGroup } from 'vant'
+import {
+    Tab,
+    Tabs,
+    Field,
+    Button,
+    Notify,
+    Tag,
+    Checkbox,
+    CheckboxGroup
+} from 'vant'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import FlipCountdown from '../../utils/flip'
-import { getmethod, MethodCrowd, getissue, getCaizhong,getbethistory } from '../../Api/api'
+import {
+    getmethod,
+    MethodCrowd,
+    getissue,
+    getCaizhong,
+    getbethistory,
+    getprize
+} from '../../Api/api'
 import jsonData from './test'
 import { Popup } from 'vant'
 import myPopup from '@/components/lottery/popup'
 import shop from './shop'
 import divtext from './1'
 import { mapState } from 'vuex'
-import {checkNum} from '../../utils/checkNum'
+import { checkNum } from '../../utils/checkNum'
 import bethistory from '../usercenter/bethistory'
 import myHeader from '../usercenter/header'
 import prize from '../common/prize'
 export default {
     watch: {
         inputVal(nVal, oVal) {
-            console.log(oVal);
+            console.log(oVal)
             this.inputVal = this.test1(nVal)
         }
     },
     data() {
         return {
-            prizeHistoryShow:false,
-            lotteryid:'',
-            betHistoryShow:false,
-            list: ['万', '千', '百','十','个'],
+            lotteryResultsStyleFlag:0,
+            prizeHistoryShow: false,
+            lotteryid: '',
+            prizeArr:[],
+            betHistoryShow: false,
+            list: ['万', '千', '百', '十', '个'],
             result: [],
-            currentIssue:'',
-            zhushu:'',
+            currentIssue: '',
+            zhushu: '',
             betinfo: {
-                "betparams": {
-                    "prizegroup": "",
-                    "iWalletType": 1,
-                    "curmid": "",
-                    "lt_issue_start": "",
-                    "lt_project": [
-                    {
-                        "type": "digital",
-                        "methodid": 3508,
-                        "point": 0,
-                        "codes": "4|5&6",
-                        "nums": 2,
-                        "times": 1,
-                        "money": 0.04,
-                        "mode": 3,
-                        "desc": "[五星组选_组5] 4,56",
-                        "buqsno": "buqsno5ce3a094c4706"
-                    },
+                betparams: {
+                    prizegroup: '',
+                    iWalletType: 1,
+                    curmid: '',
+                    lt_issue_start: '',
+                    lt_project: [
+                        {
+                            type: 'digital',
+                            methodid: 3508,
+                            point: 0,
+                            codes: '4|5&6',
+                            nums: 2,
+                            times: 1,
+                            money: 0.04,
+                            mode: 3,
+                            desc: '[五星组选_组5] 4,56',
+                            buqsno: 'buqsno5ce3a094c4706'
+                        }
                     ]
                 },
-                "bettraceparams": {
-                    "lt_trace_if": "no",
-                    "lt_trace_stop": "",
-                    "lt_trace_money": '',
-                    "lt_trace_issues": ''
+                bettraceparams: {
+                    lt_trace_if: 'no',
+                    lt_trace_stop: '',
+                    lt_trace_money: '',
+                    lt_trace_issues: ''
                 }
             },
-            curmid:'3535',
-            gameTitle:"",
-            explanation_show:false,
+            curmid: '3535',
+            gameTitle: '',
+            explanation_show: false,
             prize: '',
             point: '',
             countdown: '',
@@ -308,9 +332,9 @@ export default {
             ],
             nowIndex: -1,
             lotteryHistory: [
-                { num: 11222302, result: 65134 },
-                { num: 11222303, result: 12554 },
-                { num: 11222304, result: 69745 }
+                { state: '受注中', num: '20190611-754' },
+                { state: '已开奖',num: '20190611-753', result: [{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false}] },
+                { state: '已开奖',num: '20190611-752', result: [{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false}] },
             ],
             testData1: [],
             testData2: [],
@@ -381,12 +405,12 @@ export default {
                     ]
                 }
             ],
-            timer:null
+            timer: null
         }
     },
     methods: {
         init(params) {
-            const { data, menuid, lotteryid,title } = { ...params }
+            const { data, menuid, lotteryid, title } = { ...params }
             this.gameTitle = title
             this.jsonData = data
             this.currentGameType = `${this.jsonData[0].label[0].gtitle}-${
@@ -399,30 +423,81 @@ export default {
                 0,
                 this.jsonData[0].label[0]
             )
-            
         },
-        bethistoryCtrl(flag,name){
-            if(flag){
+        getprizeHistory() {
+            //{ state: '已开奖',num: '20190611-753', result: [{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false}] },
+            getprize({ lotteryid: this.lotteryid, size: 50 }).then(res => {
+                this.prizeArr = res.data.data
+                var issue_1 = this.prizeArr[0].issue
+                var issue_2 = this.prizeArr[1].issue
+                this.$set(this.lotteryHistory[0],'num',this.currentIssue,)
+                this.$set(this.lotteryHistory[1],'num',issue_1,)
+                this.$set(this.lotteryHistory[2],'num',issue_2,)
+                if(this.prizeArr[0].code.includes(' ')){
+                    var arr_1 = this.prizeArr[0].code.split(' ')
+                    var arr_2 = this.prizeArr[1].code.split(' ')
+                    this.lotteryResultsStyleFlag = arr_1.length
+                    for (let i = 0; i < arr_1.length; i++) {
+                        var num_1 = arr_1[i]
+                        var num_2 = arr_2[i]
+                        this.$set(this.lotteryHistory[1].result[i],'num',num_1)
+                        this.$set(this.lotteryHistory[2].result[i],'num',num_2)                                           
+                    }
+                }else{
+                    for (let i = 0; i < this.prizeArr[0].code.length; i++) {
+                        var num_1 = this.prizeArr[0].code[i]
+                        var num_2 = this.prizeArr[1].code[i]
+                        this.$set(this.lotteryHistory[1].result[i],'num',num_1)
+                        this.$set(this.lotteryHistory[2].result[i],'num',num_2)
+                    }
+                }
+                
+                this.tabSlide(1)
+                setTimeout(()=>{
+                    this.tabSlide(0)
+                },3000)
+            })
+        },
+        bethistoryCtrl(flag, name) {
+            if (flag) {
                 this.betHistoryShow = false
-            }else{
+            } else {
                 this.betHistoryShow = true
             }
-            if(name=="prizeHistory"){
+            if (name == 'prizeHistory') {
                 this.prizeHistoryShow = true
-            }else{
+            } else {
                 this.prizeHistoryShow = false
             }
         },
-        getissue(params){
+        kaijiang() {
+            var arr1 = [0, 0, 0, 0, 0]
+            this.getprizeHistory()
+            for (let i = 0; i < this.lotteryHistory[1].result.length; i++) {
+                    this.$set(this.lotteryHistory[1].result[i],'anim',false)
+                    this.$set(this.lotteryHistory[1].result[i],'active',false)
+            }
+            for (let i = 0; i < this.lotteryHistory[1].result.length; i++) {
+                setTimeout(()=>{
+                    this.$set(this.lotteryHistory[1].result[i],'anim',true)
+                    setTimeout(()=>{
+                        console.log('100');
+                        this.$set(this.lotteryHistory[1].result[i],'active',true)
+                    },1000)
+                },i*400)
+            }
+        },
+        getissue(params) {
             getissue(params).then(res => {
-                console.log("res",res);
+                this.kaijiang()
+
                 this.currentIssue = res.data.data.issue
                 var ctime = res.data.data.nowtime
                 var stime = res.data.data.opentime
                 stime = new Date(stime).getTime()
                 ctime = new Date(ctime).getTime()
                 var diff = stime - ctime
-                console.log(diff);
+                console.log(diff)
                 var localTime = new Date().getTime()
                 var countdownTimeStamp = localTime + diff
                 var countdown = new Date(countdownTimeStamp).format(
@@ -432,9 +507,9 @@ export default {
                 this.timer = null
                 this.timer = setTimeout(() => {
                     this.$refs.flip.init()
-                    const lotteryid = localStorage.getItem("lotteryid")
+                    const lotteryid = localStorage.getItem('lotteryid')
                     this.getissue({ lotteryid: Number(lotteryid) })
-                }, diff);
+                }, diff+1000)
             })
         },
         getCaizhong(id) {
@@ -499,8 +574,8 @@ export default {
                 return soure.slice(0, start) + newStr + soure.slice(start)
             }
             //处理only的方式
-            if(val!=' '){
-                console.log('object');
+            if (val != ' ') {
+                console.log('object')
                 val = val.replace(/[^\d]/g, '')
             }
 
@@ -681,29 +756,24 @@ export default {
                 desc,
                 this.currentGameType
             )
-            this.$set(
-                this.betinfo.betparams.lt_project,
-                methodid,
-                '33'
-            )
+            this.$set(this.betinfo.betparams.lt_project, methodid, '33')
         }
     },
     computed: {
         ...mapState(['userInfo']),
-        isShowCheckGroup(){
+        isShowCheckGroup() {
             var renxuan = this.currentGameType.includes('任')
-            if(renxuan){
+            if (renxuan) {
                 var zhixuan = this.currentGameType.includes('直')
                 var fushi = this.currentGameType.includes('复')
-                if(renxuan&&zhixuan&&fushi){
+                if (renxuan && zhixuan && fushi) {
                     return false
-                }else{
+                } else {
                     return true
                 }
-            }else{
+            } else {
                 return false
             }
-            
         },
         swiper() {
             return this.$refs.mySwiper.swiper
@@ -748,35 +818,34 @@ export default {
         if (this.$route.params.data != undefined) {
             const data = this.$route.params.data.data.data
             const menuid = this.$route.params.data.menuid
-            const lotteryid = this.lotteryid = this.$route.params.data.lotteryid
+            const lotteryid = (this.lotteryid = this.$route.params.data.lotteryid)
             const title = this.$route.params.data.title
-            localStorage.setItem('last_menuid',menuid)
-            localStorage.setItem('lotteryid',lotteryid)
-            localStorage.setItem('data',JSON.stringify(data))
-            localStorage.setItem('title',title)
-            if(localStorage.getItem(menuid)==null){
-                localStorage.setItem(menuid,JSON.stringify({lotteryid:lotteryid,data:data,title:title}))
+            localStorage.setItem('last_menuid', menuid)
+            localStorage.setItem('lotteryid', lotteryid)
+            localStorage.setItem('data', JSON.stringify(data))
+            localStorage.setItem('title', title)
+            if (localStorage.getItem(menuid) == null) {
+                localStorage.setItem(
+                    menuid,
+                    JSON.stringify({
+                        lotteryid: lotteryid,
+                        data: data,
+                        title: title
+                    })
+                )
             }
-            this.init(
-                {data,
-                menuid,
-                lotteryid,
-                title}
-            )
+            this.init({ data, menuid, lotteryid, title })
             this.curmid = this.$route.params.data.menuid
         } else {
             const data = JSON.parse(localStorage.getItem('data'))
             const menuid = localStorage.getItem('last_menuid')
-            const lotteryid = this.lotteryid= localStorage.getItem('lotteryid')
-            const title =  localStorage.getItem('title')
+            const lotteryid = (this.lotteryid = localStorage.getItem(
+                'lotteryid'
+            ))
+            const title = localStorage.getItem('title')
             this.curmid = menuid
-            console.log('menuid',menuid,menuid,menuid);
-            this.init(
-                {data,
-                menuid,
-                lotteryid,
-                title}
-            )
+            console.log('menuid', menuid, menuid, menuid)
+            this.init({ data, menuid, lotteryid, title })
         }
     },
     mounted() {
@@ -787,7 +856,8 @@ export default {
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
     },
     components: {
-        Checkbox,CheckboxGroup,
+        Checkbox,
+        CheckboxGroup,
         swiper,
         swiperSlide,
         FlipCountdown,
@@ -824,16 +894,16 @@ export default {
     width 100%
     margin-top 10px
 .gametitle
-    width:auto
-    display: inline-block;
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    transform: translateX(-50%);
-    font-weight: 700;
+    width auto
+    display inline-block
+    position absolute
+    left 50%
+    top 10px
+    transform translateX(-50%)
+    font-weight 700
     color #fff
-    font-size: 20px
-    font-style: oblique;
+    font-size 20px
+    font-style oblique
 .selectGameType
     text-align center
     background #fff
@@ -876,14 +946,14 @@ export default {
     left 0
     background-color #4a4a4a
     min-height 100vh
-    height calc(100% + 200px)
+    height -webkit-calc(100% + 200px)
     .explanation_pop
         border-radius 4px
         width 90%
         ul
             display flex
             padding 30px 30px
-            flex-direction: column;
+            flex-direction column
             li
                 margin-bottom 10px
                 span
@@ -896,8 +966,8 @@ export default {
         padding 5px 10px
         div
             padding-right 10px
-            display: flex;
-            align-items: center;
+            display flex
+            align-items center
             span
                 color #fff
                 font-size 14px
@@ -1054,6 +1124,9 @@ export default {
         .lotteryResults
             display flex
             justify-content center
+            position relative
+            &.kuaisan
+                transform: translate(52px);
             .ball
                 width 40px
                 height 40px
@@ -1065,11 +1138,31 @@ export default {
                 color #fff
                 font-size 30px
                 margin-right 4px
-        @keyframes balls
-            0%
-                transform translateX(-1000%) rotate(0deg)
-            100%
-                transform translateX(0%) rotate(3600deg)
+                position: absolute
+                top 0 
+                left 75px
+                transition 0.5s all
+                &.static
+                    display block
+                &.ball_0
+                    z-index 1
+                    transform translate(0px)
+                &.ball_1
+                    z-index 2
+                    transform translate(45px) rotate(360deg)
+                &.ball_2
+                    z-index 3
+                    transform translate(90px) rotate(720deg)
+                &.ball_3
+                    z-index 4
+                    transform translate(135px) rotate(1080deg)
+                &.ball_4
+                    z-index 5
+                    transform translate(180px) rotate(1440deg)
+                &.anim
+                    animation bounceInDown 0.8s
+                    display block
+                    
 header
     background-color #c32026
     height 50px
@@ -1230,11 +1323,32 @@ header
                     background-image url('../../assets/images/ssc/bg_pearl_on_001.png')
 .checkGroup
     .van-checkbox-group
-        display: flex;
-        justify-content: center;
+        display flex
+        justify-content center
 .popwrap
     margin-top 45px
     width 375px
     background-color #fff
     min-height 100vh
+@keyframes bounceInDown
+    0%, 60%, 75%, 90%, to
+        -webkit-animation-timing-function cubic-bezier(0.215, 0.61, 0.355, 1)
+        animation-timing-function cubic-bezier(0.215, 0.61, 0.355, 1)
+    0%
+        opacity 0
+        -webkit-transform translate3d(0, -3000px, 0)
+        transform translate3d(0, -3000px, 0)
+    60%
+        opacity 1
+        -webkit-transform translate3d(0, 25px, 0)
+        transform translate3d(0, 25px, 0)
+    75%
+        -webkit-transform translate3d(0, -10px, 0)
+        transform translate3d(0, -10px, 0)
+    90%
+        -webkit-transform translate3d(0, 5px, 0)
+        transform translate3d(0, 5px, 0)
+    to
+        -webkit-transform translateZ(0)
+        transform translateZ(0)
 </style>

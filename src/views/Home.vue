@@ -206,8 +206,7 @@ export default {
             color: #fff;
             border: none;
             border-radius: 3px;
-            height: 1.20313rem;
-            font-size: .3125rem;
+            font-size: 16px;
             height 49.8px
     .login_foot
         font-size: .34375rem;

@@ -488,7 +488,7 @@ export default {
         justify-content space-between
         line-height 50px
         // transition all 0.4s ease-out
-        width calc(100vw - 50px)
+        width -webkit-calc(100vw - 50px)
         position fixed
         top 0
         transform translateX(-100%)
