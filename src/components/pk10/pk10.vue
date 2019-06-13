@@ -8,7 +8,7 @@
                 </a>
                 <div class="balance">
                     <span class="userId">Guest</span>
-                    <span class="balance">{{userInfo.availablebalance}}</span>
+                    <span class="balance">{{userInfo.money}}</span>
                 </div>
             </div>
             <div class="login">
@@ -61,19 +61,20 @@
             </ul>
         </Popup>
         <Popup
-            class="betHistory_pop"
-            v-model="betHistoryShow"
+            @opened="PopupAnimtting=true"
+            @closed="PopupAnimtting=false"
+            :class="[{'transform_fix':PopupAnimtting},'betHistory_pop']"
+            v-model="popCtrlShow"
             ref="betHistoryPop"
             position="right"
             :overlay="false"
             :close-on-click-overlay="true"
-            @closed="test"
         >
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
-                <my-header @close="popCtrl(true)"></my-header>
+                <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao v-else-if="iszhuihaoShow"></zhuihao>
-                <bethistory v-else :lotteryid="lotteryid"></bethistory>
+                <zhuihao v-if="iszhuihaoShow"></zhuihao>
+                <bethistory v-if="betHistoryShow" :lotteryid="lotteryid"></bethistory>
             </div>
         </Popup>
         <Popup>
@@ -99,8 +100,8 @@
                         ></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
-                    <div class="history left" @click="popCtrl(false,'prizeHistory')">开奖历史</div>
-                    <div class="history right" @click="popCtrl(false)">投注历史</div>
+                    <div class="history left" @click="popCtrl('open','prizeHistory')">开奖历史</div>
+                    <div class="history right" @click="popCtrl('open','bethistory')">投注历史</div>
                 </swiper-slide>
                 <swiper-slide class="slide-2">
                     <div class="lotteryInfo">
@@ -251,7 +252,7 @@ import { Popup } from 'vant'
 import myPopup from '@/components/lottery/popup'
 import shop from './shop'
 import divtext from './1'
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 import { checkNum } from '../../utils/checkNum'
 import bethistory from '../usercenter/bethistory'
 import zhuihao from '@/components/common/zhuiHao'
@@ -266,12 +267,14 @@ export default {
     },
     data() {
         return {
+            PopupAnimtting:false,
             lotteryResultsStyleFlag: 0,
             prizeHistoryShow: false,
-            iszhuihaoShow:true,
+            iszhuihaoShow:false,
             lotteryid: '',
             prizeArr: [],
             betHistoryShow: false,
+            popCtrlShow:false,
             list: ['万位', '千位', '百位', '十位', '个位'],
             result: [],
             currentIssue: '',
@@ -441,7 +444,11 @@ export default {
         }
     },
     methods: {
+        ...mapMutations([
+            'updateZhuihaoArr'
+        ]),
         init(params) {
+            this.updateZhuihaoArr({type:'empty'})
             const { data, menuid, lotteryid, title } = { ...params }
             this.gameTitle = title
             this.jsonData = data
@@ -507,21 +514,33 @@ export default {
             })
         },
         popCtrl(flag, name,data) {
-
-            if (flag) {
-                this.betHistoryShow = false
-            } else {
-                this.betHistoryShow = true
-            }
-
-            if (name == 'prizeHistory') {
-                this.prizeHistoryShow = true
-            }else if(name == 'zhuihao'){
-                this.iszhuihaoShow = true
-            }
-            else {
+            console.log(flag)
+            if(flag=='close'){
+                this.PopupAnimtting = false
                 this.prizeHistoryShow = false
+                this.betHistoryShow = false
+                this.iszhuihaoShow = false
+                this.popCtrlShow = false
+            }else{
+                this.popCtrlShow = true
+                switch (name) {
+                case 'prizeHistory':
+                    console.log('prizeHistory')
+                    this.prizeHistoryShow = true
+                    break;
+                case 'bethistory':
+                console.log('bethistory');
+                    this.betHistoryShow = true
+                    break;
+                case 'zhuihao':
+                console.log('zhuihao');
+                    this.iszhuihaoShow = true
+                    break;
+                default:
+                    break;
+                }
             }
+            
         },
         kaijiang() {
             var arr1 = [0, 0, 0, 0, 0]
@@ -908,7 +927,7 @@ export default {
     mounted() {
         console.log(
             'this.$store.state.userInfo',
-            this.userInfo.availablebalance
+            this.userInfo.money
         )
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
     },
@@ -1386,7 +1405,8 @@ header
     margin-top 45px
     width 375px
     background-color #fff
-    height 100%
+    padding-bottom: 100px;
+    height: 100%;
     &.gray
         background-color #eeeeee
 @keyframes bounceInDown
@@ -1412,4 +1432,8 @@ header
         transform translateZ(0)
 .betHistory_pop
     height 100%
+    background: #eeeeee
+    &.transform_fix
+        transform none
+        top 0
 </style>

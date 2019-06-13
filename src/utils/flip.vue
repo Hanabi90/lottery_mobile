@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 let interval = null
 const uuidv4 = require('uuid/v4')
 export default {
@@ -83,16 +84,24 @@ export default {
   },
   computed: {
     seconds () {
-      return Math.trunc(this.diff) % 60
+      var seconds = Math.trunc(this.diff) % 60
+      this.UpdateCountDown({key:'seconds',value:seconds})
+      return seconds
     },
     minutes () {
-      return Math.trunc(this.diff / 60) % 60
+      var minutes = Math.trunc(this.diff / 60) % 60
+      this.UpdateCountDown({key:'minutes',value:minutes})
+      return minutes
     },
     hours () {
-      return Math.trunc(this.diff / 60 / 60) % 24
+      var hours = Math.trunc(this.diff / 60 / 60) % 24
+      this.UpdateCountDown({key:'hours',value:hours})
+      return hours
     },
     days () {
-      return Math.trunc(this.diff / 60 / 60 / 24)
+      var days = Math.trunc(this.diff / 60 / 60 / 24)
+      this.UpdateCountDown({key:'days',value:days})
+      return days
     }
   },
   watch: {
@@ -114,6 +123,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+            'UpdateCountDown'
+      ]),
       init(){
             this.interval = null
             this.now = Math.trunc(new Date().getTime() / 1000)

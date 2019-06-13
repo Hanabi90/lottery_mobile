@@ -6,19 +6,19 @@
                 <span class="text username">{{userinfo.nickname}}</span>
                 <div class="text userbalance">
                     <p>信用余额：0.000</p>
-                    <p>现金余额：{{userinfo.availablebalance}}</p>
+                    <p>现金余额：{{userinfo.money}}</p>
                 </div>
             </div>
             <div class="bottom flex_box">
-                <div class="chongzhi">
+                <div class="chongzhi" @click="bankCtrl()">
                     <van-icon name="balance-o" />
                     <span>充值</span>
                 </div>
-                <div class="tikuan">
+                <div class="tikuan" @click="bankCtrl()">
                     <van-icon name="cash-back-record" />
                     <span>提款</span>
                 </div>
-                <div class="card">
+                <div class="card" @click="bankCtrl()">
                     <van-icon name="credit-pay" />
                     <span>银行卡</span>
 
@@ -31,11 +31,11 @@
                 <span>{{navitem.title}}</span>
             </div>
         </div>
-        <my-fotter></my-fotter>
-        <van-popup v-model="show" :overlay="false" position="right">
+        <my-fotter @bankCtrl=bankCtrl></my-fotter>
+        <van-popup @closed=closePop v-model="show" :overlay="false" position="right">
             <my-header></my-header>
             <div class="popwrap">
-                <bank @closePop=closePop v-if="navlist[0].active"></bank>
+                <bank @closePop=closePop v-if="showBank"></bank>
                 <bethistory v-if="navlist[5].active"></bethistory>
                 <orderhistory v-if="navlist[1].active"></orderhistory>
             </div>
@@ -69,7 +69,8 @@ export default {
                 {title:'重要消息',icon:'envelop-o',color:'#ff4f81',active:false,event:false},
                 {title:'在线客服',icon:'service',color:'#ffc168',active:false,event:false},
                 {title:'登出',icon:'logistics',color:'#000',active:false,event:'logout'},
-            ]
+            ],
+            showBank:false
         }
     },
     computed:{
@@ -85,6 +86,10 @@ export default {
             'updateToken',
             'updateUserInfo'
         ]),
+        bankCtrl(){
+            this.showBank = true
+            this.$store.commit('UpdateCenterPop',true)
+        },
         tabNav(index,event){
             switch (event) {
                 case 'logout':
@@ -104,6 +109,8 @@ export default {
             this.$store.commit('UpdateCenterPop',true)
         },
         closePop(){
+            console.log('object')
+            this.showBank = false
             this.$store.commit('UpdateCenterPop',false)
         },
         logout(){

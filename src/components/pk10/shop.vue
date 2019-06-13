@@ -39,7 +39,7 @@
                 </p>
                 <p class="moneyremain">
                     余额
-                    <span>{{userinfo.availablebalance}}</span>元
+                    <span>{{userinfo.money}}</span>元
                 </p>
             </div>
             <div class="betnow" @click="sendOrder()">
@@ -141,14 +141,16 @@ export default {
             this.jiangjinzu = this.currentLabel.nowPrizeGroup
         },
         zhuihaoCtrl(){
-            if(this.zhushu <= 0)return
+            if(this.zhushu <= 0){
+                Dialog({ message: '选择号码不完整，请重新选择' })
+                return 
+            }
             var params = {
                 type:'add',
                 data : this.formatData()
             }
             this.updateZhuihaoArr(params)
-            console.log('this.formatData()',this.formatData());
-            this.$emit('close',false,'zhuihao')
+            this.$emit('close','open','zhuihao')
         },
         formatData(){
             if (this.zhushu <= 0) {

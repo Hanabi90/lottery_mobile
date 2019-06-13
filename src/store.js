@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         token:null,
-        islogin:true,
+        islogin:false,
         hotOrLeak:'leak',
         keyboardshow:false,
         myPopShow:false,
@@ -17,14 +17,18 @@ export default new Vuex.Store({
         timer:null,
         userInfo:{
             nickname:'',
-            availablebalance:'0'
+            money:'0'
         },
         userCenterPop:false,
-        zhuihaoArr:[]
+        zhuihaoArr:[],
+        countDown:{days:0,hours:0,minutes:0,seconds:0}
     },
     mutations: {
         UpdateCenterPop(state,flag){
             state.userCenterPop = flag
+        },
+        UpdateCountDown(state,params){
+            state.countDown[params.key] = params.value
         },
         tabHotOrLeak(state,status) {
             if (status == 'hot') {
@@ -48,17 +52,19 @@ export default new Vuex.Store({
         },
         updateBetArr(state,betArr){
             state.betArr = betArr
-            console.log('state.betArr',state.betArr);
+            // console.log('state.betArr',state.betArr);
         },
         updateZhuihaoArr(state,params){
             if(params.type=='add'){
-                console.log('add');
+                // console.log('add');
                 state.zhuihaoArr.push(params.data)
             }else if(params.type=='delete'){
-                console.log('delete',1,params.index);
+                // console.log('delete',1,params.index);
                 state.zhuihaoArr.splice(params.index,1)
+            }else{
+                state.zhuihaoArr = []
             }
-            console.log('state.zhuihaoArr',state.zhuihaoArr);
+            // console.log('state.zhuihaoArr',state.zhuihaoArr);
         },
         updateIspending(state,status){
             state.ispending = status
@@ -76,6 +82,8 @@ export default new Vuex.Store({
             var newNickname = ''
             switch (method) {
                 case 'login':
+                // console.log(method)
+
                     newNickname = nickname
                     newToken = token
                     state.token = newToken
@@ -94,10 +102,11 @@ export default new Vuex.Store({
             sessionStorage.setItem('token', newToken)
             sessionStorage.setItem('nickname', newNickname)
         },
-        updateUserInfo(state,params){
+        updateUserInfo(state, params) {
+            // console.log(params)
             const {userBalance} = {...params}
             if(userBalance){
-                state.userInfo.availablebalance = userBalance
+                state.userInfo.money = parseInt(userBalance)
             }
         }
     },

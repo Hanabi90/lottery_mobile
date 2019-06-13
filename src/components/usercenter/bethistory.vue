@@ -127,14 +127,14 @@ export default {
             this.getbethistory(false)
         }
         getuserlottery().then((res)=>{
-            console.log(res);
+            // console.log(res);
             this.userlottery = res.data.data
             for (const key in this.userlottery) {
                 this.option1.push({value:key,text:this.userlottery[key]})
             }
         })
         getchildlist().then((res)=>{
-            console.log('getchildlist',res);
+            // console.log('getchildlist',res);
             this.childlist = res.data.data
             for (const key in this.childlist) {
                 this.option4.push({value:key,text:this.childlist[key].username})

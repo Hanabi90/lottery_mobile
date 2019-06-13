@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-
+import store from './store'
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
@@ -38,7 +38,8 @@ export default new Router({
             path: '/usercenter',
             name: 'usercenter',
             component: () =>
-                import(/* webpackChunkName: "about" */ './views/UserCenter.vue')
+                import(/* webpackChunkName: "about" */ './views/UserCenter.vue'),
+                meta:{auth:true}
         },
         {
             path: '/zhuihao',
@@ -49,3 +50,17 @@ export default new Router({
 
     ]
 })
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(m => m.meta.auth)) {
+        // 对路由进行验证     
+        if (store.state.islogin == true) { // 已经登陆       
+            next()   // 正常跳转到你设置好的页面     
+        }
+        else {
+            next({ path: '/'})
+        }
+    } else {
+        next()
+    }
+})
+export default router

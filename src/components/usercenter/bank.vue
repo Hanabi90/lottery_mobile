@@ -358,7 +358,7 @@ export default {
         }
     },
     created() {
-        console.log('RSAencrypt',this.$RSAencrypt)
+        // console.log('RSAencrypt',this.$RSAencrypt)
         this.checksecpassexist()
         // this.setsecpass()
         // this.checksecpass()

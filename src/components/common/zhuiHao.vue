@@ -1,7 +1,7 @@
 <template>
     <div class="zhuihao">
         <!-- <myHeader></myHeader> -->
-        <!-- <div class="zhuihao_container">
+        <div class="zhuihao_container" v-if="isShowZhuihao">
             <div class="list_wrap">
                 <ul class="list_ul">
                     <li v-for="(item, index) in zhuitouArr[zhuihao_type-1]" :key="index">
@@ -105,18 +105,19 @@
                 </div>
                 <Checkbox class="stopzhui" v-model="lt_trace_stop">中奖后停止追号</Checkbox>
                 <div class="footer">
+                    <van-icon class="goback" name="arrow-left" size="20px" color="#fff" @click="goBack"/>
                     <van-icon name="delete" size="30px" color="#fff" @click="emptyList"/>
                     <van-button class="van_button" type="warning" @click="createList">生成</van-button>
                     <van-button class="van_button" type="danger">投注</van-button>
                 </div>
             </div>
-        </div> -->
-        <div class="zhuihao_container">
+        </div>
+        <div class="zhuihao_container" v-else>
             <div class="issue_info">
                 <span>第20190612-024期</span>
-                <span>剩余时间<span class="count_down">00:00</span></span>
+                <span>剩余时间<span class="count_down">{{countDown.hours|fixtime_2}}{{countDown.minutes|fixtime_2}}:{{countDown.seconds|fixtime}}</span></span>
             </div>
-            <ul>
+            <ul class="card_wrap_ul">
                 <li class="card_wrap_li" v-for="(item, index) in zhuihaoArr" :key="index + 'zhuihaoArr'">
                     <div class="card_title">
                         <span>第{{index+1}}</span>
@@ -150,6 +151,17 @@
                     </ul>
                 </li>
             </ul>
+            <div class="zhuihao_fotter">
+                <div>
+                    <p>共计<span>{{total_count['total_nums']}}</span>注</p>
+                    <p>总金额<span>{{total_count['total_amount']}}</span>元</p>
+                </div>
+                <div>
+                    <span @click="handleZhuihao">追号</span>
+                    <span @click="emptyZhuihaoArr">全删</span>
+                    <span>投注</span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -167,8 +179,26 @@ export default {
         vanButton: Button,
         vanIcon: Icon
     },
+    filters:{
+        fixtime(value){
+            if(value<=0){return '00'}
+            if(value<10){
+                return '0' + value
+            }else{
+                return value
+            }
+        },
+        fixtime_2(value){
+           if(value<=0){
+                return '0'
+            }else{
+                return value
+            } 
+        }
+    },
     data() {
         return {
+            isShowZhuihao:false,
             checked: false,
             lt_trace_stop: true,
             zhuihao_type: 2,
@@ -215,16 +245,42 @@ export default {
     computed:{
         zhuihaoArr(){
             return this.$store.state.zhuihaoArr
+        },
+        countDown(){
+            return this.$store.state.countDown
+        },
+        total_count(){
+            var total_amount = 0
+            var total_nums = 0
+            for (const item of this.zhuihaoArr) {
+                total_amount += item.betparams.lt_project[0].money
+                total_nums += item.betparams.lt_project[0].nums
+            }
+            return{total_amount,total_nums}
         }
     },
     methods: {
         ...mapMutations([
             'updateZhuihaoArr'
         ]),
+        goBack(){
+            console.log('goBack');
+            this.isShowZhuihao = false
+        },
+        handleZhuihao(){
+            console.log('handleZhuihao');
+            this.isShowZhuihao = true
+        },
         deleteZhuihaoArr(index){
             var params = {
                 type:'delete',
                 index:index,
+            }
+            this.updateZhuihaoArr(params)
+        },
+        emptyZhuihaoArr(){
+            var params = {
+                type:'empty',
             }
             this.updateZhuihaoArr(params)
         },
@@ -401,6 +457,12 @@ export default {
     .footer
         background #4a4a4a
         height 64px
+        position: relative;
+        .goback
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
         .van_button
             height 36px
             min-width 100px
@@ -447,7 +509,40 @@ export default {
                 background #fff
             &:nth-child(2)
                 background #fff
+.card_wrap_ul
+    margin-bottom: 200px;
 .card_wrap_li
     margin-bottom 10px
+.zhuihao_fotter
+    position fixed
+    bottom 0
+    left: 0;
+    background: #fff;
+    width 100%
+    div
+        display flex
+        justify-content: center;
+        padding 10px 0
+        p
+            span
+                padding: 0 10px;
+                color red
+        &:nth-child(2)
+            border-top 1px solid #d2d2d2
+            span
+                flex 1
+                text-align center
+                margin: 0 10px;
+                height 36px
+                border-radius: 4px;
+                line-height 36px
+                color #fff
+                &:nth-child(1)
+                    background #463b96
+                &:nth-child(2)
+                    background #f59e2e
+                &:nth-child(3)
+                    background #ff2121
+
 </style>
 
