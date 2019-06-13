@@ -205,7 +205,7 @@
                 <v-button type="warning">清空</v-button>
             </div>
             <div class="wrap danshi">
-                <textarea :value="inputVal" @input="inputVal=$event.target.value"></textarea>
+                <textarea v-model="inputVal" @input="inputCheck(inputVal)"></textarea>
             </div>
         </div>
         <shop
@@ -253,17 +253,17 @@ import myPopup from '@/components/lottery/popup'
 import shop from './shop'
 import divtext from './1'
 import { mapState,mapMutations } from 'vuex'
-import { checkNum } from '../../utils/checkNum'
+import { checkNum,_inptu_deal } from '../../utils/checkNum'
 import bethistory from '../usercenter/bethistory'
 import zhuihao from '@/components/common/zhuiHao'
 import myHeader from '../usercenter/header'
 import prize from '../common/prize'
 export default {
     watch: {
-        inputVal(nVal, oVal) {
-            console.log(oVal)
-            this.inputVal = this.test1(nVal)
-        }
+        // inputVal(nVal, oVal) {
+        //     console.log(oVal)
+        //     this.inputVal = this.test1(nVal)
+        // }
     },
     data() {
         return {
@@ -462,6 +462,11 @@ export default {
                 0,
                 this.jsonData[0].label[0]
             )
+        },
+        inputCheck(val){
+            var methodname = this.currentLabel.methodname
+            var arr = _inptu_deal(val,this.currentLabel.methodname)
+            checkNum(methodname,arr,0,0,'input')
         },
         getprizeHistory() {
             //{ state: '已开奖',num: '20190611-753', result: [{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false}] },
