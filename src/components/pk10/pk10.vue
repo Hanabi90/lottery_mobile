@@ -69,11 +69,15 @@
             :close-on-click-overlay="true"
             @closed="test"
         >
-            <my-header @close="bethistoryCtrl(true)"></my-header>
-            <div class="popwrap">
+            <div :class="[{'gray':iszhuihaoShow},'popwrap']">
+                <my-header @close="popCtrl(true)"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
+                <zhuihao v-else-if="iszhuihaoShow"></zhuihao>
                 <bethistory v-else :lotteryid="lotteryid"></bethistory>
             </div>
+        </Popup>
+        <Popup>
+            
         </Popup>
         <div class="slide-wrapper">
             <swiper
@@ -95,16 +99,16 @@
                         ></flip-countdown>
                         <!-- <div class="note">等待开奖</div> -->
                     </div>
-                    <div class="history left" @click="bethistoryCtrl(false,'prizeHistory')">开奖历史</div>
-                    <div class="history right" @click="bethistoryCtrl(false)">投注历史</div>
+                    <div class="history left" @click="popCtrl(false,'prizeHistory')">开奖历史</div>
+                    <div class="history right" @click="popCtrl(false)">投注历史</div>
                 </swiper-slide>
                 <swiper-slide class="slide-2">
                     <div class="lotteryInfo">
-                        <span>极速</span>
-                        <span>No.101587437</span>
+                        <span>{{gameTitle}}</span>
+                        <span>{{currentIssue}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
-                        <li 
+                        <li
                             class="ball"
                             :class="[{['ball_'+index]:result.active},{anim:result.anim}]"
                             ref="balls"
@@ -115,7 +119,7 @@
                 </swiper-slide>
                 <swiper-slide class="slide-3">
                     <div class="lotteryInfo">
-                        <span>极速</span>
+                        <span>{{gameTitle}}</span>
                         <span>{{currentIssue}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
@@ -129,7 +133,11 @@
                 </swiper-slide>
             </swiper>
             <ul class="slide-content-title">
-                <li v-for="(item, index) in lotteryHistory" :key="item.num +'as'" @click="tabSlide(index)">
+                <li
+                    v-for="(item, index) in lotteryHistory"
+                    :key="item.num +index"
+                    @click="tabSlide(index)"
+                >
                     <i :class="{active:nowIndex==index}">{{item.state}}</i>
                     <span class="jiangqi">{{item.num | etc(nowIndex==index)}}</span>
                 </li>
@@ -155,7 +163,7 @@
                         shape="square"
                         checked-color="#c32026"
                         v-for="(item, index) in list"
-                        :key="item"
+                        :key="item+'checkbox'"
                         :name="item"
                     >{{ item }}</checkbox>
                 </checkbox-group>
@@ -182,7 +190,7 @@
                 >
                     <li
                         v-for="type in ['全','大','小','清','奇','偶']"
-                        :key="type"
+                        :key="type+'li'"
                         @click="selectHelper(type,layoutArrindex,layoutArr.title,layoutArr.no.split('|'))"
                     >
                         <a>{{type}}</a>
@@ -202,6 +210,7 @@
         <shop
             ref="shop"
             @getPrize="getPrizeCtrl"
+            @close="popCtrl"
             :currentLabel="currentLabel"
             :newArr="newArr"
             :betinfo="betinfo"
@@ -210,6 +219,7 @@
             :point="point"
             :currentIssue="currentIssue"
             :loc="result.length"
+            :location="result"
         ></shop>
     </div>
 </template>
@@ -244,6 +254,7 @@ import divtext from './1'
 import { mapState } from 'vuex'
 import { checkNum } from '../../utils/checkNum'
 import bethistory from '../usercenter/bethistory'
+import zhuihao from '@/components/common/zhuiHao'
 import myHeader from '../usercenter/header'
 import prize from '../common/prize'
 export default {
@@ -255,12 +266,13 @@ export default {
     },
     data() {
         return {
-            lotteryResultsStyleFlag:0,
+            lotteryResultsStyleFlag: 0,
             prizeHistoryShow: false,
+            iszhuihaoShow:true,
             lotteryid: '',
-            prizeArr:[],
+            prizeArr: [],
             betHistoryShow: false,
-            list: ['万', '千', '百', '十', '个'],
+            list: ['万位', '千位', '百位', '十位', '个位'],
             result: [],
             currentIssue: '',
             zhushu: '',
@@ -326,15 +338,35 @@ export default {
                 }
             },
             lotteryState: [
-                { state: '受注中', num: '11222302' },
-                { state: '已开奖', num: '11222301' },
-                { state: '已开奖', num: '11222300' }
+                { state: '受注中', num: '' },
+                { state: '已开奖', num: '' },
+                { state: '已开奖', num: '' }
             ],
             nowIndex: -1,
             lotteryHistory: [
-                { state: '受注中', num: '20190611-754' },
-                { state: '已开奖',num: '20190611-753', result: [{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false}] },
-                { state: '已开奖',num: '20190611-752', result: [{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false},{num:'',active:false,anim:false}] },
+                { state: '受注中', num: '' },
+                {
+                    state: '已开奖',
+                    num: '',
+                    result: [
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false }
+                    ]
+                },
+                {
+                    state: '已开奖',
+                    num: '',
+                    result: [
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false },
+                        { num: '', active: false, anim: false }
+                    ]
+                }
             ],
             testData1: [],
             testData2: [],
@@ -430,43 +462,64 @@ export default {
                 this.prizeArr = res.data.data
                 var issue_1 = this.prizeArr[0].issue
                 var issue_2 = this.prizeArr[1].issue
-                this.$set(this.lotteryHistory[0],'num',this.currentIssue,)
-                this.$set(this.lotteryHistory[1],'num',issue_1,)
-                this.$set(this.lotteryHistory[2],'num',issue_2,)
-                if(this.prizeArr[0].code.includes(' ')){
+                this.$set(this.lotteryHistory[0], 'num', this.currentIssue)
+                this.$set(this.lotteryHistory[1], 'num', issue_1)
+                this.$set(this.lotteryHistory[2], 'num', issue_2)
+                if (this.prizeArr[0].code.includes(' ')) {
                     var arr_1 = this.prizeArr[0].code.split(' ')
                     var arr_2 = this.prizeArr[1].code.split(' ')
                     this.lotteryResultsStyleFlag = arr_1.length
                     for (let i = 0; i < arr_1.length; i++) {
                         var num_1 = arr_1[i]
                         var num_2 = arr_2[i]
-                        this.$set(this.lotteryHistory[1].result[i],'num',num_1)
-                        this.$set(this.lotteryHistory[2].result[i],'num',num_2)                                           
+                        this.$set(
+                            this.lotteryHistory[1].result[i],
+                            'num',
+                            num_1
+                        )
+                        this.$set(
+                            this.lotteryHistory[2].result[i],
+                            'num',
+                            num_2
+                        )
                     }
-                }else{
+                } else {
                     for (let i = 0; i < this.prizeArr[0].code.length; i++) {
                         var num_1 = this.prizeArr[0].code[i]
                         var num_2 = this.prizeArr[1].code[i]
-                        this.$set(this.lotteryHistory[1].result[i],'num',num_1)
-                        this.$set(this.lotteryHistory[2].result[i],'num',num_2)
+                        this.$set(
+                            this.lotteryHistory[1].result[i],
+                            'num',
+                            num_1
+                        )
+                        this.$set(
+                            this.lotteryHistory[2].result[i],
+                            'num',
+                            num_2
+                        )
                     }
                 }
-                
+
                 this.tabSlide(1)
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.tabSlide(0)
-                },3000)
+                }, 3000)
             })
         },
-        bethistoryCtrl(flag, name) {
+        popCtrl(flag, name,data) {
+
             if (flag) {
                 this.betHistoryShow = false
             } else {
                 this.betHistoryShow = true
             }
+
             if (name == 'prizeHistory') {
                 this.prizeHistoryShow = true
-            } else {
+            }else if(name == 'zhuihao'){
+                this.iszhuihaoShow = true
+            }
+            else {
                 this.prizeHistoryShow = false
             }
         },
@@ -474,17 +527,21 @@ export default {
             var arr1 = [0, 0, 0, 0, 0]
             this.getprizeHistory()
             for (let i = 0; i < this.lotteryHistory[1].result.length; i++) {
-                    this.$set(this.lotteryHistory[1].result[i],'anim',false)
-                    this.$set(this.lotteryHistory[1].result[i],'active',false)
+                this.$set(this.lotteryHistory[1].result[i], 'anim', false)
+                this.$set(this.lotteryHistory[1].result[i], 'active', false)
             }
             for (let i = 0; i < this.lotteryHistory[1].result.length; i++) {
-                setTimeout(()=>{
-                    this.$set(this.lotteryHistory[1].result[i],'anim',true)
-                    setTimeout(()=>{
-                        console.log('100');
-                        this.$set(this.lotteryHistory[1].result[i],'active',true)
-                    },1000)
-                },i*400)
+                setTimeout(() => {
+                    this.$set(this.lotteryHistory[1].result[i], 'anim', true)
+                    setTimeout(() => {
+                        console.log('100')
+                        this.$set(
+                            this.lotteryHistory[1].result[i],
+                            'active',
+                            true
+                        )
+                    }, 1000)
+                }, i * 400)
             }
         },
         getissue(params) {
@@ -509,7 +566,7 @@ export default {
                     this.$refs.flip.init()
                     const lotteryid = localStorage.getItem('lotteryid')
                     this.getissue({ lotteryid: Number(lotteryid) })
-                }, diff+1000)
+                }, diff + 1000)
             })
         },
         getCaizhong(id) {
@@ -873,7 +930,8 @@ export default {
         divtext,
         bethistory,
         myHeader,
-        prize
+        prize,
+        zhuihao
     }
 }
 </script>
@@ -1126,7 +1184,7 @@ export default {
             justify-content center
             position relative
             &.kuaisan
-                transform: translate(52px);
+                transform translate(52px)
             .ball
                 width 40px
                 height 40px
@@ -1138,8 +1196,8 @@ export default {
                 color #fff
                 font-size 30px
                 margin-right 4px
-                position: absolute
-                top 0 
+                position absolute
+                top 0
                 left 75px
                 transition 0.5s all
                 &.static
@@ -1162,7 +1220,6 @@ export default {
                 &.anim
                     animation bounceInDown 0.8s
                     display block
-                    
 header
     background-color #c32026
     height 50px
@@ -1329,7 +1386,9 @@ header
     margin-top 45px
     width 375px
     background-color #fff
-    min-height 100vh
+    height 100%
+    &.gray
+        background-color #eeeeee
 @keyframes bounceInDown
     0%, 60%, 75%, 90%, to
         -webkit-animation-timing-function cubic-bezier(0.215, 0.61, 0.355, 1)
@@ -1351,4 +1410,6 @@ header
     to
         -webkit-transform translateZ(0)
         transform translateZ(0)
+.betHistory_pop
+    height 100%
 </style>

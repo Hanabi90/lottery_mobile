@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="bottom">
-            <div class="bethistory">
+            <div class="bethistory" @click="zhuihaoCtrl()">
                 <span>追号模式</span>
             </div>
             <div class="info">
@@ -50,8 +50,9 @@
 </template>
 
 <script>
-import { Stepper, RadioGroup, Radio, Notify, Dialog} from 'vant'
+import { Stepper, RadioGroup, Radio, Notify, Dialog } from 'vant'
 import { betting } from '../../Api/api'
+import {mapMutations} from 'vuex'
 import { checkNum } from '../../utils/checkNum'
 export default {
     data() {
@@ -71,11 +72,31 @@ export default {
         'curmid',
         'currentGameType',
         'point',
-        'currentIssue'
+        'currentIssue',
+        'location'
     ],
     computed: {
-        userinfo(){
+        userinfo() {
             return this.$store.state.userInfo
+        },
+        computedLocation() {
+            var arr = []
+            if (this.location.includes('万位')) {
+                arr.push('万位')
+            }
+            if (this.location.includes('千位')) {
+                arr.push('千位')
+            }
+            if (this.location.includes('百位')) {
+                arr.push('百位')
+            }
+            if (this.location.includes('十位')) {
+                arr.push('十位')
+            }
+            if (this.location.includes('个位')) {
+                arr.push('个位')
+            }
+            return arr.toString()
         },
         money() {
             var money
@@ -112,13 +133,26 @@ export default {
         }
     },
     methods: {
+        ...mapMutations([
+            'updateZhuihaoArr'
+        ]),
         init() {
             console.log(this.$refs)
             this.jiangjinzu = this.currentLabel.nowPrizeGroup
         },
-        sendOrder() {
-            if(this.zhushu<=0){
-                Dialog({ message: '选择号码不完整，请重新选择' });
+        zhuihaoCtrl(){
+            if(this.zhushu <= 0)return
+            var params = {
+                type:'add',
+                data : this.formatData()
+            }
+            this.updateZhuihaoArr(params)
+            console.log('this.formatData()',this.formatData());
+            this.$emit('close',false,'zhuihao')
+        },
+        formatData(){
+            if (this.zhushu <= 0) {
+                Dialog({ message: '选择号码不完整，请重新选择' })
                 return
             }
             var str = ''
@@ -126,11 +160,11 @@ export default {
             for (const item of this.newArr) {
                 str += item.join('&') + '|'
             }
-            if(this.currentGameType.includes('和值')){
+            if (this.currentGameType.includes('和值')) {
                 str = str.substring(0, str.length - 1)
             }
             str = str.substring(0, str.length - 1)
-            console.log(str);
+            console.log(str)
             // this.zhushu = checkNum(this.currentLabel.methodname,this.newArr)
             // console.log(this.currentLabel.methodname,this.zhushu);
             var obj = {
@@ -150,48 +184,61 @@ export default {
                             money: parseFloat(this.money),
                             mode: Number(this.mode),
                             desc: this.currentGameType,
-                            buqsno: 'buqsno5ce3a094c4706'
-                        }
-                    ]
-                },
-                bettraceparams: {
-                    lt_trace_if: 'no',
-                    lt_trace_stop: 'no',
-                    zhuihao: 2,
-                    lt_trace_count_input: 10,
-                    lt_trace_money: 0.1,
-                    lt_trace_times_margin: 1,
-                    lt_trace_margin: 50,
-                    lt_trace_times_same: 1,
-                    lt_trace_diff: 1,
-                    lt_trace_times_diff: 2,
-                    lt_trace_issues: [
-                        {
-                            lt_trace_issues: '20190531-048',
-                            lt_trace_times: 1
-                        },
-                        {
-                            lt_trace_issues: '20190531-047',
-                            lt_trace_times: 1
+                            buqsno: 'buqsno5ce3a094c4706',
+                            location: this.computedLocation
                         }
                     ]
                 }
+                // bettraceparams: {
+                //     lt_trace_if: 'no',
+                //     lt_trace_stop: 'no',
+                //     zhuihao: 2,
+                //     lt_trace_count_input: 10,
+                //     lt_trace_money: 0.1,
+                //     lt_trace_times_margin: 1,
+                //     lt_trace_margin: 50,
+                //     lt_trace_times_same: 1,
+                //     lt_trace_diff: 1,
+                //     lt_trace_times_diff: 2,
+                //     lt_trace_issues: [
+                //         {
+                //             lt_trace_issues: '20190531-048',
+                //             lt_trace_times: 1
+                //         },
+                //         {
+                //             lt_trace_issues: '20190531-047',
+                //             lt_trace_times: 1
+                //         }
+                //     ]
+                // }
             }
+            return obj
+        },
+        sendOrder() {
+            var obj = this.formatData()
             console.log(obj)
             betting({ postdata: JSON.stringify(obj) })
                 .then(res => {
-                    if(res.data.code==0){
+                    if (res.data.code == 0) {
                         Notify({
-                            message:'投注成功',
+                            message: '投注成功',
                             duration: 3000,
                             background: '#1abc9c'
                         })
-                    }else{
-                        Notify({
-                            message: res.data.msg.content[0] || res.data.msg,
-                            duration: 3000,
-                            background: '#1abc9c'
-                        })
+                    } else {
+                        if (typeof (res.data.msg == 'object')) {
+                            Notify({
+                                message: res.data.msg.content[0],
+                                duration: 3000,
+                                background: '#1abc9c'
+                            })
+                        } else {
+                            Notify({
+                                message: res.data.msg,
+                                duration: 3000,
+                                background: '#1abc9c'
+                            })
+                        }
                     }
                 })
                 .catch(err => {})
@@ -208,7 +255,7 @@ export default {
         RadioGroup,
         Radio,
         Stepper,
-        Notify,
+        Notify
     },
     watch: {
         newArr() {
@@ -219,7 +266,7 @@ export default {
                 this.loc
             )
         },
-        loc(){
+        loc() {
             this.zhushu = checkNum(
                 this.currentLabel.methodname,
                 this.newArr,

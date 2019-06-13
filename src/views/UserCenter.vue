@@ -37,6 +37,7 @@
             <div class="popwrap">
                 <bank @closePop=closePop v-if="navlist[0].active"></bank>
                 <bethistory v-if="navlist[5].active"></bethistory>
+                <orderhistory v-if="navlist[1].active"></orderhistory>
             </div>
         </van-popup>
     </div>
@@ -49,6 +50,7 @@ import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
 import bethistory from '../components/usercenter/bethistory'
 import myHeader from '../components/usercenter/header'
+import orderhistory from '../components/usercenter/orderhistory'
 import {mapMutations} from 'vuex'
 
 export default {
@@ -119,6 +121,7 @@ export default {
         'vanPopup':Popup,
         'vanField':Field,
         bethistory,
+        orderhistory,
         bank,
         myHeader
     }

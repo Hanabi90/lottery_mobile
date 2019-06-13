@@ -1,7 +1,7 @@
 <template>
     <div class="zhuihao">
-        <div class="zhuihao_container">
-            <myHeader></myHeader>
+        <!-- <myHeader></myHeader> -->
+        <!-- <div class="zhuihao_container">
             <div class="list_wrap">
                 <ul class="list_ul">
                     <li v-for="(item, index) in zhuitouArr[zhuihao_type-1]" :key="index">
@@ -17,8 +17,6 @@
                             </p>
                             <p>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
                             <p>
-                                <!-- 盈利金额 -->
-                                <!-- <span>{{item.profit}}</span>元 -->
                             </p>
                         </div>
                     </li>
@@ -112,9 +110,46 @@
                     <van-button class="van_button" type="danger">投注</van-button>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="zhuihao_container">
-
+            <div class="issue_info">
+                <span>第20190612-024期</span>
+                <span>剩余时间<span class="count_down">00:00</span></span>
+            </div>
+            <ul>
+                <li class="card_wrap_li" v-for="(item, index) in zhuihaoArr" :key="index + 'zhuihaoArr'">
+                    <div class="card_title">
+                        <span>第{{index+1}}</span>
+                        <span @click="deleteZhuihaoArr(index)">删除</span>
+                    </div>
+                    <ul class="card_list_ul">
+                        <li>
+                            <span>彩种玩法:</span>
+                            <span>{{item.betparams.lt_project[0]['desc']}}</span>
+                        </li>
+                        <li>
+                            <span>购注注数:</span>
+                            <span>{{item.betparams.lt_project[0]['nums']}}</span>
+                        </li>
+                        <li>
+                            <span>购注号码:</span>
+                            <span>{{item.betparams.lt_project[0]['codes']}}</span>
+                        </li>
+                        <li>
+                            <span>购彩倍数:</span>
+                            <span>{{item.betparams.lt_project[0]['times']}}</span>
+                        </li>
+                        <li>
+                            <span>资金模式:</span>
+                            <span>{{item.betparams.lt_project[0]['mode']}}</span>
+                        </li>
+                        <li>
+                            <span>购彩金额:</span>
+                            <span>{{item.betparams.lt_project[0]['money']}}</span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -122,6 +157,7 @@
 <script>
 import myHeader from '../usercenter/header'
 import { Checkbox, CheckboxGroup, Stepper, Button, Icon } from 'vant'
+import {mapMutations} from 'vuex'
 export default {
     components: {
         myHeader,
@@ -176,7 +212,22 @@ export default {
             }
         }
     },
+    computed:{
+        zhuihaoArr(){
+            return this.$store.state.zhuihaoArr
+        }
+    },
     methods: {
+        ...mapMutations([
+            'updateZhuihaoArr'
+        ]),
+        deleteZhuihaoArr(index){
+            var params = {
+                type:'delete',
+                index:index,
+            }
+            this.updateZhuihaoArr(params)
+        },
         fixUpdate() {
             setTimeout(() => {
                 this.$forceUpdate()
@@ -271,7 +322,7 @@ export default {
 <style lang="stylus" scoped>
 .zhuihao
     padding-top 54px
-    padding 54px 16px 0 16px
+    padding 10px 16px 0 16px
 .list_wrap
     .list_ul
         padding-bottom 230px
@@ -355,5 +406,48 @@ export default {
             min-width 100px
             line-height 36px
             padding 0px 24px
+.card_title
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 8px;
+    display: flex;
+    justify-content: space-between;
+    span
+        padding 6px 0px
+        &:nth-child(1)
+            font-size 16px
+        &:nth-child(2)
+            background #c32026
+            padding 6px 20px
+            color #fff
+            border-radius 4px
+.issue_info
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10px;
+    margin-bottom: 10px;
+    .count_down
+        color red
+        padding 0 4px
+.card_list_ul
+    padding 10px 0
+    background #fff
+    display flex
+    flex-wrap wrap
+    li
+        width 40%
+        display flex
+        padding: 6px 6px;
+        &:nth-child(odd)
+            width 60%
+        span
+            &:nth-child(1)
+                color #8a4547
+                background #fff
+            &:nth-child(2)
+                background #fff
+.card_wrap_li
+    margin-bottom 10px
 </style>
 

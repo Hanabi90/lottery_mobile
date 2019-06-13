@@ -19,8 +19,8 @@ export default new Vuex.Store({
             nickname:'',
             availablebalance:'0'
         },
-
-        userCenterPop:false
+        userCenterPop:false,
+        zhuihaoArr:[]
     },
     mutations: {
         UpdateCenterPop(state,flag){
@@ -49,6 +49,16 @@ export default new Vuex.Store({
         updateBetArr(state,betArr){
             state.betArr = betArr
             console.log('state.betArr',state.betArr);
+        },
+        updateZhuihaoArr(state,params){
+            if(params.type=='add'){
+                console.log('add');
+                state.zhuihaoArr.push(params.data)
+            }else if(params.type=='delete'){
+                console.log('delete',1,params.index);
+                state.zhuihaoArr.splice(params.index,1)
+            }
+            console.log('state.zhuihaoArr',state.zhuihaoArr);
         },
         updateIspending(state,status){
             state.ispending = status

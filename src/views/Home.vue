@@ -41,7 +41,7 @@
                         <input type="text" placeholder="用户名" value="" v-model="userInfo.username">
                     </div>
                     <div class="form_group pwd_group">
-                        <input type="password" placeholder="密码" value="" v-model="userInfo.password">
+                        <input type="password" placeholder="密码" value="" v-model="userInfo.loginpass">
                         <a class="check_btn material-icons"></a>
                     </div>
                     <div class="form_tip"></div>
@@ -128,6 +128,11 @@ export default {
                     });
                     
                 } else {
+                    Notify({
+                        message: res.data.msg,
+                        duration: 2000,
+                        background: '#c32026'
+                    })
                     // this.$Message.error(res.msg)
                     this.login = {
                         username: '',

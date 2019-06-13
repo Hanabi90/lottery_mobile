@@ -183,6 +183,18 @@ export const getprize = formData =>//验证密保问题
         url: 'getprize',
         data: qs.stringify(formData)
     })
+export const getorderhistory = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'report/getorderhistory',
+        data: qs.stringify(formData)
+    })
+export const getallordertype = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'report/getallordertype',
+        data: qs.stringify(formData)
+    })
 
 
 
