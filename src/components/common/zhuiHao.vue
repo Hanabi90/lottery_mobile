@@ -259,10 +259,16 @@ export default {
             'updateZhuihaoArr'
         ]),
         update_list_steper(item,index){
-            console.log('item',item);
-            console.log('index',index);
-            item.now_money = 1000
-            item.total_money = 1000
+            var total_money = 0
+            item.total_money = 0
+            // debugger
+            for (let i = 0; i < this.zhuitouArr[this.zhuihao_type-1].length; i++) {
+                const item = this.zhuitouArr[this.zhuihao_type-1][i];
+                var ttt = this.zhuitouArr[this.zhuihao_type-1].reduce((next,old)=>{
+                    return next.total_money+old.total_money
+                })
+                console.log(ttt);
+            }
             this.$forceUpdate()
         },
         update_lt_trace_issues(index,checked){
