@@ -55,89 +55,6 @@ var _ZU6inputCheck = function (n, len) {//組六的手动输入型的检测[沒�
 };
 
 
-var _inputCheck_Num = function (l, e, fun, sort) {
-    var nums = data_sel[0].length;
-    var error = [];
-    var newsel = [];
-    var partn = "";
-    l = parseInt(l, 10);
-    switch (l) {
-        case 2 :
-            partn = /^[0-9]{2}$/;
-            break;
-        case 3 :
-            partn = /^[0-9\s]{3}$/;
-            break;
-        case 4 :
-            partn = /^[0-9\s]{4}$/;
-            break;
-        case 5 :
-            partn = /^[0-9\s]{5}$/;
-            break;
-        case 8 :
-            partn = /^[0-9\s]{8}$/;
-            break;
-        case 11 :
-            partn = /^[0-9\s]{11}$/;
-            break;
-        case 14 :
-            partn = /^[0-9\s]{14}$/;
-            break;
-        case 17 :
-            partn = /^[0-9\s]{17}$/;
-            break;
-        case 20 :
-            partn = /^[0-9\s]{20}$/;
-            break;
-        case 23 :
-            partn = /^[0-9\s]{23}$/;
-            break;
-        default:
-            partn = /^[0-9]{3}$/;
-            break;
-    }
-    var isfun = function (fun) {
-        if (typeof fun == 'function') {
-            return fun
-        } else {
-            return function (s) {
-                return true;
-            };
-        }
-    }
-    // fun = $.isFunction(fun) ? fun : function (s) {
-    //     return true;
-    // };
-    fun = isfun(fun)
-    data_sel[0].forEach((n,i)=> {
-        // n = $.trim(n);
-        if (partn.test(n) && fun(n, l)) {//合格号码
-            if (sort) {
-                if (n.indexOf(" ") == -1) {
-                    n = n.split("");
-                    n.sort(_SortNum);
-                    n = n.join("");
-                } else {
-                    n = n.split(" ");
-                    n.sort(_SortNum);
-                    n = n.join(" ");
-                }
-            }
-            data_sel[0][i] = n;
-            newsel.push(n);
-        } else {//不合格则注数减
-            if (n.length > 0) {
-                error.push(n);
-            }
-            nums = nums - 1;
-        }
-    });
-    if (e == true) {
-        data_sel[0] = newsel;
-        return error;
-    }
-    return nums;
-};
 export function _inptu_deal(val,methodname) {
     var s = val
     s = s.replace(/[^\s\r,;，；　０１２３４５６７８９0-9]/g, "")
@@ -173,10 +90,26 @@ export function _inptu_deal(val,methodname) {
     if (arr[arr.length-1]=='') {
         arr.pop()
     }
-    console.log(arr)
     return arr;
 };
-var _inputCheck_Num = function (l, e, fun, sort, {data_sel}) {
+var _SortNum = function (a, b) {
+        a = a.replace(/5单0双/g, 0).replace(/4单1双/g, 1).replace(/3单2双/g, 2).replace(/2单3双/g, 3).replace(/1单4双/g, 4).replace(/0单5双/g, 5);
+        a = a.replace(/大/g, 0).replace(/小/g, 1).replace(/单/g, 2).replace(/双/g, 3).replace(/\s/g, "");
+        a = a.replace(/豹子/g, 0).replace(/顺子/g, 1).replace(/对子/g, 2).replace(/半顺/g, 3).replace(/杂六/g, 4);
+        a = a.replace(/大单/g, 0).replace(/小双/g, 1).replace(/小单/g, 2).replace(/大双/g, 3);
+        b = b.replace(/5单0双/g, 0).replace(/4单1双/g, 1).replace(/3单2双/g, 2).replace(/2单3双/g, 3).replace(/1单4双/g, 4).replace(/0单5双/g, 5);
+        b = b.replace(/大/g, 0).replace(/小/g, 1).replace(/单/g, 2).replace(/双/g, 3).replace(/\s/g, "");
+        b = b.replace(/豹子/g, 0).replace(/顺子/g, 1).replace(/对子/g, 2).replace(/半顺/g, 3).replace(/杂六/g, 4);
+        b = b.replace(/大单/g, 0).replace(/小双/g, 1).replace(/小单/g, 2).replace(/大双/g, 3);
+    a = parseInt(a, 10);
+    b = parseInt(b, 10);
+    if (isNaN(a) || isNaN(b)) {
+        return true;
+    }
+    return (a - b);
+};
+var _inputCheck_Num = function (l, e, fun, sort, data_sel) {
+    console.log('data_seldata_sel',data_sel);
     var nums = data_sel[0].length;
     var error = [];
     var newsel = [];
@@ -228,7 +161,7 @@ var _inputCheck_Num = function (l, e, fun, sort, {data_sel}) {
         }
     }
     fun = isfun(fun)
-    data_sel.forEach((n,i)=> {
+    data_sel[0].forEach((n,i)=> {
         // n = $.trim(n);
         if (partn.test(n) && fun(n, l)) {//合格号码
             if (sort) {
@@ -255,10 +188,11 @@ var _inputCheck_Num = function (l, e, fun, sort, {data_sel}) {
         data_sel[0] = newsel;
         return error;
     }
-    return nums;
+    console.log('nums,newsel',nums,newsel);
+    return {nums,newsel};;
 };
 export function checkNum(methodname, data_sel, max_place, loc, selectType) {
-    console.log(data_sel);
+    console.log('data_sel',data_sel);
     // console.log(max_place);
     var nums = 0;
     var times = 1    //倍数
@@ -270,97 +204,97 @@ export function checkNum(methodname, data_sel, max_place, loc, selectType) {
         if (data_sel[0].length > 0) {//如果输入的有值
             switch (methodname) {
                 case 'ZX5'  :
-                    nums = _inputCheck_Num(5, false,{data_sel});
+                    nums = _inputCheck_Num(5, false,{},false,data_sel);
                     break;
                 case 'ZX4'  :
-                    nums = _inputCheck_Num(4, false,{data_sel});
+                    nums = _inputCheck_Num(4, false,{},false,data_sel);
                     break;
                 case 'QZX3'  :
                 case 'HZX3'  :
                 case 'ZZX3'  :
                 case 'SSLZX3'  :
-                    nums = _inputCheck_Num(3, false,{data_sel});
+                    nums = _inputCheck_Num(3, false,{},false,data_sel);
                     break;
                 case 'QHHZX' :
                 case 'HHHZX' :
                 case 'ZHHZX' :
                 case 'SSLHHZX' :
-                    nums = _inputCheck_Num(3, false, _HHZXcheck, true,{data_sel});
+                    nums = _inputCheck_Num(3, false, _HHZXcheck, true,data_sel);
                     break;
                 case 'QZX2'  :
                 case 'HZX2'  :
                 case 'SSLQZX2'  :
                 case 'SSLHZX2'  :
-                    nums = _inputCheck_Num(2, false,{data_sel});
+                    nums = _inputCheck_Num(2, false,{},false,data_sel);
                     break;
                 case 'QZU2'  :
                 case 'HZU2'  :
                 case 'SSLQZU2'  :
                 case 'SSLHZU2'  :
-                    nums = _inputCheck_Num(2, false, _HHZXcheck, true,{data_sel});
+                    nums = _inputCheck_Num(2, false, _HHZXcheck, true,data_sel);
                     break;
                 case 'SDZX3':
-                    nums = _inputCheck_Num(8, false, _SDinputCheck, false,{data_sel});
+                    nums = _inputCheck_Num(8, false, _SDinputCheck, false,data_sel);
                     break;
                 case 'SDZU3':
-                    nums = _inputCheck_Num(8, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(8, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDZX2':
-                    nums = _inputCheck_Num(5, false, _SDinputCheck, false,{data_sel});
+                    nums = _inputCheck_Num(5, false, _SDinputCheck, false,data_sel);
                     break;
                 case 'SDZU2':
-                    nums = _inputCheck_Num(5, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(5, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX1':
-                    nums = _inputCheck_Num(2, false, _SDinputCheck, false,{data_sel});
+                    nums = _inputCheck_Num(2, false, _SDinputCheck, false,data_sel);
                     break;
                 case 'SDRX2':
-                    nums = _inputCheck_Num(5, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(5, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX3':
-                    nums = _inputCheck_Num(8, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(8, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX4':
-                    nums = _inputCheck_Num(11, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(11, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX5':
-                    nums = _inputCheck_Num(14, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(14, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX6':
-                    nums = _inputCheck_Num(17, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(17, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX7':
-                    nums = _inputCheck_Num(20, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(20, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SDRX8':
-                    nums = _inputCheck_Num(23, false, _SDinputCheck, true,{data_sel});
+                    nums = _inputCheck_Num(23, false, _SDinputCheck, true,data_sel);
                     break;
                 case 'SSCL4ZX':
-                    nums = _inputCheck_Num(4, false,{data_sel});
+                    nums = _inputCheck_Num(4, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)*(loc-3)/24;
                     break;
                 case 'SSCL3ZX':
-                    nums = _inputCheck_Num(3, false,{data_sel});
+                    nums = _inputCheck_Num(3, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
                     break;
                 case 'SSCL3ZU3':
-                    nums = _inputCheck_Num(3, false, _ZU3inputCheck,true,{data_sel});
+                    nums = _inputCheck_Num(3, false, _ZU3inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
                     break;
                 case 'SSCL3ZU6':
-                    nums = _inputCheck_Num(3, false, _ZU6inputCheck,true,{data_sel});
+                    nums = _inputCheck_Num(3, false, _ZU6inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
                     break;
                 case 'SSCL3HHZX' :
-                    nums = _inputCheck_Num(3, false, _HHZXcheck, true,{data_sel});
+                    nums = _inputCheck_Num(3, false, _HHZXcheck, true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
                     break;
                 case 'SSCL2ZX':
-                    nums = _inputCheck_Num(2, false,{data_sel});
+                    nums = _inputCheck_Num(2, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)/2;
                     break;
                 case 'SSCL2ZU':
-                    nums = _inputCheck_Num(2, false, _ZU2inputCheck,true,{data_sel});
+                    nums = _inputCheck_Num(2, false, _ZU2inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)/2;
                     break;
                 default   :

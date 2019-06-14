@@ -73,7 +73,7 @@
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao v-if="iszhuihaoShow"></zhuihao>
+                <zhuihao v-if="iszhuihaoShow" :currentIssue=currentIssue></zhuihao>
                 <bethistory v-if="betHistoryShow" :lotteryid="lotteryid"></bethistory>
             </div>
         </Popup>
@@ -466,7 +466,11 @@ export default {
         inputCheck(val){
             var methodname = this.currentLabel.methodname
             var arr = _inptu_deal(val,this.currentLabel.methodname)
-            checkNum(methodname,arr,0,0,'input')
+            arr = new Set(arr)
+            arr = Array.from(arr)
+            this.newArr = [arr]
+            // checkNum(methodname,[arr],0,0,'input')
+            // this.$shop
         },
         getprizeHistory() {
             //{ state: '已开奖',num: '20190611-753', result: [{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false}] },
@@ -844,17 +848,22 @@ export default {
         ...mapState(['userInfo']),
         isShowCheckGroup() {
             var renxuan = this.currentGameType.includes('任')
-            if (renxuan) {
-                var zhixuan = this.currentGameType.includes('直')
-                var fushi = this.currentGameType.includes('复')
-                if (renxuan && zhixuan && fushi) {
-                    return false
-                } else {
-                    return true
-                }
-            } else {
+            if(this.gameTitle.includes('11')){
                 return false
+            }else{
+                if (renxuan) {
+                var zhixuan = this.currentGameType.includes('直')
+                    var fushi = this.currentGameType.includes('复')
+                    if (renxuan && zhixuan && fushi) {
+                        return false
+                    } else {
+                        return true
+                    }
+                } else {
+                    return false
+                }
             }
+            
         },
         swiper() {
             return this.$refs.mySwiper.swiper

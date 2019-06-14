@@ -1,18 +1,22 @@
 <template>
     <div class="zhuihao">
         <!-- <myHeader></myHeader> -->
+        <div class="issue_info">
+                <span>第{{currentIssue}}期</span>
+                <span>剩余时间<span class="count_down">{{countDown.hours|fixtime_2}}{{countDown.minutes|fixtime_2}}:{{countDown.seconds|fixtime}}</span></span>
+            </div>
         <div class="zhuihao_container" v-if="isShowZhuihao">
             <div class="list_wrap">
                 <ul class="list_ul">
                     <li v-for="(item, index) in zhuitouArr[zhuihao_type-1]" :key="index">
                         <div class="left">
-                            <Checkbox @click="fixUpdate" v-model="item.checked"></Checkbox>
+                            <Checkbox @click="fixUpdate" v-model="item.checked" @change="update_lt_trace_issues(index,item.checked)"></Checkbox>
                         </div>
                         <div class="right">
                             <p>
                                 <span>{{item.issue}}期</span>
                                 <span>
-                                    <van-stepper v-model="item.beishu" min="1" max="1024"/>倍
+                                    <van-stepper v-model="item.beishu" @change="update_list_steper(item,index)" min="1" max="1024"/>倍
                                 </span>
                             </p>
                             <p>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
@@ -113,10 +117,6 @@
             </div>
         </div>
         <div class="zhuihao_container" v-else>
-            <div class="issue_info">
-                <span>第20190612-024期</span>
-                <span>剩余时间<span class="count_down">{{countDown.hours|fixtime_2}}{{countDown.minutes|fixtime_2}}:{{countDown.seconds|fixtime}}</span></span>
-            </div>
             <ul class="card_wrap_ul">
                 <li class="card_wrap_li" v-for="(item, index) in zhuihaoArr" :key="index + 'zhuihaoArr'">
                     <div class="card_title">
@@ -168,7 +168,7 @@
 
 <script>
 import myHeader from '../usercenter/header'
-import { Checkbox, CheckboxGroup, Stepper, Button, Icon } from 'vant'
+import { Checkbox, CheckboxGroup, Stepper, Button, Icon,Dialog } from 'vant'
 import {mapMutations} from 'vuex'
 export default {
     components: {
@@ -181,7 +181,10 @@ export default {
     },
     filters:{
         fixtime(value){
-            if(value<=0){return '00'}
+            if(value<=0){
+                
+                return '00'
+            }
             if(value<10){
                 return '0' + value
             }else{
@@ -196,6 +199,12 @@ export default {
             } 
         }
     },
+    watch:{
+        currentIssue(){
+            Dialog({ message: '奖期已更新' });
+            this.createList()
+        }
+    },
     data() {
         return {
             isShowZhuihao:false,
@@ -203,7 +212,6 @@ export default {
             lt_trace_stop: true,
             zhuihao_type: 2,
             limt_profit: 50,
-            issue: '20190606-039',
             zhuitouArr: [[], [], []],
             lt_trace_count_input_1: 10,
             lt_trace_count_input_2: 10,
@@ -218,33 +226,20 @@ export default {
                 { title: '翻倍追号', active: false, type: 3 },
                 { title: '利润率追号', active: false, type: 1 }
             ],
-            bettraceparams: {
-                lt_trace_if: 'no', //是否追号 *
-                lt_trace_stop: 'no', //中奖是否停止追号 *
-                zhuihao: 2, //1：利潤率追號；2：同倍追號；3：翻倍追號； *
-                lt_trace_count_input: 10, //int	追號期數；指要追多少期 *
-                lt_trace_money: 0.1, //float	追號總金額
-                lt_trace_times_margin: 1, //起始倍數
-                lt_trace_margin: 50, //利润率 最低收益
-                lt_trace_times_same: 1, //固定值1
-                lt_trace_diff: 1, //固定值1
-                lt_trace_times_diff: 2, //固定值2
-                lt_trace_issues: [
-                    {
-                        lt_trace_issues: '20190531-048', //奖期
-                        lt_trace_times: 1 //追几期
-                    },
-                    {
-                        lt_trace_issues: '20190531-047',
-                        lt_trace_times: 1
-                    }
-                ]
-            }
+            bettraceparams: {},
         }
     },
+    props:['currentIssue'],
     computed:{
         zhuihaoArr(){
             return this.$store.state.zhuihaoArr
+        },
+        lt_project(){
+            var arr = []
+            for (const item of this.zhuihaoArr) {
+                arr.push(item.betparams.lt_project[0])
+            }
+            return arr
         },
         countDown(){
             return this.$store.state.countDown
@@ -263,6 +258,20 @@ export default {
         ...mapMutations([
             'updateZhuihaoArr'
         ]),
+        update_list_steper(item,index){
+            console.log('item',item);
+            console.log('index',index);
+            item.now_money = 1000
+            item.total_money = 1000
+            this.$forceUpdate()
+        },
+        update_lt_trace_issues(index,checked){
+            if(checked){
+                this.$set(this.bettraceparams.lt_trace_issues[index],'lt_trace_times',1)
+            }else{
+                this.$set(this.bettraceparams.lt_trace_issues[index],'lt_trace_times',0)
+            }
+        },
         goBack(){
             console.log('goBack');
             this.isShowZhuihao = false
@@ -277,6 +286,7 @@ export default {
                 index:index,
             }
             this.updateZhuihaoArr(params)
+            
         },
         emptyZhuihaoArr(){
             var params = {
@@ -302,12 +312,13 @@ export default {
             this.zhuitouArr.splice(this.zhuihao_type - 1, 1, [])
         },
         createList() {
+            var lt_trace_issues = []
             if (this.zhuihao_type == 2) {
                 const lt_trace_count_input = this.lt_trace_count_input_2
                 const beishu = this.beishu_2
-                const issueStr = this.issue.split('-')[0]
-                var issue = parseInt(this.issue.split('-')[1])
-                const now_money = 2
+                const issueStr = this.currentIssue.split('-')[0]
+                var issue = parseInt(this.currentIssue.split('-')[1])
+                const now_money = this.total_count['total_amount']
                 var zhuitouArr = []
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
@@ -319,6 +330,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
                     issue++
                 }
             } else if (this.zhuihao_type == 3) {
@@ -326,10 +338,10 @@ export default {
                 var lt_trace_count_input = this.lt_trace_count_input_3
                 const geqi_lt_trace_count_input = this.geqi_lt_trace_count_input
                 const geqi_beishu = this.geqi_beishu
-                const issueStr = this.issue.split('-')[0]
+                const issueStr = this.currentIssue.split('-')[0]
                 var beishu = this.beishu_3
-                var issue = parseInt(this.issue.split('-')[1])
-                var now_money = 2
+                var issue = parseInt(this.currentIssue.split('-')[1])
+                var now_money = this.total_count['total_amount']
                 var total_money = 0
                 for (let i = 1; i <= this.lt_trace_count_input_3; i++) {
                     var now_money_1 = now_money * beishu
@@ -342,6 +354,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
                     if (i % geqi_lt_trace_count_input == 0) {
                         beishu *= geqi_beishu
                     }
@@ -350,9 +363,9 @@ export default {
             } else {
                 const lt_trace_count_input = this.lt_trace_count_input_1
                 const beishu = this.beishu_1
-                const issueStr = this.issue.split('-')[0]
-                var issue = parseInt(this.issue.split('-')[1])
-                const now_money = 2
+                const issueStr = this.currentIssue.split('-')[0]
+                var issue = parseInt(this.currentIssue.split('-')[1])
+                const now_money = this.total_count['total_amount']
                 var zhuitouArr = []
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
@@ -364,12 +377,29 @@ export default {
                         checked: true,
                         profit: ''
                     })
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
                     issue++
                 }
             }
             this.zhuitouArr[this.zhuihao_type - 1] = zhuitouArr
             this.zhuitouArr.splice(this.zhuihao_type - 1, 1, zhuitouArr)
             this.$forceUpdate()
+            var bettraceparams = {
+                lt_trace_if: 'yes', //是否追号 *
+                lt_trace_stop: this.lt_trace_stop?'yes':'no', //中奖是否停止追号 *
+                zhuihao: this.zhuihao_type, //1：利潤率追號；2：同倍追號；3：翻倍追號； *
+                lt_trace_count_input: this.zhuitouArr[this.zhuihao_type-1].length, //int	追號期數；指要追多少期 *
+                lt_trace_money: this.zhuitouArr[this.zhuihao_type-1][this.zhuitouArr[this.zhuihao_type-1].length-1]['total_money'], //float	追號總金額
+                lt_trace_times_margin: this['beishu_'+this.zhuihao_type], //起始倍數
+                lt_trace_margin: this.limt_profit, //利润率 最低收益
+                lt_trace_times_same: 1, //固定值1
+                lt_trace_diff: 1, //固定值1
+                lt_trace_times_diff: 2, //固定值2
+                lt_trace_issues: lt_trace_issues
+            }
+            console.log('bettraceparams',bettraceparams);
+            this.bettraceparams = bettraceparams
+
         }
     }
 }

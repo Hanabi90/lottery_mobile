@@ -261,20 +261,46 @@ export default {
     },
     watch: {
         newArr() {
-            this.zhushu = checkNum(
+            var length 
+            if(this.currentLabel.selectarea.layout!==undefined){
+                length = this.currentLabel.selectarea.layout.length - 1
+            }else{
+                length = 0
+            }
+            var zhushu = checkNum(
                 this.currentLabel.methodname,
                 this.newArr,
-                this.currentLabel.selectarea.layout.length - 1,
-                this.loc
+                length,
+                this.loc,
+                this.currentLabel.selectarea.type
             )
+            if(this.currentLabel.selectarea.type=="input"){
+                this.zhushu = zhushu['nums']
+                var temp = new Set(zhushu['newsel'])
+                temp = Array.from(temp)
+                this.newArr = temp
+                console.log('temptemptemptemp',temp);
+            }else{
+                this.zhushu = zhushu
+            }
         },
         loc() {
-            this.zhushu = checkNum(
+            var zhushu = checkNum(
                 this.currentLabel.methodname,
                 this.newArr,
-                this.currentLabel.selectarea.layout.length - 1,
-                this.loc
+                length,
+                this.loc,
+                this.currentLabel.selectarea.type
             )
+            if(this.currentLabel.selectarea.type=="input"){
+                this.zhushu = zhushu['nums']
+                var temp = new Set(zhushu['newsel'])
+                temp = Array.from(temp)
+                this.newArr = temp
+                console.log('temptemptemptemp',temp);
+            }else{
+                this.zhushu = zhushu
+            }
         }
     }
 }
