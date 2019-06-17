@@ -212,6 +212,7 @@
             ref="shop"
             @getPrize="getPrizeCtrl"
             @close="popCtrl"
+            @mutaNewArr='mutaNewArr'
             :currentLabel="currentLabel"
             :newArr="newArr"
             :betinfo="betinfo"
@@ -447,6 +448,9 @@ export default {
         ...mapMutations([
             'updateZhuihaoArr'
         ]),
+        mutaNewArr(arr){
+            this.newArr = arr
+        },
         init(params) {
             this.updateZhuihaoArr({type:'empty'})
             const { data, menuid, lotteryid, title } = { ...params }

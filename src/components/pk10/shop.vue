@@ -278,8 +278,9 @@ export default {
                 this.zhushu = zhushu['nums']
                 var temp = new Set(zhushu['newsel'])
                 temp = Array.from(temp)
-                this.newArr = temp
                 console.log('temptemptemptemp',temp);
+                this.$emit('mutaNewArr',temp)
+                // this.newArr = temp
             }else{
                 this.zhushu = zhushu
             }
@@ -296,7 +297,9 @@ export default {
                 this.zhushu = zhushu['nums']
                 var temp = new Set(zhushu['newsel'])
                 temp = Array.from(temp)
-                this.newArr = temp
+                console.log('temptemptemptemp',temp);
+                this.$emit('mutaNewArr',temp)
+                // this.newArr = temp
                 console.log('temptemptemptemp',temp);
             }else{
                 this.zhushu = zhushu

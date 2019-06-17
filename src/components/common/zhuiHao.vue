@@ -16,10 +16,11 @@
                             <p>
                                 <span>{{item.issue}}期</span>
                                 <span>
-                                    <van-stepper v-model="item.beishu" @change="update_list_steper(item,index)" min="1" max="1024"/>倍
+                                    <van-stepper v-model="item.beishu" @change="update_list_steper(index)" min="1" max="1024"/>倍
                                 </span>
                             </p>
-                            <p>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
+                            <p v-if="item.checked==false">当前投入0元，累计投入0元</p>
+                            <p v-else>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
                             <p>
                             </p>
                         </div>
@@ -112,7 +113,7 @@
                     <van-icon class="goback" name="arrow-left" size="20px" color="#fff" @click="goBack"/>
                     <van-icon name="delete" size="30px" color="#fff" @click="emptyList"/>
                     <van-button class="van_button" type="warning" @click="createList">生成</van-button>
-                    <van-button class="van_button" type="danger">投注</van-button>
+                    <van-button @click="formatData()" class="van_button" type="danger">投注</van-button>
                 </div>
             </div>
         </div>
@@ -168,8 +169,9 @@
 
 <script>
 import myHeader from '../usercenter/header'
-import { Checkbox, CheckboxGroup, Stepper, Button, Icon,Dialog } from 'vant'
+import { Checkbox, CheckboxGroup, Stepper, Button, Icon,Dialog,Notify} from 'vant'
 import {mapMutations} from 'vuex'
+import {betting} from '../../Api/api'
 export default {
     components: {
         myHeader,
@@ -258,20 +260,29 @@ export default {
         ...mapMutations([
             'updateZhuihaoArr'
         ]),
-        update_list_steper(item,index){
+        update_list_steper(index){
             var total_money = 0
-            item.total_money = 0
+            var list = []
+            this.zhuitouArr[this.zhuihao_type-1][index].total_money = this.zhuitouArr[this.zhuihao_type-1][index].now_money*this.zhuitouArr[this.zhuihao_type-1][index].beishu
+
             // debugger
             for (let i = 0; i < this.zhuitouArr[this.zhuihao_type-1].length; i++) {
-                const item = this.zhuitouArr[this.zhuihao_type-1][i];
-                var ttt = this.zhuitouArr[this.zhuihao_type-1].reduce((next,old)=>{
-                    return next.total_money+old.total_money
-                })
-                console.log(ttt);
+                const el = this.zhuitouArr[this.zhuihao_type-1][i];
+                // if(el.checked==false)return
+                this.$set(this.bettraceparams.lt_trace_issues[i],'lt_trace_times',el.beishu)
+                if(el.checked){
+                    el.now_money = this.total_count['total_amount']*el.beishu
+                    total_money += el.now_money
+                    el.total_money =total_money
+                }else{
+
+                }
             }
             this.$forceUpdate()
         },
         update_lt_trace_issues(index,checked){
+            this.update_list_steper(index)
+            
             if(checked){
                 this.$set(this.bettraceparams.lt_trace_issues[index],'lt_trace_times',1)
             }else{
@@ -336,7 +347,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
                     issue++
                 }
             } else if (this.zhuihao_type == 3) {
@@ -360,7 +371,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
                     if (i % geqi_lt_trace_count_input == 0) {
                         beishu *= geqi_beishu
                     }
@@ -383,7 +394,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: 1})
+                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
                     issue++
                 }
             }
@@ -406,6 +417,48 @@ export default {
             console.log('bettraceparams',bettraceparams);
             this.bettraceparams = bettraceparams
 
+        },
+        formatData(){
+            var betparams = {
+                curmid:this.zhuihaoArr[0].betparams['curmid'],
+                iWalletType:this.zhuihaoArr[0].betparams['iWalletType'],
+                lt_issue_start:this.currentIssue,
+                lt_project : this.lt_project
+            }
+            this.bettraceparams.lt_trace_stop= this.lt_trace_stop?'yes':'no'
+            this.bettraceparams.lt_trace_issues = this.bettraceparams.lt_trace_issues.filter((item)=>{
+                return item.lt_trace_times>0
+            })
+            betting({ postdata: JSON.stringify({
+            betparams,
+            bettraceparams:this.bettraceparams
+            }) })
+                .then(res => {
+                    if (res.data.code == 0) {
+                        Notify({
+                            message: '投注成功',
+                            duration: 3000,
+                            background: '#1abc9c'
+                        })
+                    } else {
+                        if (typeof (res.data.msg == 'object')) {
+                            console.log('if');
+                            Notify({
+                                message: res.data.msg.content[0],
+                                duration: 3000,
+                                background: '#1abc9c'
+                            })
+                        } else {
+                            console.log('else');
+                            Notify({
+                                message: res.data.msg,
+                                duration: 3000,
+                                background: '#1abc9c'
+                            })
+                        }
+                    }
+                })
+                .catch(err => {})
         }
     }
 }
