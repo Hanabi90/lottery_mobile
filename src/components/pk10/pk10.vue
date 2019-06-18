@@ -161,6 +161,7 @@
             <div class="checkGroup" v-if="isShowCheckGroup">
                 <checkbox-group v-model="result">
                     <checkbox
+                        @change="updateNums"
                         shape="square"
                         checked-color="#c32026"
                         v-for="(item, index) in list"
@@ -201,8 +202,8 @@
         </div>
         <div class="selectarea flex" v-if="selectarea=='input'">
             <div class="cleartext">
-                <v-button type="danger">删除重复及错误项</v-button>
-                <v-button type="warning">清空</v-button>
+                <v-button type="danger" @click="deleteInvalidValue()">删除重复及错误项</v-button>
+                <v-button type="warning" @click="emptyinputVal">清空</v-button>
             </div>
             <div class="wrap danshi">
                 <textarea v-model="inputVal" @input="inputCheck(inputVal)"></textarea>
@@ -450,6 +451,7 @@ export default {
         ]),
         mutaNewArr(arr){
             this.newArr = arr
+            this.$store.commit('UpdateWatchLock',false)
         },
         init(params) {
             this.updateZhuihaoArr({type:'empty'})
@@ -467,14 +469,29 @@ export default {
                 this.jsonData[0].label[0]
             )
         },
+        updateNums(){
+            console.log('updateNums')
+            this.$refs.shop.zhushu = this.$store.state.nums
+            var temp = new Set(this.$store.state.newsel)
+            temp = Array.from(temp)
+            this.newaArr = temp
+        },
+        deleteInvalidValue(){
+            this.inputVal = this.$store.state.newsel.toString()
+        },
+        emptyinputVal(){
+            this.inputVal = ''
+            this.$refs.shop.zhushu = '0'
+            this.result = []
+            this.$store.commit('updateNewsel')
+        },
         inputCheck(val){
             var methodname = this.currentLabel.methodname
             var arr = _inptu_deal(val,this.currentLabel.methodname)
             arr = new Set(arr)
             arr = Array.from(arr)
             this.newArr = [arr]
-            // checkNum(methodname,[arr],0,0,'input')
-            // this.$shop
+            this.updateNums()
         },
         getprizeHistory() {
             //{ state: '已开奖',num: '20190611-753', result: [{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false}] },
@@ -748,6 +765,9 @@ export default {
             this.$refs.selectPopup.inited = false
         },
         tabGameType(gameLabel, gtitle, index, labelArr) {
+            setTimeout(() => {
+                this.emptyinputVal()
+            }, 0);
             this.currentLabel = labelArr.label[index]
             this.getPrizeCtrl()
             if (gameLabel.selectarea.type == 'input') {
@@ -769,6 +789,35 @@ export default {
         },
         selectBalls(balls) {
             const { layoutItem, title, layoutArrindex } = { ...balls }
+            console.log(balls)
+            var gameType = this.currentGameType
+            var dan_Maxlen
+            switch (gameType) {
+                case '任选二中二':
+                    dan_Maxlen = 1
+                    break;
+                case '任选三中三':
+                    dan_Maxlen = 2
+                    break;
+                case '任选四中四':
+                    dan_Maxlen = 3
+                    break;
+                case '任选五中五':
+                    dan_Maxlen = 4
+                    break;
+                case '任选六中五':
+                    dan_Maxlen = 5
+                    break;
+                case '任选七中五':
+                    dan_Maxlen = 6
+                    break;
+                case '任选八中五':
+                    dan_Maxlen = 7
+                    break;
+            
+                default:
+                    break;
+            }
             // console.log(layoutItem,title,layoutArrindex);
             // console.log('layoutArrindex',layoutArrindex);
             if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {
@@ -791,50 +840,9 @@ export default {
             }
             // console.log(this.newArr);
         },
-        // selectBalls(balls){
-        //     this.newSelectBalls(balls)
-        //     const {layoutItem,title,layoutArrindex} = {...balls}
-        //     switch (title) {
-        //         case '万位':
-        //         if(this.ballsMap.wan.indexOf(layoutItem)==-1){
-        //             this.ballsMap.wan.push(layoutItem)
-        //         }else{
-        //             this.ballsMap.wan.splice(this.ballsMap.wan.indexOf(layoutItem),1)
-        //         }
-        //             break;
-        //         case '千位':
-        //             if(this.ballsMap.qian.indexOf(layoutItem)==-1){
-        //             this.ballsMap.qian.push(layoutItem)
-        //         }else{
-        //             this.ballsMap.qian.splice(this.ballsMap.qian.indexOf(layoutItem),1)
-        //         }
-        //             break;
-        //         case '百位':
-        //            if(this.ballsMap.bai.indexOf(layoutItem)==-1){
-        //             this.ballsMap.bai.push(layoutItem)
-        //         }else{
-        //             this.ballsMap.bai.splice(this.ballsMap.bai.indexOf(layoutItem),1)
-        //         }
-        //             break;
-        //         case '十位':
-        //             if(this.ballsMap.shi.indexOf(layoutItem)==-1){
-        //             this.ballsMap.shi.push(layoutItem)
-        //         }else{
-        //             this.ballsMap.shi.splice(this.ballsMap.shi.indexOf(layoutItem),1)
-        //         }
-        //             break;
-        //         case '个位':
-        //            if(this.ballsMap.ge.indexOf(layoutItem)==-1){
-        //             this.ballsMap.ge.push(layoutItem)
-        //         }else{
-        //             this.ballsMap.ge.splice(this.ballsMap.ge.indexOf(layoutItem),1)
-        //         }
-        //             break;
-
-        //         default:
-        //             break;
-        //     }
-        // }
+        tuodan_renxuan(){
+            
+        },
         sendOrder() {
             // getissue({lotteryid:3535}).then((res)=>{
             //     this.$set(this.betinfo.betparams,lt_issue_start,res.data.data.issue)

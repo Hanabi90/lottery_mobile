@@ -181,12 +181,12 @@ export default {
             tempData: [],
             username: '',
             value1: '-1',
-            value2: '-1',
+            value2: '0',
             value3: '-1',
             value4: '-1',
             option1: [{ text: '所有游戏', value: '-1' }],
             option2: [
-                { text: '所有模式', value: '-1' },
+                { text: '所有模式', value: '0' },
                 { text: '元', value: '1' },
                 { text: '角', value: '2' },
                 { text: '分', value: '3' }
@@ -308,8 +308,8 @@ export default {
         },
         tabMenu(v) {
             if (v == 0) {
-                this.value2 = '-1'
-                this.option2 = [{ text: '所有模式', value: '-1' }]
+                this.value2 = '0'
+                this.option2 = [{ text: '所有模式', value: '0' }]
             }
         },
         timeConfirm(flag, currentDate, isStart) {

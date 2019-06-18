@@ -159,7 +159,13 @@ export default {
             }
             var str = ''
             var arr = []
-            for (const item of this.newArr) {
+            var newArr = []
+            if(this.currentLabel.selectarea.type=='input'){
+                newArr = [this.$store.state.newsel]
+            }else{
+                newArr = this.newArr
+            }
+            for (const item of newArr) {
                 str += item.join('&') + '|'
             }
             if (this.currentGameType.includes('和值')) {
@@ -173,6 +179,7 @@ export default {
                 betparams: {
                     // prizegroup: parseInt(this.currentLabel.nowPrizeGroup),
                     iWalletType: 1,
+                    prizegroup:this.$parent.prize,
                     curmid: Number(this.curmid),
                     lt_issue_start: this.currentIssue,
                     lt_project: [
@@ -228,6 +235,7 @@ export default {
                             background: '#1abc9c'
                         })
                     } else {
+                        console.log(res.data.msg);
                         if (typeof (res.data.msg == 'object')) {
                             Notify({
                                 message: res.data.msg.content[0],
@@ -274,16 +282,7 @@ export default {
                 this.loc,
                 this.currentLabel.selectarea.type
             )
-            if(this.currentLabel.selectarea.type=="input"){
-                this.zhushu = zhushu['nums']
-                var temp = new Set(zhushu['newsel'])
-                temp = Array.from(temp)
-                console.log('temptemptemptemp',temp);
-                this.$emit('mutaNewArr',temp)
-                // this.newArr = temp
-            }else{
-                this.zhushu = zhushu
-            }
+            this.zhushu = zhushu
         },
         loc() {
             var zhushu = checkNum(
@@ -293,17 +292,7 @@ export default {
                 this.loc,
                 this.currentLabel.selectarea.type
             )
-            if(this.currentLabel.selectarea.type=="input"){
-                this.zhushu = zhushu['nums']
-                var temp = new Set(zhushu['newsel'])
-                temp = Array.from(temp)
-                console.log('temptemptemptemp',temp);
-                this.$emit('mutaNewArr',temp)
-                // this.newArr = temp
-                console.log('temptemptemptemp',temp);
-            }else{
-                this.zhushu = zhushu
-            }
+            this.zhushu = zhushu
         }
     }
 }

@@ -1,3 +1,4 @@
+import store from '../store'
 function inArray(n,arr){
     var bool = arr.findIndex((item)=>{
         return item==n
@@ -189,8 +190,42 @@ var _inputCheck_Num = function (l, e, fun, sort, data_sel) {
         return error;
     }
     console.log('nums,newsel',nums,newsel);
-    return {nums,newsel};;
+    store.state.nums = nums
+    store.state.newsel = newsel
+    return nums;;
 };
+function Combination(n, m)
+{
+	m = parseInt(m);
+	n = parseInt(n);
+	if( m<0 || n<0 )
+	{
+		return false;
+	}
+	if( m==0 || n == 0 )
+	{
+		return 1;
+	}
+	if( m > n )
+	{
+		return 0;
+	}
+	if( m > n/2.0)
+	{
+		m = n - m;
+	}
+
+    var result = 0.0;
+    var i 
+	for(i=n; i>=(n-m+1);i--) {
+		result += Math.log(i);			
+    }
+	for(i=m; i >= 1; i--) {
+		result -= Math.log(i);
+	}
+	result = Math.exp(result);
+	return Math.round(result);
+}
 export function checkNum(methodname, data_sel, max_place, loc, selectType) {
     console.log('data_sel',data_sel);
     // console.log(max_place);
@@ -201,7 +236,9 @@ export function checkNum(methodname, data_sel, max_place, loc, selectType) {
     // var loc=$($.lt_id_data.name_selected_location).length;
     //01:验证号码合法性并计算注数
     if (otype == 'input') {//输入框形式的检测
+        if(data_sel.length<=0)return
         if (data_sel[0].length > 0) {//如果输入的有值
+            var temp
             switch (methodname) {
                 case 'ZX5'  :
                     nums = _inputCheck_Num(5, false,{},false,data_sel);
@@ -272,30 +309,37 @@ export function checkNum(methodname, data_sel, max_place, loc, selectType) {
                 case 'SSCL4ZX':
                     nums = _inputCheck_Num(4, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)*(loc-3)/24;
+                    store.state.nums = nums
                     break;
                 case 'SSCL3ZX':
                     nums = _inputCheck_Num(3, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
+                    store.state.nums = nums
                     break;
                 case 'SSCL3ZU3':
                     nums = _inputCheck_Num(3, false, _ZU3inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
+                    store.state.nums = nums
                     break;
                 case 'SSCL3ZU6':
                     nums = _inputCheck_Num(3, false, _ZU6inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
+                    store.state.nums = nums
                     break;
                 case 'SSCL3HHZX' :
                     nums = _inputCheck_Num(3, false, _HHZXcheck, true,data_sel);
                     nums=nums*loc*(loc-1)*(loc-2)/6;
+                    store.state.nums = nums
                     break;
                 case 'SSCL2ZX':
                     nums = _inputCheck_Num(2, false,{},false,data_sel);
                     nums=nums*loc*(loc-1)/2;
+                    store.state.nums = nums
                     break;
                 case 'SSCL2ZU':
                     nums = _inputCheck_Num(2, false, _ZU2inputCheck,true,data_sel);
                     nums=nums*loc*(loc-1)/2;
+                    store.state.nums = nums
                     break;
                 default   :
                     break;

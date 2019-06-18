@@ -441,6 +441,7 @@ export default {
                             background: '#1abc9c'
                         })
                     } else {
+                        console.log(typeof res.data.msg,typeof (res.data.msg == 'object'));
                         if (typeof (res.data.msg == 'object')) {
                             console.log('if');
                             Notify({

@@ -6,6 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         token:null,
+        nums:'',
+        newsel:'',
+        watchLock:false,
         islogin:false,
         hotOrLeak:'leak',
         keyboardshow:false,
@@ -26,6 +29,12 @@ export default new Vuex.Store({
     mutations: {
         UpdateCenterPop(state,flag){
             state.userCenterPop = flag
+        },
+        updateNewsel(state){
+            state.newsel = []
+        },
+        UpdateWatchLock(state,flag){
+            state.watchLock = flag
         },
         UpdateCountDown(state,params){
             state.countDown[params.key] = params.value
