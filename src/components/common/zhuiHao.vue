@@ -260,6 +260,7 @@ export default {
         ...mapMutations([
             'updateZhuihaoArr'
         ]),
+        
         update_list_steper(index){
             var total_money = 0
             var list = []
@@ -441,21 +442,18 @@ export default {
                             background: '#1abc9c'
                         })
                     } else {
-                        console.log(typeof res.data.msg,typeof (res.data.msg == 'object'));
-                        if (typeof (res.data.msg == 'object')) {
-                            console.log('if');
+                        if(res.data.msg==undefined){
                             Notify({
                                 message: res.data.msg.content[0],
                                 duration: 3000,
                                 background: '#1abc9c'
                             })
-                        } else {
-                            console.log('else');
+                        }else{
                             Notify({
-                                message: res.data.msg,
-                                duration: 3000,
-                                background: '#1abc9c'
-                            })
+                            message: res.data.msg,
+                            duration: 3000,
+                            background: '#1abc9c'
+                        })
                         }
                     }
                 })

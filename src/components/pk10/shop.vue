@@ -171,10 +171,10 @@ export default {
             if (this.currentGameType.includes('和值')) {
                 str = str.substring(0, str.length - 1)
             }
-            str = str.substring(0, str.length - 1)
-            console.log(str)
-            // this.zhushu = checkNum(this.currentLabel.methodname,this.newArr)
-            // console.log(this.currentLabel.methodname,this.zhushu);
+            
+            while (str.lastIndexOf('|')+1==str.length) { 
+                str = str.substring(0, str.length - 1)
+            }
             var obj = {
                 betparams: {
                     // prizegroup: parseInt(this.currentLabel.nowPrizeGroup),
@@ -225,30 +225,23 @@ export default {
         },
         sendOrder() {
             var obj = this.formatData()
-            console.log(obj)
             betting({ postdata: JSON.stringify(obj) })
                 .then(res => {
+                    console.log(res.data.msg);
                     if (res.data.code == 0) {
                         Notify({
                             message: '投注成功',
                             duration: 3000,
                             background: '#1abc9c'
                         })
+                        const userBalance = res.data.data.amount
+                        this.$store.commit('updateUserInfo',{userBalance})
                     } else {
-                        console.log(res.data.msg);
-                        if (typeof (res.data.msg == 'object')) {
-                            Notify({
-                                message: res.data.msg.content[0],
-                                duration: 3000,
-                                background: '#1abc9c'
-                            })
-                        } else {
-                            Notify({
-                                message: res.data.msg,
-                                duration: 3000,
-                                background: '#1abc9c'
-                            })
-                        }
+                        Notify({
+                            message: res.data.msg,
+                            duration: 3000,
+                            background: '#1abc9c'
+                        })
                     }
                 })
                 .catch(err => {})

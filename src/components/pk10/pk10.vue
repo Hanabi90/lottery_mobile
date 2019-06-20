@@ -717,7 +717,6 @@ export default {
                     })
                     this.$set(this.newArr, layoutArrindex, newArr)
                     break
-                    a
                 case '小':
                     this.$set(this.newArr, layoutArrindex, fullArr)
                     var newArr = this.newArr[layoutArrindex].filter(item => {
@@ -726,7 +725,7 @@ export default {
                     this.$set(this.newArr, layoutArrindex, newArr)
                     break
                 case '清':
-                    this.$set(this.newArr, layoutArrindex, [''])
+                    this.$set(this.newArr, layoutArrindex, [])
                     break
                 case '奇':
                     this.$set(this.newArr, layoutArrindex, fullArr)
@@ -787,58 +786,73 @@ export default {
                 this.selectarea = gameLabel.selectarea
             }
         },
+        tuodan(title,layoutItem,dan_Maxlen){
+            if(title=='胆码'){
+                var index = this.newArr[1].indexOf(layoutItem)
+                if(this.newArr[0].length>dan_Maxlen){
+                    this.newArr[0].shift()
+                }
+                if(index!=-1){
+                    this.newArr[1].splice(index,1)
+                }
+            }else{
+                var index = this.newArr[0].indexOf(layoutItem)
+                if(index!=-1){
+                    this.newArr[0].splice(index,1)
+                }
+            }
+        },
         selectBalls(balls) {
             const { layoutItem, title, layoutArrindex } = { ...balls }
             console.log(balls)
-            var gameType = this.currentGameType
-            var dan_Maxlen
-            switch (gameType) {
-                case '任选二中二':
-                    dan_Maxlen = 1
-                    break;
-                case '任选三中三':
-                    dan_Maxlen = 2
-                    break;
-                case '任选四中四':
-                    dan_Maxlen = 3
-                    break;
-                case '任选五中五':
-                    dan_Maxlen = 4
-                    break;
-                case '任选六中五':
-                    dan_Maxlen = 5
-                    break;
-                case '任选七中五':
-                    dan_Maxlen = 6
-                    break;
-                case '任选八中五':
-                    dan_Maxlen = 7
-                    break;
-            
-                default:
-                    break;
-            }
-            // console.log(layoutItem,title,layoutArrindex);
-            // console.log('layoutArrindex',layoutArrindex);
-            if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {
-                this.newArr[layoutArrindex].push(String(layoutItem))
-                this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort(
-                    (a, b) => {
-                        return a - b
-                    }
-                )
+            if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {this.newArr[layoutArrindex].push(String(layoutItem))
             } else {
-                this.newArr[layoutArrindex].splice(
-                    this.newArr[layoutArrindex].indexOf(layoutItem),
-                    1
-                )
+                this.newArr[layoutArrindex].splice(this.newArr[layoutArrindex].indexOf(layoutItem),1)
+            }
+            if(this.currentGameType.includes('任选胆拖')){
+                var gameType = this.currentLabel.desc
+                console.log(gameType)
+                var dan_Maxlen
+                switch (gameType) {
+                    case '任选二中二':
+                        dan_Maxlen = 1
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选三中三':
+                        dan_Maxlen = 2
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选四中四':
+                        dan_Maxlen = 3
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选五中五':
+                        dan_Maxlen = 4
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选六中五':
+                        dan_Maxlen = 5
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选七中五':
+                        dan_Maxlen = 6
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                    case '任选八中五':
+                        dan_Maxlen = 7
+                        this.tuodan(title,layoutItem,dan_Maxlen)
+                        break;
+                
+                    default:
+                        break;
+                }
+            }else{
                 this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort(
                     (a, b) => {
                         return a - b
                     }
                 )
             }
-            // console.log(this.newArr);
         },
         tuodan_renxuan(){
             
@@ -1432,7 +1446,6 @@ header
     width 375px
     background-color #fff
     padding-bottom: 100px;
-    height: 100%;
     &.gray
         background-color #eeeeee
 @keyframes bounceInDown
