@@ -9,13 +9,13 @@
                 <i class="icon"></i>
                 <span>优惠</span>
             </router-link>
-            <router-link v-if="isLogin==null" class="navItem navItem_register" to="/register" tag="li">注册</router-link>
+            <router-link v-if="!isLogin" class="navItem navItem_register" to="/register" tag="li">注册</router-link>
             <span v-else class="navItem navItem_register" tag="li" @click="$emit('bankCtrl',true)">存款</span>
             <router-link class="navItem navItem_wallet" to="/usercenter" tag="li">
                 <i class="icon"></i>
                 <span>钱包</span>
             </router-link>
-            <li v-if="isLogin==null" class="navItem navItem_login" @click="$emit('popCtrl',true)">
+            <li v-if="!isLogin" class="navItem navItem_login" @click="$emit('popCtrl',true)">
                 <i class="icon"></i>
                 <span>登录</span>
             </li>
@@ -35,7 +35,7 @@ export default {
     },
     computed:{
         isLogin(){
-            return this.$store.state.token
+            return this.$store.state.islogin
         }
     },
     methods: {}

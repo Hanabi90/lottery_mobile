@@ -233,7 +233,7 @@ export default {
     methods: {
         getMenu() {
             getMenu().then(res => {
-                var gameMenu = res.data.data
+                var gameMenu = res.data
                 for (const gameitem in gameMenu) {
                     if (gameMenu.hasOwnProperty(gameitem)) {
                         const element = gameMenu[gameitem]
@@ -271,13 +271,13 @@ export default {
                 console.log(i);
                 getCaizhong({ memnuid: i.menuid }).then(res => {
                 const data = {
-                    data:res.data,
+                    data:res,
                     lotteryid:i.lotteryid,
                     menuid:i.menuid,
                     title:i.title
                     }
                 if (data.data.code == 0) {
-                    localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res.data,title:i.title}))
+                    localStorage.setItem(i.menuid,JSON.stringify({lotteryid:i.lotteryid,data:res,title:i.title}))
                     this.$router.push({
                         name: 'pk10',
                         params: {

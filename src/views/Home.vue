@@ -38,17 +38,17 @@
             <div class="form">
                 <form>
                     <div class="form_group">
-                        <input type="text" placeholder="用户名" value="" v-model="userInfo.username">
+                        <input type="text" placeholder="用户名" value="" v-model="userInfo.username" @change="save_userInfo">
                     </div>
                     <div class="form_group pwd_group">
-                        <input type="password" placeholder="密码" value="" v-model="userInfo.loginpass">
+                        <input type="password" placeholder="密码" value="" v-model="userInfo.loginpass" @change="save_userInfo">
                         <a class="check_btn material-icons"></a>
                     </div>
                     <div class="form_tip"></div>
                     <div class="form_ctl">
                         <label class="label" >
                             <i :class="[{'active':isCheckBoxActive},'form_ckeckbox']" @click="rememberInfo">
-                                <input type="checkbox" value="on" checked>
+                                <input type="checkbox"  checked>
                             </i>
                             <!-- -->
                             记住用户名
@@ -77,8 +77,8 @@ export default {
     data() {
         return {
             userInfo:{
-                username:'devpeter',
-                loginpass:'1234qwer'
+                username:'',
+                loginpass:''
             },
             isCheckBoxActive:false,
             show: false,
@@ -103,38 +103,44 @@ export default {
                 '<<沙巴体育维护公告》沙巴体育将于 4 月 24 日 13:30 至 16:00 进行维护>>                              '
         }
     },
+    created(){
+        console.log('asdasd');
+        this.getbalance()
+        this.isCheckBoxActive = localStorage.getItem('isCheckBoxActive')
+        if(this.isCheckBoxActive){
+            var username = localStorage.getItem('username')
+            var loginpass = localStorage.getItem('loginpass')
+            this.$set(this.userInfo,'username',username)
+            this.$set(this.userInfo,'loginpass',loginpass)
+        }
+    },
     methods:{
         ...mapMutations([
             'updateToken',
-            'updateUserInfo'
+            'updateUserInfo',
+            'updateLogin'
         ]),
         getbalance(){
             getbalance().then((res)=>{
-                console.log(res)
-                const userBalance = res.data.data.money
+                const userBalance = res.data.money
                 this.updateUserInfo({userBalance})
+                this.updateLogin(true)
             })
         },
         handlelogin() {
+            sessionStorage.removeItem('token')
             login(this.userInfo).then((res) => {
-                console.log(res);
-                if (res.data.code == 0) {
+                if (res.code == 0) {
                     this.show = false
-                    const token = res.data.data.token
-                    this.updateToken({token,method:'login',nickname:res.data.data.nickname})
+                    const token = res.data.token
+                    this.updateToken({token,method:'login',nickname:res.data.nickname})
                     Notify({
                         message: '登录成功',
                         duration: 2000,
-                        background: '#c32026'
+                        background: '#33ad35'
                     });
                     
                 } else {
-                    Notify({
-                        message: res.data.msg,
-                        duration: 2000,
-                        background: '#c32026'
-                    })
-                    // this.$Message.error(res.msg)
                     this.login = {
                         username: '',
                         loginpass: ''
@@ -143,14 +149,41 @@ export default {
                 this.getbalance()
             })
         },
-
+        
         fixPop(){
             setTimeout(() => {
                 this.$refs.popup.inited = false
             }, 100);
         },
+        save_userInfo(){
+            var username = this.userInfo['username']
+            var loginpass = this.userInfo['loginpass']
+            if(this.isCheckBoxActive){
+                var username = this.userInfo['username']
+                var loginpass = this.userInfo['loginpass']
+                this.$set(this.userInfo,'username',username)
+                this.$set(this.userInfo,'loginpass',loginpass)
+                localStorage.setItem('username',username)
+                localStorage.setItem('loginpass',loginpass)
+            }
+        },
         rememberInfo(){
             this.isCheckBoxActive = !this.isCheckBoxActive
+            if(this.isCheckBoxActive){
+                var username = this.userInfo['username']
+                var loginpass = this.userInfo['loginpass']
+                this.$set(this.userInfo,'username',username)
+                this.$set(this.userInfo,'loginpass',loginpass)
+                localStorage.setItem('username',username)
+                localStorage.setItem('loginpass',loginpass)
+                localStorage.setItem('isCheckBoxActive',true)
+            }else{
+                this.$set(this.userInfo,'username','')
+                this.$set(this.userInfo,'loginpass','')
+                localStorage.removeItem('username')
+                localStorage.removeItem('loginpass')
+                localStorage.removeItem('isCheckBoxActive')
+            }
         },
         popCtrl(param){
             this.show = param

@@ -85,6 +85,9 @@ export default new Vuex.Store({
                 state.myPopShow = false
             }, 3000);
         },
+        updateLogin(state,flag){
+            state.islogin = flag
+        },
         updateToken(state,params){
             const { token,method,nickname } = { ...params }
             var newToken = null

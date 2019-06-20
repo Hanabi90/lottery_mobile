@@ -128,14 +128,14 @@ export default {
         }
         getuserlottery().then((res)=>{
             // console.log(res);
-            this.userlottery = res.data.data
+            this.userlottery = res.data
             for (const key in this.userlottery) {
                 this.option1.push({value:key,text:this.userlottery[key]})
             }
         })
         getchildlist().then((res)=>{
             // console.log('getchildlist',res);
-            this.childlist = res.data.data
+            this.childlist = res.data
             for (const key in this.childlist) {
                 this.option4.push({value:key,text:this.childlist[key].username})
             }
@@ -245,14 +245,14 @@ export default {
                     "p":this.page_index
                 }).then((res)=>{
                         this.buttonLoading = false
-                        var dataArr = res.data.data.page_data
+                        var dataArr = res.data.page_data
                         if(dataArr==undefined){
                             this.finished = true
                             this.listLoading = false
                             return
                         }
                         console.log(dataArr,this.finished,this.listLoading);
-                        this.page_index = res.data.data.page_index+1
+                        this.page_index = res.data.page_index+1
                         this.historyListArr=this.historyListArr.concat(dataArr)
                         this.listLoading = false;
                         console.log('if');
@@ -271,9 +271,9 @@ export default {
                     "endtime":endtime
 
                 }).then((res)=>{
-                    this.page_index = res.data.data.page_index+1
+                    this.page_index = res.data.page_index+1
                     this.buttonLoading = false
-                    this.historyListArr = res.data.data.page_data
+                    this.historyListArr = res.data.page_data
                     this.listLoading = false;
                     console.log('else');
                 })
@@ -292,7 +292,7 @@ export default {
         tabMenu(v){
             getuserlotterymethod({lotteryid:v}).then((res)=>{
                 console.log(res);
-                this.tempData = res.data.data
+                this.tempData = res.data
                 for (const key in this.tempData) {
                     console.log(this.tempData[key]);
                     this.option2.push({value:key,text:this.tempData[key].methodname})

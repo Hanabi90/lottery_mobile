@@ -115,6 +115,7 @@ export default {
         },
         logout(){
             logout().then((res)=>{
+                sessionStorage.removeItem('token')
                 this.updateToken({token:null,method:'logout',nickname:''})
                 this.$router.push('/')
                 Notify('您已经登出')

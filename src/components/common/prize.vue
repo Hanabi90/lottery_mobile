@@ -26,7 +26,7 @@ export default {
     methods: {
         getprize(){
             getprize({lotteryid:this.lotteryid,size:50}).then((res)=>{
-                this.prizeArr = res.data.data
+                this.prizeArr = res.data
             })
         }
     }

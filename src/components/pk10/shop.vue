@@ -227,18 +227,18 @@ export default {
             var obj = this.formatData()
             betting({ postdata: JSON.stringify(obj) })
                 .then(res => {
-                    console.log(res.data.msg);
-                    if (res.data.code == 0) {
+                    console.log(res.msg);
+                    if (res.code == 0) {
                         Notify({
                             message: '投注成功',
                             duration: 3000,
                             background: '#1abc9c'
                         })
-                        const userBalance = res.data.data.amount
+                        const userBalance = res.data.amount
                         this.$store.commit('updateUserInfo',{userBalance})
                     } else {
                         Notify({
-                            message: res.data.msg,
+                            message: res.msg,
                             duration: 3000,
                             background: '#1abc9c'
                         })

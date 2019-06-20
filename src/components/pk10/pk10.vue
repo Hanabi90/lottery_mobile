@@ -496,7 +496,7 @@ export default {
         getprizeHistory() {
             //{ state: '已开奖',num: '20190611-753', result: [{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false},{num:6,active:false,anim:false}] },
             getprize({ lotteryid: this.lotteryid, size: 50 }).then(res => {
-                this.prizeArr = res.data.data
+                this.prizeArr = res.data
                 var issue_1 = this.prizeArr[0].issue
                 var issue_2 = this.prizeArr[1].issue
                 this.$set(this.lotteryHistory[0], 'num', this.currentIssue)
@@ -597,9 +597,9 @@ export default {
             getissue(params).then(res => {
                 this.kaijiang()
 
-                this.currentIssue = res.data.data.issue
-                var ctime = res.data.data.nowtime
-                var stime = res.data.data.opentime
+                this.currentIssue = res.data.issue
+                var ctime = res.data.nowtime
+                var stime = res.data.opentime
                 stime = new Date(stime).getTime()
                 ctime = new Date(ctime).getTime()
                 var diff = stime - ctime
@@ -620,7 +620,7 @@ export default {
         },
         getCaizhong(id) {
             getCaizhong({ memnuid: id }).then(res => {
-                const data = res.data
+                const data = res
                 this.init(data.data, 1)
                 if (data.data.code == 1) {
                     Notify({
@@ -859,8 +859,8 @@ export default {
         },
         sendOrder() {
             // getissue({lotteryid:3535}).then((res)=>{
-            //     this.$set(this.betinfo.betparams,lt_issue_start,res.data.data.issue)
-            //     console.log(res.data.data.issue);
+            //     this.$set(this.betinfo.betparams,lt_issue_start,res.data.issue)
+            //     console.log(res.data.issue);
             // })
             this.$set(
                 this.betinfo.betparams.lt_project,

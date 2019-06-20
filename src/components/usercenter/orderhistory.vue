@@ -62,7 +62,6 @@
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
-            :offset="1"
             :immediate-check="false"
         >
             <van-collapse v-model="activeNames" accordion>
@@ -139,9 +138,9 @@ export default {
     },
     created() {
         getallordertype().then(res => {
-            this.allordertype = res.data.data
+            this.allordertype = res.data
             for (const item of this.allordertype) {
-                ;(item.text = item.description), (item.value = item.id)
+                (item.text = item.description), (item.value = item.id)
             }
             this.option3 = this.option3.concat(this.allordertype)
         })
@@ -150,13 +149,13 @@ export default {
         //     this.getorderhistory(false)
         // }
         getuserlottery().then(res => {
-            this.userlottery = res.data.data
+            this.userlottery = res.data
             for (const key in this.userlottery) {
                 this.option1.push({ value: key, text: this.userlottery[key] })
             }
         })
         getchildlist().then(res => {
-            this.childlist = res.data.data
+            this.childlist = res.data
             for (const key in this.childlist) {
                 this.option4.push({
                     value: key,
@@ -262,12 +261,12 @@ export default {
                     p:this.page_index
                 }).then(res => {
                     this.buttonLoading = false
-                    var dataArr = res.data.data.page_data
+                    var dataArr = res.data.page_data
                     if (dataArr == undefined) {
                         this.finished = true
                         return
                     }
-                    this.page_index = res.data.data.page_index + 1
+                    this.page_index = res.data.page_index + 1
                     this.historyListArr = this.historyListArr.concat(dataArr)
                     this.listLoading = false
                 })
@@ -287,8 +286,8 @@ export default {
                     pn:10,
                     p:this.page_index
                 }).then(res => {
-                        this.page_index = res.data.data.page_index + 1
-                        this.historyListArr = res.data.data.page_data
+                        this.page_index = res.data.page_index + 1
+                        this.historyListArr = res.data.page_data
                         this.listLoading = false
                         this.buttonLoading = false
                 })
