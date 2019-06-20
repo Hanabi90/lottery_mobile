@@ -55,13 +55,14 @@
             type="danger"
             loading-type="spinner"
             loading-text="查询中..."
-            @click="getorderhistory(false)"
+            @click.prevent="getorderhistory(false)"
         >查询</van-button>
         <van-list
             v-model="listLoading"
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
+            :offset="1"
             :immediate-check="false"
         >
             <van-collapse v-model="activeNames" accordion>
@@ -226,10 +227,13 @@ export default {
     },
     methods: {
         onLoad() {
-            console.log('object')
+            console.log('onLoadonLoadonLoadonLoadonLoad')
             this.getorderhistory(true)
+            this.listLoading = false
         },
         getorderhistory(flag) {
+            console.log('flag',flag);
+            console.log('this.page_index',this.page_index);
             const lottery = this.value1
             const modes = this.value2
             const ordertypeid = this.value3
@@ -242,12 +246,10 @@ export default {
                     ? ''
                     : this.childlist[this.value4]['username']
             var p = this.page_index
-            console.log('p',p);
             const includechild = this.value4 == '-1' ? 0 : 1
             if (this.buttonLoading == true) return
 
             if (flag) {
-                console.log('flag');
                 getorderhistory({
                     lottery,
                     modes,
@@ -255,26 +257,24 @@ export default {
                     starttime,
                     endtime,
                     username,
-                    p,
                     includechild,
                     pn:10,
                     p:this.page_index
                 }).then(res => {
-                    console.log('historyListArr', res)
                     this.buttonLoading = false
                     var dataArr = res.data.data.page_data
                     if (dataArr == undefined) {
                         this.finished = true
-                        this.listLoading = false
                         return
                     }
-                    console.log(res);
                     this.page_index = res.data.data.page_index + 1
                     this.historyListArr = this.historyListArr.concat(dataArr)
                     this.listLoading = false
                 })
                 this.buttonLoading = true
             } else {
+                this.historyListArr = []
+                this.page_index = 1
                 this.finished = false
                 getorderhistory({
                     lottery,
@@ -287,12 +287,9 @@ export default {
                     pn:10,
                     p:this.page_index
                 }).then(res => {
-                    console.log('resres',res);
-                        this.page_index = res.data.data.page_index
+                        this.page_index = res.data.data.page_index + 1
                         this.historyListArr = res.data.data.page_data
-                        console.log('fififififififi');
                         this.listLoading = false
-                        console.log('else')
                         this.buttonLoading = false
                 })
                 this.buttonLoading = true
