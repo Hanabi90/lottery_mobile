@@ -195,9 +195,27 @@ export const getallordertype = formData =>//验证密保问题
         url: 'report/getallordertype',
         data: qs.stringify(formData)
     })
+export const getmessage = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getmessage',
+        data: qs.stringify(formData)
+    })
 
-
-
+export const sendmessagetochild = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/sendmessagetochild',
+        data: qs.stringify(formData)
+    })
+export const checkistopproxy = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/checkistopproxy',
+        data: qs.stringify(formData)
+    })
+    
+    
 /* {
     "betparams": {
         "iWalletType": 1,
