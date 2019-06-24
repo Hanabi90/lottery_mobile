@@ -260,8 +260,8 @@ export default {
         checksecpass(secpass) {
             secpass = this.$RSAencrypt(secpass)
             checksecpass({secpass:secpass}).then(res => {
-                const code = res.data.code
-                if(res.data.code==0){
+                const code = res.code
+                if(res.code==0){
                     this.isseclogin = true
                     Notify('成功登录资金账户')
                     this.getuserbankinfo(secpass)

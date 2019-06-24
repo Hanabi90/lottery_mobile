@@ -38,6 +38,7 @@
                 <bank @closePop=closePop v-if="showBank"></bank>
                 <bethistory v-if="navlist[5].active"></bethistory>
                 <orderhistory v-if="navlist[1].active"></orderhistory>
+                <accountSet v-if="navlist[0].active"></accountSet>
             </div>
         </van-popup>
     </div>
@@ -51,6 +52,7 @@ import bank from '../components/usercenter/bank.vue'
 import bethistory from '../components/usercenter/bethistory'
 import myHeader from '../components/usercenter/header'
 import orderhistory from '../components/usercenter/orderhistory'
+import accountSet from '../components/usercenter/accountSet'
 import {mapMutations} from 'vuex'
 
 export default {
@@ -131,7 +133,8 @@ export default {
         bethistory,
         orderhistory,
         bank,
-        myHeader
+        myHeader,
+        accountSet
     }
 }
 </script>
@@ -214,7 +217,7 @@ header
             color #4a84da
             margin-bottom 8px
 .popwrap
-    margin-top 45px
+    margin-top 50px
     width 375px
     background-color #fff
     min-height 100vh

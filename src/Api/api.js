@@ -232,7 +232,6 @@ export const checkistopproxy = formData =>//验证密保问题
         url: 'user/checkistopproxy',
         data: qs.stringify(formData)
     })
-
     
 /* {
     "betparams": {
