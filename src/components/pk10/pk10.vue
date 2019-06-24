@@ -73,14 +73,11 @@
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao v-if="iszhuihaoShow" :currentIssue=currentIssue></zhuihao>
-                <!-- <bethistory v-if="betHistoryShow" :lotteryid="lotteryid"></bethistory> -->
-                <quickHistory v-if="betHistoryShow" ></quickHistory>
+                <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue"></zhuihao>
+                <quickHistory v-if="betHistoryShow"></quickHistory>
             </div>
         </Popup>
-        <Popup>
-            
-        </Popup>
+        <Popup></Popup>
         <div class="slide-wrapper">
             <swiper
                 ref="mySwiper"
@@ -214,7 +211,7 @@
             ref="shop"
             @getPrize="getPrizeCtrl"
             @close="popCtrl"
-            @mutaNewArr='mutaNewArr'
+            @mutaNewArr="mutaNewArr"
             :currentLabel="currentLabel"
             :newArr="newArr"
             :betinfo="betinfo"
@@ -255,8 +252,8 @@ import { Popup } from 'vant'
 import myPopup from '@/components/lottery/popup'
 import shop from './shop'
 import divtext from './1'
-import { mapState,mapMutations } from 'vuex'
-import { checkNum,_inptu_deal } from '../../utils/checkNum'
+import { mapState, mapMutations } from 'vuex'
+import { checkNum, _inptu_deal } from '../../utils/checkNum'
 import bethistory from '../usercenter/bethistory'
 import zhuihao from '@/components/common/zhuiHao'
 import myHeader from '../usercenter/header'
@@ -271,14 +268,14 @@ export default {
     },
     data() {
         return {
-            PopupAnimtting:false,
+            PopupAnimtting: false,
             lotteryResultsStyleFlag: 0,
             prizeHistoryShow: false,
-            iszhuihaoShow:false,
+            iszhuihaoShow: false,
             lotteryid: '',
             prizeArr: [],
             betHistoryShow: false,
-            popCtrlShow:false,
+            popCtrlShow: false,
             list: ['万位', '千位', '百位', '十位', '个位'],
             result: [],
             currentIssue: '',
@@ -448,15 +445,13 @@ export default {
         }
     },
     methods: {
-        ...mapMutations([
-            'updateZhuihaoArr'
-        ]),
-        mutaNewArr(arr){
+        ...mapMutations(['updateZhuihaoArr']),
+        mutaNewArr(arr) {
             this.newArr = arr
-            this.$store.commit('UpdateWatchLock',false)
+            this.$store.commit('UpdateWatchLock', false)
         },
         init(params) {
-            this.updateZhuihaoArr({type:'empty'})
+            this.updateZhuihaoArr({ type: 'empty' })
             const { data, menuid, lotteryid, title } = { ...params }
             this.gameTitle = title
             this.jsonData = data
@@ -471,25 +466,25 @@ export default {
                 this.jsonData[0].label[0]
             )
         },
-        updateNums(){
+        updateNums() {
             console.log('updateNums')
             this.$refs.shop.zhushu = this.$store.state.nums
             var temp = new Set(this.$store.state.newsel)
             temp = Array.from(temp)
             this.newaArr = temp
         },
-        deleteInvalidValue(){
+        deleteInvalidValue() {
             this.inputVal = this.$store.state.newsel.toString()
         },
-        emptyinputVal(){
+        emptyinputVal() {
             this.inputVal = ''
             this.$refs.shop.zhushu = '0'
             this.result = []
             this.$store.commit('updateNewsel')
         },
-        inputCheck(val){
+        inputCheck(val) {
             var methodname = this.currentLabel.methodname
-            var arr = _inptu_deal(val,this.currentLabel.methodname)
+            var arr = _inptu_deal(val, this.currentLabel.methodname)
             arr = new Set(arr)
             arr = Array.from(arr)
             this.newArr = [arr]
@@ -545,34 +540,33 @@ export default {
                 }, 3000)
             })
         },
-        popCtrl(flag, name,data) {
+        popCtrl(flag, name, data) {
             console.log(flag)
-            if(flag=='close'){
+            if (flag == 'close') {
                 this.PopupAnimtting = false
                 this.prizeHistoryShow = false
                 this.betHistoryShow = false
                 this.iszhuihaoShow = false
                 this.popCtrlShow = false
-            }else{
+            } else {
                 this.popCtrlShow = true
                 switch (name) {
-                case 'prizeHistory':
-                    console.log('prizeHistory')
-                    this.prizeHistoryShow = true
-                    break;
-                case 'bethistory':
-                console.log('bethistory');
-                    this.betHistoryShow = true
-                    break;
-                case 'zhuihao':
-                console.log('zhuihao');
-                    this.iszhuihaoShow = true
-                    break;
-                default:
-                    break;
+                    case 'prizeHistory':
+                        console.log('prizeHistory')
+                        this.prizeHistoryShow = true
+                        break
+                    case 'bethistory':
+                        console.log('bethistory')
+                        this.betHistoryShow = true
+                        break
+                    case 'zhuihao':
+                        console.log('zhuihao')
+                        this.iszhuihaoShow = true
+                        break
+                    default:
+                        break
                 }
             }
-            
         },
         kaijiang() {
             var arr1 = [0, 0, 0, 0, 0]
@@ -768,7 +762,7 @@ export default {
         tabGameType(gameLabel, gtitle, index, labelArr) {
             setTimeout(() => {
                 this.emptyinputVal()
-            }, 0);
+            }, 0)
             this.currentLabel = labelArr.label[index]
             this.getPrizeCtrl()
             if (gameLabel.selectarea.type == 'input') {
@@ -788,67 +782,71 @@ export default {
                 this.selectarea = gameLabel.selectarea
             }
         },
-        tuodan(title,layoutItem,dan_Maxlen){
-            if(title=='胆码'){
+        tuodan(title, layoutItem, dan_Maxlen) {
+            if (title == '胆码') {
                 var index = this.newArr[1].indexOf(layoutItem)
-                if(this.newArr[0].length>dan_Maxlen){
+                if (this.newArr[0].length > dan_Maxlen) {
                     this.newArr[0].shift()
                 }
-                if(index!=-1){
-                    this.newArr[1].splice(index,1)
+                if (index != -1) {
+                    this.newArr[1].splice(index, 1)
                 }
-            }else{
+            } else {
                 var index = this.newArr[0].indexOf(layoutItem)
-                if(index!=-1){
-                    this.newArr[0].splice(index,1)
+                if (index != -1) {
+                    this.newArr[0].splice(index, 1)
                 }
             }
         },
         selectBalls(balls) {
             const { layoutItem, title, layoutArrindex } = { ...balls }
             console.log(balls)
-            if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {this.newArr[layoutArrindex].push(String(layoutItem))
+            if (this.newArr[layoutArrindex].indexOf(layoutItem) == -1) {
+                this.newArr[layoutArrindex].push(String(layoutItem))
             } else {
-                this.newArr[layoutArrindex].splice(this.newArr[layoutArrindex].indexOf(layoutItem),1)
+                this.newArr[layoutArrindex].splice(
+                    this.newArr[layoutArrindex].indexOf(layoutItem),
+                    1
+                )
             }
-            if(this.currentGameType.includes('任选胆拖')){
+            if (this.currentGameType.includes('任选胆拖')) {
                 var gameType = this.currentLabel.desc
                 console.log(gameType)
                 var dan_Maxlen
                 switch (gameType) {
                     case '任选二中二':
                         dan_Maxlen = 1
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选三中三':
                         dan_Maxlen = 2
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选四中四':
                         dan_Maxlen = 3
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选五中五':
                         dan_Maxlen = 4
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选六中五':
                         dan_Maxlen = 5
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选七中五':
                         dan_Maxlen = 6
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
                     case '任选八中五':
                         dan_Maxlen = 7
-                        this.tuodan(title,layoutItem,dan_Maxlen)
-                        break;
-                
+                        this.tuodan(title, layoutItem, dan_Maxlen)
+                        break
+
                     default:
-                        break;
+                        break
                 }
-            }else{
+            } else {
                 this.newArr[layoutArrindex] = this.newArr[layoutArrindex].sort(
                     (a, b) => {
                         return a - b
@@ -856,9 +854,7 @@ export default {
                 )
             }
         },
-        tuodan_renxuan(){
-            
-        },
+        tuodan_renxuan() {},
         sendOrder() {
             // getissue({lotteryid:3535}).then((res)=>{
             //     this.$set(this.betinfo.betparams,lt_issue_start,res.data.issue)
@@ -876,11 +872,11 @@ export default {
         ...mapState(['userInfo']),
         isShowCheckGroup() {
             var renxuan = this.currentGameType.includes('任')
-            if(this.gameTitle.includes('11')){
+            if (this.gameTitle.includes('11')) {
                 return false
-            }else{
+            } else {
                 if (renxuan) {
-                var zhixuan = this.currentGameType.includes('直')
+                    var zhixuan = this.currentGameType.includes('直')
                     var fushi = this.currentGameType.includes('复')
                     if (renxuan && zhixuan && fushi) {
                         return false
@@ -891,7 +887,6 @@ export default {
                     return false
                 }
             }
-            
         },
         swiper() {
             return this.$refs.mySwiper.swiper
@@ -967,10 +962,7 @@ export default {
         }
     },
     mounted() {
-        console.log(
-            'this.$store.state.userInfo',
-            this.userInfo.money
-        )
+        console.log('this.$store.state.userInfo', this.userInfo.money)
         this.nowIndex = this.$refs.mySwiper.swiper.realIndex
     },
     components: {
@@ -1448,7 +1440,7 @@ header
     margin-top 45px
     width 375px
     background-color #fff
-    padding-bottom: 100px;
+    padding-bottom 100px
     &.gray
         background-color #eeeeee
 @keyframes bounceInDown
@@ -1474,7 +1466,7 @@ header
         transform translateZ(0)
 .betHistory_pop
     height 100%
-    background: #eeeeee
+    background #eeeeee
     &.transform_fix
         transform none
         top 0

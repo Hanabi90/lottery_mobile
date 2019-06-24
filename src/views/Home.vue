@@ -15,20 +15,30 @@
             </div>
         </div>
         <div class="banner">
-            <!-- swiper -->
-            <swiper :options="swiperOption" class="slide-container">
+            <!-- <swiper :options="swiperOption" class="slide-container">
                 <swiper-slide class="slide-1"></swiper-slide>
                 <swiper-slide class="slide-2"></swiper-slide>
                 <swiper-slide class="slide-3"></swiper-slide>
                 <swiper-slide class="slide-4"></swiper-slide>
                 <swiper-slide class="slide-5"></swiper-slide>
                 <div class="swiper-pagination" slot="pagination"></div>
-                <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
-                <!-- <div class="swiper-button-next" slot="button-next"></div> -->
-            </swiper>
+            </swiper> -->
+            <van-swipe :autoplay="3000" indicator-color="white">
+                <van-swipe-item v-for="(imgUrl, index) in swiperImgs" :key="imgUrl">
+                    <van-image
+                        width="100%"
+                        height="187.5px"
+                        fit="cover"
+                        :src="imgUrl"
+                    />
+                </van-swipe-item>
+            </van-swipe>
             <div class="marquee">
                 <div class="box">
-                    <marquee-text :duration="15">{{this.test_text}}</marquee-text>
+                   <van-notice-bar mode="link" :speed="noticeStr.length/50">
+                        {{noticeStr}}
+                    </van-notice-bar>
+                    <!-- <marquee-text :duration="15">{{this.test_text}}</marquee-text> -->
                 </div>
             </div>
         </div>
@@ -66,11 +76,11 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
-import MarqueeText from 'vue-marquee-text-component'
+// import MarqueeText from 'vue-marquee-text-component'
 import GameList from '../components/home/GameList'
-import { Popup,Notify } from 'vant'
+import { Popup,Notify,Swipe, SwipeItem,Image,NoticeBar } from 'vant'
 import 'vant/lib/popup/style/'
-import {login,config,getbalance} from '../Api/api'
+import {login,config,getbalance,getnotice} from '../Api/api'
 import {mapMutations} from 'vuex'
 import fotter from '../components/common/footer'
 export default {
@@ -99,8 +109,14 @@ export default {
                     prevEl: '.swiper-button-prev'
                 }
             },
-            test_text:
-                '<<沙巴体育维护公告》沙巴体育将于 4 月 24 日 13:30 至 16:00 进行维护>>                              '
+            swiperImgs:[
+                require('../assets/images/banner1803.jpg'),
+                require('../assets/images/banner1809.jpg'),
+                require('../assets/images/banner1818.jpg'),
+                require('../assets/images/banner1819.jpg'),
+                require('../assets/images/banner1820.jpg')
+            ],
+            noticeStr:'***'.repeat(100)
         }
     },
     created(){
@@ -122,9 +138,12 @@ export default {
         ]),
         getbalance(){
             getbalance().then((res)=>{
-                const userBalance = res.data.money
-                this.updateUserInfo({userBalance})
-                this.updateLogin(true)
+                if(res.code==0){
+                    const userBalance = res.data.money
+                    this.updateUserInfo({userBalance})
+                    this.updateLogin(true)
+                    this.getnotice()
+                }
             })
         },
         handlelogin() {
@@ -139,7 +158,7 @@ export default {
                         duration: 2000,
                         background: '#33ad35'
                     });
-                    
+                    this.getnotice()
                 } else {
                     this.login = {
                         username: '',
@@ -149,7 +168,20 @@ export default {
                 this.getbalance()
             })
         },
-        
+        getnotice(){
+            getnotice().then((res)=>{
+                if(res.code == 0){
+                    var str = ''
+                    var noticeArr = res.data.results
+                    for (let i = 0; i < noticeArr.length; i++) {
+                        const item = noticeArr[i];
+                        console.log(item);
+                        str= str + item.subject+'    '+item.content+'          '
+                    }
+                    this.noticeStr = str
+                }
+            })
+        },
         fixPop(){
             setTimeout(() => {
                 this.$refs.popup.inited = false
@@ -190,9 +222,12 @@ export default {
         }
     },
     components: {
+        "van-swipe":Swipe, "van-swipe-item":SwipeItem,
+        "van-image":Image,
         swiper,
         swiperSlide,
-        MarqueeText,
+        "van-notice-bar":NoticeBar,
+        // MarqueeText,
         GameList,
         Popup,
         Notify,
@@ -348,8 +383,8 @@ export default {
         z-index 1
         color #fff
         font-size 10px
-        height 20px
-        line-height 20px
+        // height 20px
+        // line-height 20px
         background-color rgba(0, 0, 0, 0.7)
         .box
             display flex
@@ -417,15 +452,6 @@ export default {
     text-align right
     padding-right 10px
     padding-bottom 14px
-.slide-1
-    background-image url('../assets/images/banner1803.jpg')
-.slide-2
-    background-image url('../assets/images/banner1809.jpg')
-.slide-3
-    background-image url('../assets/images/banner1818.jpg')
-.slide-4
-    background-image url('../assets/images/banner1819.jpg')
-.slide-5
-    background-image url('../assets/images/banner1820.jpg')
+
 </style>
 

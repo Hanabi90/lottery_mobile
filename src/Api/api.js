@@ -43,8 +43,8 @@ export const getmethod = formData =>
 //获取系统通知
 export const getnotice = formData =>
     service.request({
-        method: 'get',
-        url: `notice/get/${formData}`
+        method: 'post',
+        url: `getnotice`
     })
 
 export const getCaizhong = formData =>
@@ -201,7 +201,25 @@ export const getmessage = formData =>//验证密保问题
         url: 'user/getmessage',
         data: qs.stringify(formData)
     })
-
+export const getmessagecontent = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getmessagecontent',
+        data: qs.stringify(formData)
+    })
+export const deletemessage = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/deletemessage',
+        data: qs.stringify(formData)
+    })
+export const messagereply = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/messagereply',
+        data: qs.stringify(formData)
+    })
+    
 export const sendmessagetochild = formData =>//验证密保问题
     service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
         method: 'post',
@@ -214,7 +232,7 @@ export const checkistopproxy = formData =>//验证密保问题
         url: 'user/checkistopproxy',
         data: qs.stringify(formData)
     })
-    
+
     
 /* {
     "betparams": {
