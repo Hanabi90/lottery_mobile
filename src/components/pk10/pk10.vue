@@ -74,7 +74,7 @@
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
                 <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue"></zhuihao>
-                <quickHistory v-if="betHistoryShow"></quickHistory>
+                <bethistory v-if="betHistoryShow"></bethistory>
             </div>
         </Popup>
         <Popup></Popup>
@@ -258,7 +258,6 @@ import bethistory from '../usercenter/bethistory'
 import zhuihao from '@/components/common/zhuiHao'
 import myHeader from '../usercenter/header'
 import prize from '../common/prize'
-import quickHistory from './quickHistory'
 export default {
     watch: {
         // inputVal(nVal, oVal) {
@@ -985,7 +984,6 @@ export default {
         myHeader,
         prize,
         zhuihao,
-        quickHistory
     }
 }
 </script>

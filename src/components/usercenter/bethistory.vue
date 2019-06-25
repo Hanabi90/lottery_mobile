@@ -75,6 +75,7 @@
                 :label="item.methodname" 
                 :value="item.issue+' '+item.writetime|test"
                 label-class="col_label"
+                v-show="item.iscancel==0"
                 >
                     <Cell>
                         投注内容:
@@ -97,6 +98,17 @@
                         <span class="cell_span" v-if="item.prizestatus=='1'">已派奖</span>
                         <span class="cell_span" v-else>未派奖</span>
                     </Cell>
+                    <Cell>
+                        自身返点:
+                        <span class="cell_span">{{item.diffmoney}}</span>
+                    </Cell>
+                    <Cell>
+                        奖金组:
+                        <span class="cell_span">{{item.prizegroup}}</span>
+                    </Cell>
+                    <Cell v-if="item.can">
+                        <van-button @click="ordercancel(item.projectid,index)" type="info">撤单</van-button>
+                    </Cell>
                 </van-collapse-item>
             </van-collapse>
         </van-list>
@@ -104,8 +116,8 @@
 </template>
 <script>
 import myHeader from './header'
-import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell  } from 'vant'
-import { getbethistory,getuserlottery,getuserlotterymethod,getchildlist } from '../../Api/api'
+import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify  } from 'vant'
+import { getbethistory,getuserlottery,getuserlotterymethod,getchildlist,ordercancel } from '../../Api/api'
 export default {
     name: 'tab-bar-demo',
     components: {
@@ -280,6 +292,18 @@ export default {
                 this.buttonLoading = true
                 }
             
+        },
+        ordercancel(id,index){
+            ordercancel({projectid:id}).then((res)=>{
+                if(res.code==0){
+                    Notify({
+                    message: '撤单成功',
+                    duration: 1000,
+                    background: '#1989fa'
+                });
+                this.historyListArr.splice(index,1)
+                }
+            })
         },
         dateShowCtrl(flag){
             this.dateShow = true

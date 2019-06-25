@@ -266,17 +266,14 @@ export default {
             var list = []
             this.zhuitouArr[this.zhuihao_type-1][index].total_money = this.zhuitouArr[this.zhuihao_type-1][index].now_money*this.zhuitouArr[this.zhuihao_type-1][index].beishu
 
-            // debugger
             for (let i = 0; i < this.zhuitouArr[this.zhuihao_type-1].length; i++) {
                 const el = this.zhuitouArr[this.zhuihao_type-1][i];
                 // if(el.checked==false)return
-                this.$set(this.bettraceparams.lt_trace_issues[i],'lt_trace_times',el.beishu)
                 if(el.checked){
+                    this.$set(this.bettraceparams.lt_trace_issues[i],'lt_trace_times',el.beishu)
                     el.now_money = this.total_count['total_amount']*el.beishu
                     total_money += el.now_money
                     el.total_money =total_money
-                }else{
-
                 }
             }
             this.$forceUpdate()
@@ -435,7 +432,7 @@ export default {
             bettraceparams:this.bettraceparams
             }) })
                 .then(res => {
-                    if (res.data.code == 0) {
+                    if (res.code == 0) {
                         Notify({
                             message: '投注成功',
                             duration: 3000,

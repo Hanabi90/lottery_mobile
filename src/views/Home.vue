@@ -175,7 +175,6 @@ export default {
                     var noticeArr = res.data.results
                     for (let i = 0; i < noticeArr.length; i++) {
                         const item = noticeArr[i];
-                        console.log(item);
                         str= str + item.subject+'    '+item.content+'          '
                     }
                     this.noticeStr = str

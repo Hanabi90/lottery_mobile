@@ -226,10 +226,22 @@ export const sendmessagetochild = formData =>//验证密保问题
         url: 'user/sendmessagetochild',
         data: qs.stringify(formData)
     })
+export const sendmessagetoparent = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/sendmessagetoparent',
+        data: qs.stringify(formData)
+    })
 export const checkistopproxy = formData =>//验证密保问题
     service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
         method: 'post',
         url: 'user/checkistopproxy',
+        data: qs.stringify(formData)
+    })
+export const ordercancel = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'ordercancel',
         data: qs.stringify(formData)
     })
     

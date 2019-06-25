@@ -60,11 +60,16 @@ export default {
          console.log('key')
         this.activeKey = key;
       }
-    }
+    },
 }
 </script>
 
 <style lang="stylus" scoped>
 .accountSet
-  display: flex;
+    display flex
+    .van-sidebar
+        flex 0.25
+    .components
+        flex 0.75
+
 </style>

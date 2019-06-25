@@ -87,6 +87,10 @@ export default new Vuex.Store({
         },
         updateLogin(state,flag){
             state.islogin = flag
+            if(state.islogin){
+                var newNickName = localStorage.getItem('nickname')
+                state.userInfo['nickname'] = newNickName
+            }
         },
         updateToken(state,params){
             const { token,method,nickname } = { ...params }
@@ -112,7 +116,7 @@ export default new Vuex.Store({
             }
             state.userInfo['nickname'] = newNickname
             sessionStorage.setItem('token', newToken)
-            sessionStorage.setItem('nickname', newNickname)
+            localStorage.setItem('nickname',newNickname)
         },
         updateUserInfo(state, params) {
             // console.log(params)
@@ -120,6 +124,10 @@ export default new Vuex.Store({
             if(userBalance){
                 state.userInfo.money = parseInt(userBalance)
             }
+        },
+        editNickName(state,newNickname){
+            state.userInfo['nickname'] = newNickname
+            localStorage.setItem('nickname',newNickname)
         }
     },
     actions: {

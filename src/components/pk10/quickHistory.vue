@@ -10,14 +10,24 @@
             >
                 <div slot="action" @click="onSearch">搜索下级</div>
             </Search>
-            <div class="sysMsg flex">
+            <!-- <div class="sysMsg flex">
                 <van-icon name="chat-o" size="40px" info="9" color="#07c160"/>
                 <span>系统讯息</span>
                 <span></span>
-            </div>
+            </div> -->
             <van-collapse v-model="activeNames">
                 <van-collapse-item size="large" title="线上客服" name="1" icon="service-o"></van-collapse-item>
-                <van-collapse-item size="large" title="上级用户" name="2" icon="manager-o"></van-collapse-item>
+                <van-collapse-item v-if="!istopproxy" size="large" title="上级用户" name="2" icon="manager-o">
+                    <div class="toParent" @click="chatCtrl({username:'上级',userid:'-1'},true,true)" >
+                        <van-icon
+                            class="closeChat"
+                            name="chat-o"
+                            color="#5ff11d"
+                            size="20px"
+                        />
+                        <span>发送信息给上级</span>
+                    </div>
+                </van-collapse-item>
                 <van-collapse-item size="large" title="未读信息" name="3" icon="comment" class="msg_xiala">
                     <van-swipe-cell v-for="(msgItem, index) in msgArr.page_data" :key="index + msgItem.id" :right-width="60" :left-width="60"  :on-close="onClose">
                         <van-button square slot="left" type="danger" text="选择"/>
@@ -31,7 +41,7 @@
                         <van-button square slot="right" type="danger" text="删除"/>
                     </van-swipe-cell>
                 </van-collapse-item>
-                <van-collapse-item size="large" title="下级用户" name="4" icon="cluster">
+                <van-collapse-item v-if="childlist.length>0" size="large" title="下级用户" name="4" icon="cluster">
                     <div
                         @click="chatCtrl(item,true,true)"
                         class="xiaji_user"
@@ -121,7 +131,8 @@ import {
     checkistopproxy,
     getmessagecontent,
     deletemessage,
-    messagereply
+    messagereply,
+    sendmessagetoparent
 } from '../../Api/api'
 export default {
     data() {
@@ -142,7 +153,8 @@ export default {
             currentmsgentry:'',
             currentmsgId:'',
             currentIndex:-1,
-            isReply:false
+            isReply:false,
+            istopproxy:false
             
         }
     },
@@ -222,16 +234,26 @@ export default {
             }
             if(this.isReply){
                this.replyMsg() 
+            }else if(this.currentUser=='上级'){
+                this.sendmessagetoparent()
             }else{
                 this.sendmessagetochild()
             }
-            
-            
-            
         },
         clearmsg() {
             this.msg_title = ''
             this.msg_content = ''
+        },
+        sendmessagetoparent(){
+            var params = {
+                subject: this.msg_title,
+                content: this.msg_content
+            }
+            sendmessagetoparent(params).then(res => {
+                if (res.code == 0) {
+                    Toast.success(`发送信息给\n 上级成功`)
+                }
+            })
         },
         sendmessagetochild() {
             var params = {
@@ -278,7 +300,9 @@ export default {
         },
         checkistopproxy() {
             checkistopproxy().then(res => {
-                console.log('checkistopproxy', res)
+                if(res.data.istopproxy==true){
+                    this.istopproxy = true
+                }
             })
         }
     },
@@ -372,4 +396,9 @@ export default {
     display flex
     justify-content: space-around;
     padding: 0 61px;
+.toParent
+    align-items center
+    display flex
+    span
+        margin-left 10px
 </style>
