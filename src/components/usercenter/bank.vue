@@ -136,6 +136,7 @@ import {
     getuserbankinfo, //查询银行卡
     adduserbank //添加銀行卡
 } from '../../Api/api'
+import md5 from 'js-md5'
 const citys = {
     浙江: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
     福建: ['福州', '厦门', '莆田', '三明', '泉州']
@@ -258,7 +259,7 @@ export default {
             }
         },
         checksecpass(secpass) {
-            secpass = this.$RSAencrypt(secpass)
+            secpass = this.$RSAencrypt(md5(secpass))
             checksecpass({secpass:secpass}).then(res => {
                 const code = res.code
                 if(res.code==0){

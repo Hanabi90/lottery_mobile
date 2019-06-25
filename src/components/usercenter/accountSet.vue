@@ -13,14 +13,14 @@
         </van-sidebar>
         <div class="components">
           <KaiHuZhongXin v-if="activeKey==0"></KaiHuZhongXin>
-          <YongHuLieBiao v-if="activeKey==1"></YongHuLieBiao>
-          <WoDeJiangJin v-if="activeKey==2"></WoDeJiangJin>
-          <ZhaoHuiZiJin v-if="activeKey==3"></ZhaoHuiZiJin>
-          <MiBaoSheZhi v-if="activeKey==4"></MiBaoSheZhi>
-          <XiuGaiDengLu v-if="activeKey==5"></XiuGaiDengLu>
-          <XiuGaiZiJin v-if="activeKey==6"></XiuGaiZiJin>
-          <LianXiXinXi v-if="activeKey==7"></LianXiXinXi>
-          <TuanDuiYue v-if="activeKey==8"></TuanDuiYue>
+          <YongHuLieBiao v-else-if="activeKey==1"></YongHuLieBiao>
+          <WoDeJiangJin v-else-if="activeKey==2"></WoDeJiangJin>
+          <MiBaoSheZhi :zhaohuizijin="true" v-else-if="activeKey==3"></MiBaoSheZhi>
+          <MiBaoSheZhi v-else-if="activeKey==4"></MiBaoSheZhi>
+          <XiuGaiDengLu v-else-if="activeKey==5"></XiuGaiDengLu>
+          <XiuGaiZiJin v-else-if="activeKey==6"></XiuGaiZiJin>
+          <LianXiXinXi v-else-if="activeKey==7"></LianXiXinXi>
+          <TuanDuiYue v-else></TuanDuiYue>
         </div>
     </div>
 </template>
