@@ -1,65 +1,77 @@
 <template>
-  <div>
-    <template v-if="!unSetMiBao">
-      <div class="serverQue">
-        <p v-if="serverQue!=-1">{{quesArr[serverQue].text}}</p>
-        <van-field
-          v-model="serverQue_ans"
-          placeholder="输入密保1答案(长度小于25)"
-          type="text"
-          required
-          clearable
-        />
-        <van-button type="warning" @click="checksequestion(true)">验证密保</van-button>
-      </div>
-    </template>
-    <template v-else-if="unSetMiBao&&!zhaohuizijin">
-      <div class="header">密保设定</div>
-      <div class="que_wrap">
-        <p>
-          <span class="red">*必填</span> 问题1：
-        </p>
-        <van-dropdown-menu :overlay="false">
-          <van-dropdown-item v-model="value1" :options="quesArr"/>
-        </van-dropdown-menu>
-        <van-field v-model="que1_ans" placeholder="输入密保1答案(长度小于25)" type="text" required clearable/>
-      </div>
-      <div class="que_wrap">
-        <p>
-          <span class="red">*必填</span> 问题2：
-        </p>
-        <van-dropdown-menu :overlay="false">
-          <van-dropdown-item v-model="value2" :options="quesArr"/>
-        </van-dropdown-menu>
-        <van-field v-model="que2_ans" placeholder="输入密保2答案(长度小于25)" type="text" required clearable/>
-      </div>
-      <div class="buttons">
-        <van-button type="warning" @click="setsequestion">修改密保</van-button>
-      </div>
-    </template>
-    <div v-else>
-      <div class="header">资金密码找回</div>
-      <van-field
-        v-model="newZijinPass"
-        placeholder="请设定资金密码"
-        type="password"
-        required
-        clearable
-        error-message="（由字母和数字组成6-16个字符,资金密码不能与登录密码相同）"
-      />
-      <van-field
-        v-model="confirm_newZijinPass"
-        placeholder="再次输入资金密码"
-        type="password"
-        required
-        clearable
-        error-message="（由字母和数字组成6-16个字符,资金密码不能与登录密码相同）"
-      />
-      <div class="buttons">
-        <van-button type="warning" @click="changeusersecpass">设定新的资金密码</van-button>
-      </div>
+    <div>
+        <template v-if="!unSetMiBao">
+            <div class="serverQue">
+                <p v-if="serverQue!=-1">{{quesArr[serverQue].text}}</p>
+                <van-field
+                    v-model="serverQue_ans"
+                    placeholder="输入密保1答案(长度小于25)"
+                    type="text"
+                    required
+                    clearable
+                />
+                <van-button type="warning" @click="checksequestion(true)">验证密保</van-button>
+            </div>
+        </template>
+        <template v-else-if="unSetMiBao&&!zhaohuizijin">
+            <div class="header">密保设定</div>
+            <div class="que_wrap">
+                <p>
+                    <span class="red">*必填</span> 问题1：
+                </p>
+                <van-dropdown-menu :overlay="false">
+                    <van-dropdown-item v-model="value1" :options="quesArr"/>
+                </van-dropdown-menu>
+                <van-field
+                    v-model="que1_ans"
+                    placeholder="输入密保1答案(长度小于25)"
+                    type="text"
+                    required
+                    clearable
+                />
+            </div>
+            <div class="que_wrap">
+                <p>
+                    <span class="red">*必填</span> 问题2：
+                </p>
+                <van-dropdown-menu :overlay="false">
+                    <van-dropdown-item v-model="value2" :options="quesArr"/>
+                </van-dropdown-menu>
+                <van-field
+                    v-model="que2_ans"
+                    placeholder="输入密保2答案(长度小于25)"
+                    type="text"
+                    required
+                    clearable
+                />
+            </div>
+            <div class="buttons">
+                <van-button type="warning" @click="setsequestion">修改密保</van-button>
+            </div>
+        </template>
+        <div v-else>
+            <div class="header">资金密码找回</div>
+            <van-field
+                v-model="newZijinPass"
+                placeholder="请设定资金密码"
+                type="password"
+                required
+                clearable
+                error-message="（由字母和数字组成6-16个字符,资金密码不能与登录密码相同）"
+            />
+            <van-field
+                v-model="confirm_newZijinPass"
+                placeholder="再次输入资金密码"
+                type="password"
+                required
+                clearable
+                error-message="（由字母和数字组成6-16个字符,资金密码不能与登录密码相同）"
+            />
+            <div class="buttons">
+                <van-button type="warning" @click="changeusersecpass">设定新的资金密码</van-button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -90,7 +102,7 @@ export default {
                 { text: '对您影响最大的人名字是？', value: 13 }
             ],
             value1: 0,
-            value2: 1,
+            value2: 0,
             que1_ans: '',
             que2_ans: '',
             unSetMiBao: false,
@@ -130,10 +142,9 @@ export default {
         changeusersecpass() {
             var params = {
                 flag: 'sequestion',
-                json: this.$RSAencrypt(
-                    JSON.stringify({
-                        newpass: md5(this.newZijinPass),
-                        confirm_newpass: md5(this.confirm_newZijinPass)
+                json: this.$RSAencrypt(JSON.stringify({
+                    newpass: md5(this.newZijinPass),
+                    confirm_newpass: md5(this.confirm_newZijinPass)
                     })
                 )
             }
@@ -182,11 +193,6 @@ export default {
     },
     created() {
         this.init()
-        console.log('object')
-
-    },
-    beforeDestroy(){
-        console.log('beforeDestroy')
     },
     components: {
         'van-dropdown-menu': DropdownMenu,
@@ -194,34 +200,32 @@ export default {
         vanField: Field,
         vanIcon: Icon,
         vanButton: Button
+    },
+    watch: {
+        zhaohuizijin() {
+            this.init()
+        }
     }
 }
 </script>
 
 <style lang="stylus" scoped>
-.que_wrap {
-  margin-bottom: 30px;
-}
-
-.header {
-  font-size: 16px;
-  text-align: center;
-  padding: 10px 0;
-  color: red;
-}
-
-.red {
-  color: red;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-}
-
-.serverQue {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
+.que_wrap
+    margin-bottom 30px
+.header
+    font-size 16px
+    text-align center
+    padding 10px 0
+    color red
+.red
+    color red
+.buttons
+    display flex
+    justify-content center
+.serverQue
+    display flex
+    justify-content center
+    flex-direction column
+    p
+        padding 10px 0
 </style>

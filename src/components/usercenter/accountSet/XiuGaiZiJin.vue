@@ -32,14 +32,14 @@
                 clearable
             />
             <div class="submit">
-                <van-button size="large" type="danger" @touchstart="checksecpass()">确认</van-button>
+                <van-button size="large" type="danger" @touchstart="changeusersecpass()">确认</van-button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { changeuserloginpass } from '../../../Api/api'
+import { changeusersecpass } from '../../../Api/api'
 import md5 from 'js-md5'
 import { Field, Icon, Button, Notify } from 'vant'
 export default {
@@ -65,15 +65,15 @@ export default {
                 return '请确输入的信息不符合规则'
             }
         },
-        checksecpass() {
+        changeusersecpass() {
             var params = {
                 newpass: md5(this.nsecpass),
                 confirm_newpass: md5(this.confirm_nsecpass),
                 oldpass: md5(this.osecpass)
             }
-            changeuserloginpass({json:this.$RSAencrypt(JSON.stringify(params))}).then((res)=>{
+            changeusersecpass({json:this.$RSAencrypt(JSON.stringify(params))}).then((res)=>{
                 if(res.code==0){
-                    Notify('修改密码成功')
+                    Notify('修改资金密码成功')
                     this.osecpass = ''
                     this.nsecpass = ''
                     this.confirm_nsecpass = ''

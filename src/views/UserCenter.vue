@@ -49,11 +49,11 @@
             <my-header></my-header>
             <div class="popwrap">
                 <bank @closePop="closePop" v-if="showBank"></bank>
-                <bethistory v-if="navlist[5].active"></bethistory>
-                <orderhistory v-if="navlist[1].active"></orderhistory>
-                <accountSet v-if="navlist[0].active"></accountSet>
-                <quickHistory v-if="navlist[9].active"></quickHistory>
-                
+                <bethistory v-else-if="navlist[5].active"></bethistory>
+                <orderhistory v-else-if="navlist[1].active"></orderhistory>
+                <accountSet v-else-if="navlist[0].active"></accountSet>
+                <quickHistory v-else-if="navlist[9].active"></quickHistory>
+                <!-- ="navlist[9].active" -->
             </div>
         </van-popup>
     </div>
@@ -198,8 +198,12 @@ export default {
             this.$store.commit('UpdateCenterPop', true)
         },
         closePop() {
-            console.log('object')
             this.showBank = false
+            for (let i = 0; i < this.navlist.length; i++) {
+                const item = this.navlist[i]
+                this.$set(item, 'active', false)
+            }
+            this.$forceUpdate()
             this.$store.commit('UpdateCenterPop', false)
         },
         logout() {

@@ -231,10 +231,10 @@ export default {
         //API
         checksecpassexist() {
             checksecpassexist().then(res => {
-                const code = res.data.code
+                const code = res.code
                 if (code == -21) {
                     Notify({
-                        message: res.data.msg,
+                        message: res.msg,
                         duration: 3000,
                         background: '#1989fa'
                     })
@@ -248,7 +248,7 @@ export default {
             if (isok) {
                 setsecpass({ secpass: secpass }).then(res => {
                     console.log(res.data)
-                    if (res.data.code != 0) {
+                    if (res.code != 0) {
                         Notify('请输入正确的信息')
                     }else{
                         this.secpassexist = true
@@ -267,7 +267,7 @@ export default {
                     Notify('成功登录资金账户')
                     this.getuserbankinfo(secpass)
                 }else{
-                    Notify(res.data.msg)
+                    Notify(res.msg)
                     this.isseclogin = false
                 }
             })
@@ -275,7 +275,7 @@ export default {
         getbanklist() {
             //secpass
             getbanklist().then(res => {
-                this.banklistData = res.data.data
+                this.banklistData = res.data
                 for (const bankitem of this.banklistData) {
                     this.banklist.push(bankitem.bank_name)
                 }
@@ -284,8 +284,8 @@ export default {
         getprovincelist() {
             //secpass
             getprovincelist().then(res => {
-                const provincelist = res.data.data
-                console.log(res.data.data);
+                const provincelist = res.data
+                console.log(res.data);
                 for (const provinceitem of provincelist) {
                     this.getcitylist(provinceitem)
                 }
@@ -307,7 +307,7 @@ export default {
             // this.provincelistIdArr.push({id:provinceitem.id})
             const province = provinceitem.id+provinceitem.name
             getcitylist({province:province}).then(res => {
-                const citys = res.data.data
+                const citys = res.data
                 // console.log(citys);
                 provinceitem.citys = citys
                 const arr = []
@@ -324,8 +324,8 @@ export default {
         getuserbankinfo(secpass) {
             //secpass
             getuserbankinfo({secpass:secpass}).then(res => {
-                const userbanklist = res.data.data.banklist
-                const maxbanknum = res.data.data.num
+                const userbanklist = res.data.banklist
+                const maxbanknum = res.data.num
                 this.userbanklist = userbanklist
                 if(this.userbanklist.length<maxbanknum){
                     this.getbanklist()

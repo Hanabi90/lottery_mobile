@@ -251,7 +251,7 @@ export default {
         this.init()
     },
     mounted() {
-        this.$refs.stepper.currentValue = 1970
+        this.$refs.stepper.currentValue = this.currentLabel.nowPrizeGroup
     },
     components: {
         Stepper,

@@ -244,7 +244,12 @@ export const ordercancel = formData =>//验证密保问题
         url: 'ordercancel',
         data: qs.stringify(formData)
     })
-    
+export const getreglink = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'user/getreglink',
+        data: qs.stringify(formData)
+    })
 /* {
     "betparams": {
         "iWalletType": 1,

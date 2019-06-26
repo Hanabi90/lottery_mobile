@@ -104,7 +104,7 @@
                 <swiper-slide class="slide-2">
                     <div class="lotteryInfo">
                         <span>{{gameTitle}}</span>
-                        <span>{{currentIssue}}</span>
+                        <span>{{currentIssue-1}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
                         <li
@@ -119,7 +119,7 @@
                 <swiper-slide class="slide-3">
                     <div class="lotteryInfo">
                         <span>{{gameTitle}}</span>
-                        <span>{{currentIssue}}</span>
+                        <span>{{currentIssue-2}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
                         <li
