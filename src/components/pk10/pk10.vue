@@ -73,8 +73,8 @@
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue"></zhuihao>
-                <bethistory v-if="betHistoryShow"></bethistory>
+                <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
+                <quickHistory v-if="betHistoryShow"></quickHistory>
             </div>
         </Popup>
         <Popup></Popup>
@@ -104,7 +104,7 @@
                 <swiper-slide class="slide-2">
                     <div class="lotteryInfo">
                         <span>{{gameTitle}}</span>
-                        <span>{{currentIssue-1}}</span>
+                        <span>{{currentIssue}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
                         <li
@@ -119,7 +119,7 @@
                 <swiper-slide class="slide-3">
                     <div class="lotteryInfo">
                         <span>{{gameTitle}}</span>
-                        <span>{{currentIssue-2}}</span>
+                        <span>{{currentIssue}}</span>
                     </div>
                     <ul :class="[{kuaisan:lotteryResultsStyleFlag==3},'lotteryResults']">
                         <li
@@ -258,6 +258,7 @@ import bethistory from '../usercenter/bethistory'
 import zhuihao from '@/components/common/zhuiHao'
 import myHeader from '../usercenter/header'
 import prize from '../common/prize'
+import quickHistory from './quickHistory'
 export default {
     watch: {
         // inputVal(nVal, oVal) {
@@ -984,6 +985,7 @@ export default {
         myHeader,
         prize,
         zhuihao,
+        quickHistory
     }
 }
 </script>

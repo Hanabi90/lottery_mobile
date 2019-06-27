@@ -57,7 +57,7 @@
         type="danger"
         loading-type="spinner"
         loading-text="查询中..."
-        @click="getbethistory(false)"
+        @click="gettaskhistory(false)"
         >
         查询
         </van-button>
@@ -70,45 +70,41 @@
         >
             <van-collapse v-model="activeNames"  accordion>
                 <van-collapse-item v-for="(item, index) in historyListArr"  
-                :title="item.cnname" 
                 :name="index" 
                 :label="item.methodname" 
-                :value="item.issue+' '+item.writetime|test"
+                :value="item.begintime"
                 label-class="col_label"
-                v-show="item.iscancel==0"
                 :key="index + item.cnname"
                 >
+                <div slot="title">{{item.cnname}} <span class="col_label">追{{item.issuecount}}期</span>
+                <span class="col_label doing" v-show="item.status=='0'">追号中</span> 
+                <span class="col_label iscanceled" v-show="item.status=='1'">已取消</span> 
+                <span class="col_label finished" v-show="item.status=='2'">已完成</span> 
+                </div>
                     <Cell>
-                        投注内容:
-                        <span class="cell_span">{{item.code}}</span>
+                        开始期数:
+                        <span class="cell_span">{{item.beginissue}}</span>
                     </Cell>
                     <Cell>
-                        投注金额:
-                        <span class="cell_span">{{item.totalprice}}</span>
+                        追号内容:
+                        <span class="cell_span">{{item.codes}}</span>
                     </Cell>
                     <Cell>
-                        奖金:
-                        <span class="cell_span">{{item.bonus}}</span>
+                        追号总金额:
+                        <span class="cell_span">{{item.taskprice}}</span>
                     </Cell>
                     <Cell>
-                        开奖号码:
-                        <span class="cell_span">{{item.nocode}}</span>
+                        完成金额:
+                        <span class="cell_span">{{item.finishprice}}</span>
                     </Cell>
                     <Cell>
-                        状态:
-                        <span class="cell_span" v-if="item.prizestatus=='1'">已派奖</span>
-                        <span class="cell_span" v-else>未派奖</span>
+                        取消金额:
+                        <span class="cell_span">{{item.cancelprice}}</span>
                     </Cell>
                     <Cell>
-                        自身返点:
-                        <span class="cell_span">{{item.diffmoney}}</span>
-                    </Cell>
-                    <Cell>
-                        奖金组:
-                        <span class="cell_span">{{item.prizegroup}}</span>
-                    </Cell>
-                    <Cell v-if="item.can">
-                        <van-button @click="ordercancel(item.projectid,index)" type="info">撤单</van-button>
+                        中奖后停止:
+                        <span class="cell_span" v-if="item.stoponwin==1">是</span>
+                        <span class="cell_span" v-else>否</span>
                     </Cell>
                 </van-collapse-item>
             </van-collapse>
@@ -118,7 +114,7 @@
 <script>
 import myHeader from './header'
 import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify  } from 'vant'
-import { getbethistory,getuserlottery,getuserlotterymethod,getchildlist,ordercancel } from '../../Api/api'
+import { getuserlottery,getuserlotterymethod,getchildlist,ordercancel,gettaskhistory,gettaskhistorydetail } from '../../Api/api'
 export default {
     name: 'tab-bar-demo',
     components: {
@@ -137,7 +133,7 @@ export default {
     created(){
         if(this.lotteryid!==undefined){
             this.value1 = this.lotteryid
-            this.getbethistory(false)
+            this.gettaskhistory(false)
         }
         getuserlottery().then((res)=>{
             // console.log(res);
@@ -221,10 +217,11 @@ export default {
     methods: {
         onLoad(){
             console.log('object');
-            this.getbethistory(true)
+            console.log(this.page_index);
+            this.gettaskhistory(true)
             
         },
-        getbethistory(flag){
+        gettaskhistory(flag){
             const include = this.value4=="-1"?0:1//	是否包含下級（0：不包含，1包含）
             var username = this.value4=="-1"?"":this.childlist[this.value4]["username"] 	//用户名
             const userpointtype = this.value3 	//string	投注類型
@@ -236,17 +233,9 @@ export default {
             //_		
                 //int	請求的數據記錄數量
             const p = this.page_index	//int	要請求的page序號
-            // console.log("include",include);
-            // console.log("username",username);
-            // console.log("userpointtype",userpointtype);
-            // console.log("issue",issue);
-            // console.log("methodid",methodid);
-            // console.log("lotteryid",lotteryid);
-            // console.log("starttime",starttime);
-            // console.log("endtime",endtime);
             if(this.buttonLoading==true)return
             if(flag){
-                    getbethistory({
+                    gettaskhistory({
                     "include":include,
                     "username":username,
                     "userpointtype":userpointtype,
@@ -255,7 +244,9 @@ export default {
                     "lotteryid":lotteryid,
                     "starttime":starttime,
                     "endtime":endtime,
-                    "p":this.page_index
+                    "p":'10',
+                    "pn":this.page_index,
+                    'taskstatus':'-1'
                 }).then((res)=>{
                         this.buttonLoading = false
                         var dataArr = res.data.page_data
@@ -264,16 +255,14 @@ export default {
                             this.listLoading = false
                             return
                         }
-                        console.log(dataArr,this.finished,this.listLoading);
                         this.page_index = res.data.page_index+1
                         this.historyListArr=this.historyListArr.concat(dataArr)
                         this.listLoading = false;
-                        console.log('if');
                 })
                 this.buttonLoading = true    
                 }else{
                     this.finished = false
-                    getbethistory({
+                    gettaskhistory({
                     "include":include,
                     "username":username,
                     "userpointtype":userpointtype,
@@ -281,7 +270,9 @@ export default {
                     "methodid":methodid,
                     "lotteryid":lotteryid,
                     "starttime":starttime,
-                    "endtime":endtime
+                    "endtime":endtime,
+                    "p":this.page_index,
+                    'taskstatus':'-1'
 
                 }).then((res)=>{
                     this.page_index = res.data.page_index+1
@@ -374,6 +365,16 @@ export default {
     background: #c32026;
     text-align: center;
     color #fff
+    &.finished
+        background-color #1989fa
+        margin 0 4px
+    &.iscanceled
+        background-color #ff4444
+        margin 0 4px
+    $.doing
+        background-color #07c160
+        margin 0 4px
+
 .col_value
     position relative
     &::after

@@ -262,6 +262,24 @@ export const addnewuser = formData =>//验证密保问题
         url: 'user/addnewuser',
         data: qs.stringify(formData)
     })
+export const gettaskhistory = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'gameinfo/gettaskhistory',
+        data: qs.stringify(formData)
+    })
+export const gettaskhistorydetail = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'gameinfo/gettaskhistorydetail',
+        data: qs.stringify(formData)
+    })
+export const getcreateissues = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'getcreateissues',
+        data: qs.stringify(formData)
+    })
 /* {
     "betparams": {
         "iWalletType": 1,

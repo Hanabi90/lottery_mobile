@@ -171,7 +171,7 @@
 import myHeader from '../usercenter/header'
 import { Checkbox, CheckboxGroup, Stepper, Button, Icon,Dialog,Notify} from 'vant'
 import {mapMutations} from 'vuex'
-import {betting} from '../../Api/api'
+import {betting,getcreateissues} from '../../Api/api'
 export default {
     components: {
         myHeader,
@@ -201,10 +201,14 @@ export default {
             } 
         }
     },
+    created(){
+        this.getcreateissues()
+    },
     watch:{
         currentIssue(){
             Dialog({ message: '奖期已更新' });
-            this.createList()
+            this.getcreateissues(true)
+            
         }
     },
     data() {
@@ -229,9 +233,10 @@ export default {
                 { title: '利润率追号', active: false, type: 1 }
             ],
             bettraceparams: {},
+            issueArr:[]
         }
     },
-    props:['currentIssue'],
+    props:['currentIssue','lotteryid'],
     computed:{
         zhuihaoArr(){
             return this.$store.state.zhuihaoArr
@@ -338,7 +343,7 @@ export default {
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
                     zhuitouArr.push({
-                        issue: issueStr + '-' + issue,
+                        issue: this.issueArr[i],
                         beishu: beishu,
                         now_money: now_money,
                         total_money: total_money,
@@ -362,7 +367,7 @@ export default {
                     var now_money_1 = now_money * beishu
                     total_money += now_money_1
                     zhuitouArr.push({
-                        issue: issueStr + '-' + issue,
+                        issue: this.issueArr[i],
                         beishu: beishu,
                         now_money: now_money_1,
                         total_money: total_money,
@@ -385,7 +390,7 @@ export default {
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
                     zhuitouArr.push({
-                        issue: issueStr + '-' + issue,
+                        issue: this.issueArr[i],
                         beishu: beishu,
                         now_money: now_money,
                         total_money: total_money,
@@ -415,6 +420,21 @@ export default {
             console.log('bettraceparams',bettraceparams);
             this.bettraceparams = bettraceparams
 
+        },
+        getcreateissues(flag){
+            var params = {
+                lotteryid:this.lotteryid,
+                currissue:this.currentIssue
+            }
+            getcreateissues(params).then((res)=>{
+                if(res.code==0){
+                    console.log(res)
+                    this.issueArr = res.data
+                    if(flag){
+                        this.createList()
+                    }
+                }
+            })
         },
         formatData(){
             var betparams = {

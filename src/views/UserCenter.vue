@@ -53,6 +53,7 @@
                 <orderhistory v-else-if="navlist[1].active"></orderhistory>
                 <accountSet v-else-if="navlist[0].active"></accountSet>
                 <quickHistory v-else-if="navlist[9].active"></quickHistory>
+                <zhuihaoHistory v-else-if="navlist[6].active"></zhuihaoHistory>
                 <!-- ="navlist[9].active" -->
             </div>
         </van-popup>
@@ -65,6 +66,7 @@ import { Icon, Popup, Field, Notify } from 'vant'
 import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
 import bethistory from '../components/usercenter/bethistory'
+import zhuihaoHistory from '../components/usercenter/zhuihaoHistory'
 import myHeader from '../components/usercenter/header'
 import orderhistory from '../components/usercenter/orderhistory'
 import accountSet from '../components/usercenter/accountSet'
@@ -243,7 +245,8 @@ export default {
         bank,
         myHeader,
         accountSet,
-        quickHistory
+        quickHistory,
+        zhuihaoHistory
     }
 }
 </script>
