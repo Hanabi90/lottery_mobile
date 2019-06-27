@@ -4,7 +4,7 @@
             <van-tab title="一键开户">
                 <p class="flex center align">
                     <span>用户类型：</span>
-                    <van-radio-group v-model="radio" class="flex">
+                    <van-radio-group v-model="usertype" class="flex">
                         <van-radio name="1" checked-color="#c32026">代理</van-radio>
                         <van-radio name="0" checked-color="#c32026">会员</van-radio>
                     </van-radio-group>
@@ -51,14 +51,14 @@
                         />
                     </van-cell>
                     <van-cell :center="true" class="button">
-                        <van-button type="primary">立即开户</van-button>
+                        <van-button type="primary" @click="addnewuser">立即开户</van-button>
                     </van-cell>
                 </van-cell-group>
             </van-tab>
             <van-tab title="推广链接">
                 <p class="flex center align">
                     <span>用户类型：</span>
-                    <van-radio-group v-model="radio" class="flex">
+                    <van-radio-group v-model="usertype" class="flex">
                         <van-radio name="1" checked-color="#c32026">代理</van-radio>
                         <van-radio name="0" checked-color="#c32026">会员</van-radio>
                     </van-radio-group>
@@ -87,7 +87,19 @@
                         />
                     </van-cell>
                     <van-cell :center="true" class="button">
-                        <van-button type="primary">一键设置</van-button>
+                        <van-button type="primary" @click="setreglink">一键设置</van-button>
+                    </van-cell>
+                </van-cell-group>
+                <van-cell-group>
+                    <van-cell>
+                        <span>推广用户类型:</span>
+                        <span class="red">{{ztype}}</span>
+                    </van-cell>
+                    <van-cell>
+                        <div class="flex urlbox">
+                            <span>推广链接:</span>
+                            <a :href="url">{{url}}</a>
+                        </div>
                     </van-cell>
                 </van-cell-group>
             </van-tab>
@@ -114,7 +126,7 @@ export default {
     data() {
         return {
             active: 2,
-            radio: '1',
+            usertype: '1',
             username: '',
             password: '',
             showtip: false,
@@ -122,7 +134,9 @@ export default {
             prizeGroup: 0,
             curodds: '0',
             maxodds: '0',
-            minodds: '0'
+            minodds: '0',
+            url: '',
+            unComputedZtype:''
         }
     },
     created() {
@@ -141,20 +155,47 @@ export default {
                     this.curodds = res.data.curodds
                     this.maxodds = res.data.maxodds
                     this.minodds = res.data.minodds
+                    this.prizeGroup = res.data.curodds
                 }
             })
         },
         setreglink() {
-            setreglink().then(res => {
+            var params = {
+                usertype: this.usertype,
+                keepodds: this.prizeGroup
+            }
+            setreglink(params).then(res => {
                 if (res.code == 0) {
+                    console.log(res)
+                    this.url = res.data.tuiguan.url + res.data.tuiguan.urlparam
+                    this.unComputedZtype = res.data.tuiguan.ztype
+                    // var urlDom = document.getElementById('tuiguangUrl')
+                    // urlDom.select()
+                    // document.execCommand("Copy")
                 }
             })
         },
         addnewuser() {
-            addnewuser().then(res => {
-                if (res.code == 0) {
-                }
+            var params = {
+                onekeyodds: this.prizeGroup,
+                usertype: Number(this.usertype),
+                username: this.username,
+                userpass: this.password
+            }
+            addnewuser({
+                pdata: this.$RSAencrypt(JSON.stringify(params))
+            }).then(res => {
+                console.log(res)
             })
+        }
+    },
+    computed: {
+        ztype() {
+            if (this.unComputedZtype == '0') {
+                return '会员'
+            } else if (this.unComputedZtype == '1') {
+                return '代理'
+            }
         }
     },
     components: {
@@ -202,4 +243,7 @@ export default {
             text-align center
             background-color #f44
             border-radius 100px
+.urlbox
+    flex-direction column
+    word-break: break-all;
 </style>
