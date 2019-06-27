@@ -2,7 +2,7 @@
     <div>
         <template v-if="!unSetMiBao">
             <div class="serverQue">
-                <p v-if="serverQue!=-1">{{quesArr[serverQue].text}}</p>
+                <p v-if="serverQue!=-1">{{serverQue_text}}</p>
                 <van-field
                     v-model="serverQue_ans"
                     placeholder="输入密保1答案(长度小于25)"
@@ -86,23 +86,23 @@ export default {
     data() {
         return {
             quesArr: [
-                { text: '请选择密保问题', value: 0 },
-                { text: '您母亲的姓名是？', value: 1 },
-                { text: '您配偶的生日是？', value: 2 },
-                { text: '您的学号（或工号）是？', value: 3 },
-                { text: '您母亲的生日是？', value: 4 },
-                { text: '您高中班主任的名字是？', value: 5 },
-                { text: '您父亲的姓名是？', value: 6 },
-                { text: '您小学班主任的名字是？', value: 7 },
-                { text: '您父亲的生日是？', value: 8 },
-                { text: '您配偶的姓名是？', value: 9 },
-                { text: '您初中班主任的名字是？', value: 10 },
-                { text: '您最熟悉的童年好友名字是？', value: 11 },
-                { text: '您最熟悉的学校宿舍室友名字是？', value: 12 },
-                { text: '对您影响最大的人名字是？', value: 13 }
+                { text: '请选择密保问题', value: -1 },
+                { text: '您母亲的姓名是？', value: 4 },
+                { text: '您配偶的生日是？', value: 8 },
+                { text: '您的学号（或工号）是？', value: 13 },
+                { text: '您母亲的生日是？', value: 5 },
+                { text: '您高中班主任的名字是？', value: 12 },
+                { text: '您父亲的姓名是？', value: 1 },
+                { text: '您小学班主任的名字是？', value: 10 },
+                { text: '您父亲的生日是？', value: 2 },
+                { text: '您配偶的姓名是？', value: 7 },
+                { text: '您初中班主任的名字是？', value: 11 },
+                { text: '您最熟悉的童年好友名字是？', value: 16 },
+                { text: '您最熟悉的学校宿舍室友名字是？', value: 17 },
+                { text: '对您影响最大的人名字是？', value: 18 }
             ],
-            value1: 0,
-            value2: 0,
+            value1: -1,
+            value2: -1,
             que1_ans: '',
             que2_ans: '',
             unSetMiBao: false,
@@ -200,6 +200,14 @@ export default {
         vanField: Field,
         vanIcon: Icon,
         vanButton: Button
+    },
+    computed:{
+        serverQue_text(){
+            var text = this.quesArr.find((item)=>{
+                return item.value==this.dna_ques
+            }).text
+            return text
+        }
     },
     watch: {
         zhaohuizijin() {

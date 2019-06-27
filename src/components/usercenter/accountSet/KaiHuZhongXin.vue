@@ -6,7 +6,7 @@
                     <span>用户类型：</span>
                     <van-radio-group v-model="radio" class="flex">
                         <van-radio name="1" checked-color="#c32026">代理</van-radio>
-                        <van-radio name="2" checked-color="#c32026">会员</van-radio>
+                        <van-radio name="0" checked-color="#c32026">会员</van-radio>
                     </van-radio-group>
                 </p>
                 <van-cell-group class="userinfo">
@@ -29,22 +29,68 @@
                         left-icon="closed-eye"
                     />
                     <van-cell>
-                        <span>注册用户奖金组范围:<b>{{minodds}}</b>--<b>{{maxodds}}</b></span>
+                        <span>
+                            注册用户奖金组范围:
+                            <b>{{minodds}}</b>--
+                            <b>{{maxodds}}</b>
+                        </span>
                     </van-cell>
                     <!-- <van-cell class="slider-bar">
                         <van-slider v-model="value" :step=0.01 active-color="#f44" bar-height="8px">
                             <div slot="button" class="custom-button">{{ (value/1000*1970).toFixed(1)*10 }}</div>
                         </van-slider>
-                    </van-cell> -->
-                    <van-cell :center=true class="slider-bar">
-                        <van-stepper input-width=40px :min=minodds :max=maxodds :integer=true v-model="value2" step="1" />
+                    </van-cell>-->
+                    <van-cell :center="true" class="slider-bar">
+                        <van-stepper
+                            input-width="40px"
+                            :min="minodds"
+                            :max="maxodds"
+                            :integer="true"
+                            v-model="prizeGroup"
+                            step="1"
+                        />
                     </van-cell>
-                    <van-cell :center=true class="button">
-                        <van-button type="primary">主要按钮</van-button>
+                    <van-cell :center="true" class="button">
+                        <van-button type="primary">立即开户</van-button>
                     </van-cell>
                 </van-cell-group>
             </van-tab>
-            <van-tab title="推广链接"></van-tab>
+            <van-tab title="推广链接">
+                <p class="flex center align">
+                    <span>用户类型：</span>
+                    <van-radio-group v-model="radio" class="flex">
+                        <van-radio name="1" checked-color="#c32026">代理</van-radio>
+                        <van-radio name="0" checked-color="#c32026">会员</van-radio>
+                    </van-radio-group>
+                </p>
+                <van-cell-group class="userinfo">
+                    <van-cell>
+                        <span>
+                            注册用户奖金组范围:
+                            <b>{{minodds}}</b>--
+                            <b>{{maxodds}}</b>
+                        </span>
+                    </van-cell>
+                    <!-- <van-cell class="slider-bar">
+                        <van-slider v-model="value" :step=0.01 active-color="#f44" bar-height="8px">
+                            <div slot="button" class="custom-button">{{ (value/1000*1970).toFixed(1)*10 }}</div>
+                        </van-slider>
+                    </van-cell>-->
+                    <van-cell :center="true" class="slider-bar">
+                        <van-stepper
+                            input-width="40px"
+                            :min="minodds"
+                            :max="maxodds"
+                            :integer="true"
+                            v-model="prizeGroup"
+                            step="1"
+                        />
+                    </van-cell>
+                    <van-cell :center="true" class="button">
+                        <van-button type="primary">一键设置</van-button>
+                    </van-cell>
+                </van-cell-group>
+            </van-tab>
         </van-tabs>
     </div>
 </template>
@@ -62,7 +108,7 @@ import {
     Stepper,
     Button
 } from 'vant'
-import {getreglink} from '../../../Api/api'
+import { getreglink, setreglink, addnewuser } from '../../../Api/api'
 export default {
     components: {},
     data() {
@@ -73,19 +119,14 @@ export default {
             password: '',
             showtip: false,
             value: 50,
-            value2:0,
-            curodds:'0',
-            maxodds:'0',
-            minodds:'0',
+            prizeGroup: 0,
+            curodds: '0',
+            maxodds: '0',
+            minodds: '0'
         }
     },
-    created(){
+    created() {
         this.getreglink()
-    },
-    computed:{
-        computedPrize(){
-            return (this.value/1000*1970).toFixed(0)*10
-        }
     },
     methods: {
         onBlur() {
@@ -94,12 +135,24 @@ export default {
         onFocus() {
             this.showtip = true
         },
-        getreglink(){
-            getreglink().then((res)=>{
-                if(res.code==0){
-                    this.curodds=res.data.curodds
-                    this.maxodds=res.data.maxodds
-                    this.minodds=res.data.minodds
+        getreglink() {
+            getreglink().then(res => {
+                if (res.code == 0) {
+                    this.curodds = res.data.curodds
+                    this.maxodds = res.data.maxodds
+                    this.minodds = res.data.minodds
+                }
+            })
+        },
+        setreglink() {
+            setreglink().then(res => {
+                if (res.code == 0) {
+                }
+            })
+        },
+        addnewuser() {
+            addnewuser().then(res => {
+                if (res.code == 0) {
                 }
             })
         }
@@ -113,8 +166,8 @@ export default {
         'van-cell-group': CellGroup,
         'van-cell': Cell,
         'van-slider': Slider,
-        'van-stepper':Stepper,
-        'van-button':Button
+        'van-stepper': Stepper,
+        'van-button': Button
     }
 }
 </script>
@@ -139,14 +192,14 @@ export default {
         .van-cell__value
             text-align center
     .van-slider
-        transform: translateY(-50%);
-        top: 50%;
+        transform translateY(-50%)
+        top 50%
         .custom-button
-            width: 26px;
-            color: #fff;
-            font-size: 10px;
-            line-height: 18px;
-            text-align: center;
-            background-color: #f44;
-            border-radius: 100px;
+            width 26px
+            color #fff
+            font-size 10px
+            line-height 18px
+            text-align center
+            background-color #f44
+            border-radius 100px
 </style>
