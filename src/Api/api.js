@@ -280,6 +280,12 @@ export const getcreateissues = formData =>//验证密保问题
         url: 'getcreateissues',
         data: qs.stringify(formData)
     })
+export const traceordercancel = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'traceordercancel',
+        data: qs.stringify(formData)
+    })
 /* {
     "betparams": {
         "iWalletType": 1,

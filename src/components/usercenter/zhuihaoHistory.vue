@@ -212,7 +212,8 @@ export default {
             firsttime:true,
             currentPage: 1,
             detailData:null,
-            detailShow:false
+            detailShow:false,
+            detailId:-1
         }
     },
     computed: {
@@ -307,6 +308,7 @@ export default {
                 }
         },
         gettaskhistorydetail(id){
+            this.detailId = id
             gettaskhistorydetail({id}).then((res)=>{
                 this.detailData = res.data
                 this.detailShow = true

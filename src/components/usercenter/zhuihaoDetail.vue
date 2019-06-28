@@ -8,7 +8,7 @@
                 </Cell>
                 <Cell>
                     追号编号:
-                    <span class="cell_span">{{detailData.task.username}}</span>
+                    <span class="cell_span">{{detailData.task.taskid}}</span>
                 </Cell>
                 <Cell>
                     追号时间:
@@ -85,15 +85,20 @@
                         <tr v-for="(item, index) in detailData.aTaskdetail" :key="index" class="center">
                             <td>{{item.issue}}</td>
                             <td>{{item.multiple}}</td>
-                            <td>{{status(item)}}</td>
+                            <td @click="removeOrder(item,index)">{{status(item)}}</td>
                             <td>{{kaijiangStatus(item)}}</td>
                         </tr>
                     </tbody>
                 </table>
             </van-cell-group>
-            <van-button type="danger" @click="$emit('closedetail')">
-                返回
-            </van-button>
+            <div>
+                <van-button class="button" type="danger" @click="$emit('closedetail')">
+                    返回
+                </van-button>
+                <van-button class="button" type="danger" @click="refresh">
+                    刷新
+                </van-button>
+            </div>
     </div>
 </template>
 <script>
@@ -111,8 +116,10 @@ import {
     Cell,
     CellGroup,
     Notify,
-    Tag
+    Tag,
+    Dialog 
 } from 'vant'
+import {traceordercancel,ordercancel} from '../../Api/api'
 export default {
     components: {
         DropdownMenu,
@@ -131,7 +138,8 @@ export default {
     },
     data() {
         return {
-            activeNames: ['1']
+            activeNames: ['1'],
+            index:-1
         }
     },
     created() {},
@@ -172,6 +180,42 @@ export default {
             }else{
                 return '已取消'
             }
+        },
+        removeOrder(item,index){
+            if(item.can==0){
+                return 
+            }
+            this.index = index
+            Dialog.confirm({
+                title: '确定要撤单吗？',
+                message: `${item.issue}期-${item.multiple}倍`,
+                beforeClose:this.beforeClose
+            });
+        },
+        beforeClose(action, done) {
+            traceordercancel(params).then((res)=>{
+                        done()
+                        console.log(res);
+                    })
+            if (action === 'confirm') {
+                var params = {
+                    taskId:this.detailData.task.taskid,
+                    detailsId:[this.detailData.aTaskdetail[this.index].entry]
+                }
+                var projectId = this.detailData.aTaskdetail[this.index].projectid
+                if(this.detailData.aTaskdetail[this.index].can==1){
+                    traceordercancel(params).then((res)=>{
+                        console.log(res);
+                    })
+                        done()
+                }
+                
+            } else {
+                done();
+            }
+        },
+        refresh(){
+            this.$parent.gettaskhistorydetail(this.$parent.detailId)
         }
     },
 }
@@ -187,12 +231,16 @@ export default {
         background: #3067a0;
         color: #fff;
         border: solid 1px #3067a0;
+        height 30px
+        line-height 30px
     td
-        height 20px
+        height 30px
+        line-height 30px
         background: #fff;
         border: solid 1px #3067a0;
         color: #000;
 .center
     text-align: center;
-
+.button
+    margin-top 10px
 </style>
