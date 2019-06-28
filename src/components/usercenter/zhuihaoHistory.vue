@@ -1,5 +1,6 @@
 <template>
-    <div class="bethistory">
+<div>
+    <div class="bethistory" v-if="!detailShow">
         <DropdownMenu v-if="userlottery" :overlay=false>
             <DropdownItem @change=tabMenu(value1)  v-model="value1" :options="option1"/>
             <DropdownItem  v-model="value2" :options="option2"/>
@@ -67,6 +68,7 @@
         finished-text="没有更多了"
         @load="onLoad"
         :immediate-check=false
+        class="list"
         >
             <van-collapse v-model="activeNames"  accordion>
                 <van-collapse-item v-for="(item, index) in historyListArr"  
@@ -106,15 +108,22 @@
                         <span class="cell_span" v-if="item.stoponwin==1">是</span>
                         <span class="cell_span" v-else>否</span>
                     </Cell>
+                    <Cell>
+                        <van-button type="primary" @click="gettaskhistorydetail(item.taskid)">查看详情</van-button>
+                    </Cell>
+                    
                 </van-collapse-item>
             </van-collapse>
         </van-list>
     </div>
+    <zhuihaoDetail @closedetail=closedetail :detailData=detailData v-else></zhuihaoDetail>
+</div>
 </template>
 <script>
 import myHeader from './header'
-import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify  } from 'vant'
+import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify} from 'vant'
 import { getuserlottery,getuserlotterymethod,getchildlist,ordercancel,gettaskhistory,gettaskhistorydetail } from '../../Api/api'
+import zhuihaoDetail from './zhuihaoDetail'
 export default {
     name: 'tab-bar-demo',
     components: {
@@ -128,7 +137,8 @@ export default {
         'vanButton':Button,
         "vanCollapse":Collapse,
         "vanCollapseItem":CollapseItem,
-        Cell
+        Cell,
+        zhuihaoDetail
     },
     created(){
         if(this.lotteryid!==undefined){
@@ -199,7 +209,10 @@ export default {
 
             lock:false,
             page_index:1,
-            firsttime:true
+            firsttime:true,
+            currentPage: 1,
+            detailData:null,
+            detailShow:false
         }
     },
     computed: {
@@ -221,8 +234,11 @@ export default {
             this.gettaskhistory(true)
             
         },
+        closedetail(){
+            this.detailShow = false
+        },
         gettaskhistory(flag){
-            const include = this.value4=="-1"?0:1//	是否包含下級（0：不包含，1包含）
+             const include = this.value4=="-1"?0:1//	是否包含下級（0：不包含，1包含）
             var username = this.value4=="-1"?"":this.childlist[this.value4]["username"] 	//用户名
             const userpointtype = this.value3 	//string	投注類型
             const issue = ''	//string	彩種獎期
@@ -233,6 +249,14 @@ export default {
             //_		
                 //int	請求的數據記錄數量
             const p = this.page_index	//int	要請求的page序號
+            // console.log("include",include);
+            // console.log("username",username);
+            // console.log("userpointtype",userpointtype);
+            // console.log("issue",issue);
+            // console.log("methodid",methodid);
+            // console.log("lotteryid",lotteryid);
+            // console.log("starttime",starttime);
+            // console.log("endtime",endtime);
             if(this.buttonLoading==true)return
             if(flag){
                     gettaskhistory({
@@ -244,9 +268,7 @@ export default {
                     "lotteryid":lotteryid,
                     "starttime":starttime,
                     "endtime":endtime,
-                    "p":'10',
-                    "pn":this.page_index,
-                    'taskstatus':'-1'
+                    "p":this.page_index
                 }).then((res)=>{
                         this.buttonLoading = false
                         var dataArr = res.data.page_data
@@ -255,9 +277,11 @@ export default {
                             this.listLoading = false
                             return
                         }
+                        console.log(dataArr,this.finished,this.listLoading);
                         this.page_index = res.data.page_index+1
                         this.historyListArr=this.historyListArr.concat(dataArr)
                         this.listLoading = false;
+                        console.log('if');
                 })
                 this.buttonLoading = true    
                 }else{
@@ -270,9 +294,7 @@ export default {
                     "methodid":methodid,
                     "lotteryid":lotteryid,
                     "starttime":starttime,
-                    "endtime":endtime,
-                    "p":this.page_index,
-                    'taskstatus':'-1'
+                    "endtime":endtime
 
                 }).then((res)=>{
                     this.page_index = res.data.page_index+1
@@ -283,7 +305,12 @@ export default {
                 })
                 this.buttonLoading = true
                 }
-            
+        },
+        gettaskhistorydetail(id){
+            gettaskhistorydetail({id}).then((res)=>{
+                this.detailData = res.data
+                this.detailShow = true
+            })
         },
         ordercancel(id,index){
             ordercancel({projectid:id}).then((res)=>{
@@ -385,5 +412,7 @@ export default {
         color: #a9aaac;
 .cell_span
     font-weight bold
-
+.detailPop
+    width: 100vw;
+    height: 100vh;
 </style>
