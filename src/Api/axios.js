@@ -63,6 +63,7 @@ service.interceptors.response.use(
                     Router.push('/')
                     return new Promise(() => {})
                 default:
+                    store.commit('UpdateIsBtnLoading',false)
                     if(typeof response.data.msg == 'object'){
                         Notify({
                             message: response.data.msg.content[0],
@@ -75,6 +76,7 @@ service.interceptors.response.use(
                             duration: 2000,
                             background: '#1abc9c'
                         });
+
                     }
                     
                     // Message.error(response.data.msg)

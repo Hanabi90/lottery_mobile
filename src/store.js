@@ -25,11 +25,15 @@ export default new Vuex.Store({
         userCenterPop:false,
         zhuihaoArr:[],
         countDown:{days:0,hours:0,minutes:0,seconds:0},
-        noticeData:[]
+        noticeData:[],
+        isBtnLoading:false
     },
     mutations: {
         UpdateCenterPop(state,flag){
             state.userCenterPop = flag
+        },
+        UpdateIsBtnLoading(state,status){
+            state.isBtnLoading = status
         },
         UpdateNoticeData(state,noticeData){
             state.noticeData = noticeData

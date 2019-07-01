@@ -51,7 +51,31 @@
                         />
                     </van-cell>
                     <van-cell :center="true" class="button">
-                        <van-button type="primary" @click="addnewuser">立即开户</van-button>
+                        <van-button
+                            type="primary"
+                            @click="addnewuser"
+                            :loading="isloading"
+                            loading-text="开户中..."
+                        >立即开户</van-button>
+                    </van-cell>
+                </van-cell-group>
+                <van-cell-group v-show="gotusername!==''">
+                    <van-cell>
+                        <span class="red">恭喜您！开户成功！</span>
+                    </van-cell>
+                    <van-cell>
+                        <span class="red">
+                            请牢记您的用户名和代理密码
+                            恭喜您！开户成功！
+                        </span>
+                    </van-cell>
+                    <van-cell :center="true" class="userinfo">
+                        <span>用户名:</span>
+                        <span>{{gotusername}}</span>
+                    </van-cell>
+                    <van-cell :center="true" class="userinfo">
+                        <span>密码:</span>
+                        <span>{{gotpassword}}</span>
                     </van-cell>
                 </van-cell-group>
             </van-tab>
@@ -99,6 +123,7 @@
                         <div class="flex urlbox">
                             <span>推广链接:</span>
                             <a :href="url">{{url}}</a>
+                            <div id="qrcode" ref="qrcode"></div>
                         </div>
                     </van-cell>
                 </van-cell-group>
@@ -108,6 +133,7 @@
 </template>
 
 <script>
+import QRCode from 'qrcodejs2'
 import {
     Tab,
     Tabs,
@@ -118,7 +144,8 @@ import {
     Cell,
     Slider,
     Stepper,
-    Button
+    Button,
+    Notify
 } from 'vant'
 import { getreglink, setreglink, addnewuser } from '../../../Api/api'
 export default {
@@ -129,6 +156,8 @@ export default {
             usertype: '1',
             username: '',
             password: '',
+            gotusername: '',
+            gotpassword: '',
             showtip: false,
             value: 50,
             prizeGroup: 0,
@@ -136,7 +165,7 @@ export default {
             maxodds: '0',
             minodds: '0',
             url: '',
-            unComputedZtype:''
+            unComputedZtype: ''
         }
     },
     created() {
@@ -168,6 +197,10 @@ export default {
                 if (res.code == 0) {
                     console.log(res)
                     this.url = res.data.tuiguan.url + res.data.tuiguan.urlparam
+                    this.$nextTick (function () {
+                        document.getElementById('qrcode').innerHTML = ''
+                        this.qrCode(this.url)
+                    })
                     this.unComputedZtype = res.data.tuiguan.ztype
                     // var urlDom = document.getElementById('tuiguangUrl')
                     // urlDom.select()
@@ -182,11 +215,31 @@ export default {
                 username: this.username,
                 userpass: this.password
             }
+            this.$store.commit('UpdateIsBtnLoading', true)
             addnewuser({
                 pdata: this.$RSAencrypt(JSON.stringify(params))
             }).then(res => {
-                console.log(res)
+                if (res.code == 0) {
+                    Notify('开户成功')
+                    this.gotusername = this.username
+                    this.gotpassword = this.password
+                    this.username = ''
+                    this.password = ''
+                }
+                this.$store.commit('UpdateIsBtnLoading', false)
             })
+        },
+        qrCode(url) {
+            let qrcode = new QRCode('qrcode', {
+                width: 150, //图像宽度
+                height: 150, //图像高度
+                colorDark: '#000000', //前景色
+                colorLight: '#ffffff', //背景色
+                typeNumber: 4,
+                correctLevel: QRCode.CorrectLevel.H //容错级别 容错级别有：（1）QRCode.CorrectLevel.L （2）QRCode.CorrectLevel.M （3）QRCode.CorrectLevel.Q （4）QRCode.CorrectLevel.H
+            })
+            qrcode.clear() //清除二维码
+            qrcode.makeCode(url) //生成另一个新的二维码
         }
     },
     computed: {
@@ -196,6 +249,9 @@ export default {
             } else if (this.unComputedZtype == '1') {
                 return '代理'
             }
+        },
+        isloading() {
+            return this.$store.state.isBtnLoading
         }
     },
     components: {
@@ -208,7 +264,8 @@ export default {
         'van-cell': Cell,
         'van-slider': Slider,
         'van-stepper': Stepper,
-        'van-button': Button
+        'van-button': Button,
+        QRCode
     }
 }
 </script>
@@ -245,5 +302,11 @@ export default {
             border-radius 100px
 .urlbox
     flex-direction column
-    word-break: break-all;
+    word-break break-all
+.red
+    color red
+#qrcode
+    margin 20px 0
+    display: flex;
+    justify-content: center;
 </style>
