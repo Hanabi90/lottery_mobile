@@ -4,7 +4,9 @@
             <li class="prize_li" v-for="item in prizeArr" :key="item.id">
                 <p class="wrap">
                     <span class="issue">{{item.issue}}</span>
-                    <span class="ball" v-for="(ball, index) in item.code">{{ball}}</span>
+                    <div class="codes">
+                        <span class="ball" v-for="(ball, index) in item.code">{{ball}}</span>
+                    </div>
                 </p>
             </li>
         </ul>
@@ -27,6 +29,9 @@ export default {
         getprize(){
             getprize({lotteryid:this.lotteryid,size:50}).then((res)=>{
                 this.prizeArr = res.data
+                this.prizeArr.map((item)=>{
+                    item.code = item.code.split(' ')
+                })
             })
         }
     }
@@ -36,10 +41,14 @@ export default {
 <style lang="stylus" scoped>
 .wrap
     display flex
-    justify-content space-around
     padding 20px 10px;
 .prize_li
         border-bottom 1px solid #eee
+        display flex
+.codes
+    display flex
+    flex-wrap wrap
+    align-items: center;
 .issue
     height 30px
     display flex

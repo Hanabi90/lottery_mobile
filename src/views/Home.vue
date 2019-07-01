@@ -178,6 +178,7 @@ export default {
                         str= str + item.subject+'    '+item.content+'          '
                     }
                     this.noticeStr = str
+                    this.$store.commit('UpdateNoticeData',noticeArr)
                 }
             })
         },

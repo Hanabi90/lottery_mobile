@@ -24,11 +24,16 @@ export default new Vuex.Store({
         },
         userCenterPop:false,
         zhuihaoArr:[],
-        countDown:{days:0,hours:0,minutes:0,seconds:0}
+        countDown:{days:0,hours:0,minutes:0,seconds:0},
+        noticeData:[]
     },
     mutations: {
         UpdateCenterPop(state,flag){
             state.userCenterPop = flag
+        },
+        UpdateNoticeData(state,noticeData){
+            state.noticeData = noticeData
+            console.log(state.noticeData);
         },
         updateNewsel(state){
             state.newsel = []

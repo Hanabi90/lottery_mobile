@@ -74,7 +74,7 @@
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
                 <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
-                <quickHistory v-if="betHistoryShow"></quickHistory>
+                <bethistory v-if="betHistoryShow"></bethistory>
             </div>
         </Popup>
         <Popup></Popup>
