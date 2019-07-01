@@ -1,8 +1,8 @@
 <template>
     <div class="zhuihaoDetail">
-            <van-cell-group title="追号详情" >
-                <van-cell-group class="detail-group">
-                    <Cell>
+        <van-cell-group title="追号详情">
+            <van-cell-group class="detail-group">
+                <Cell>
                     游戏用户:
                     <span class="cell_span">{{detailData.task.username}}</span>
                 </Cell>
@@ -71,34 +71,30 @@
                     追号总金额:
                     <span class="cell_span">{{detailData.task.taskprice}}</span>
                 </Cell>
-                </van-cell-group>
             </van-cell-group>
-            <van-cell-group>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th>奖期</th>
-                            <th>追号倍数</th>
-                            <th>追号状态</th>
-                            <th>注单状态</th>
-                        </tr>
-                        <tr v-for="(item, index) in detailData.aTaskdetail" :key="index" class="center">
-                            <td>{{item.issue}}</td>
-                            <td>{{item.multiple}}</td>
-                            <td @click="removeOrder(item,index)">{{status(item)}}</td>
-                            <td>{{kaijiangStatus(item)}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </van-cell-group>
-            <div>
-                <van-button class="button" type="danger" @click="$emit('closedetail')">
-                    返回
-                </van-button>
-                <van-button class="button" type="danger" @click="refresh">
-                    刷新
-                </van-button>
+        </van-cell-group>
+        <van-cell-group class="cell_group">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>奖期</th>
+                        <th>追号倍数</th>
+                        <th>追号状态</th>
+                        <th>注单状态</th>
+                    </tr>
+                    <tr v-for="(item, index) in detailData.aTaskdetail" :key="index" class="center">
+                        <td>{{item.issue}}</td>
+                        <td>{{item.multiple}}</td>
+                        <td @click="removeOrder(item,index)">{{status(item)}}</td>
+                        <td>{{kaijiangStatus(item)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="buttons">
+                <van-button class="button" type="danger" @click="$emit('closedetail')">返回</van-button>
+                <van-button class="button" type="danger" @click="refresh">刷新</van-button>
             </div>
+        </van-cell-group>
     </div>
 </template>
 <script>
@@ -117,9 +113,9 @@ import {
     CellGroup,
     Notify,
     Tag,
-    Dialog 
+    Dialog
 } from 'vant'
-import {traceordercancel,ordercancel} from '../../Api/api'
+import { traceordercancel, ordercancel } from '../../Api/api'
 export default {
     components: {
         DropdownMenu,
@@ -133,114 +129,114 @@ export default {
         vanCollapse: Collapse,
         vanCollapseItem: CollapseItem,
         Cell,
-        'van-cell-group':CellGroup,
-        'van-tag':Tag
+        'van-cell-group': CellGroup,
+        'van-tag': Tag
     },
     data() {
         return {
             activeNames: ['1'],
-            index:-1
+            index: -1
         }
     },
     created() {},
     props: ['detailData'],
     methods: {
-        kaijiangStatus(item){
-            if(item.iscancel==0){
-                if(item.isgetprize==0){
+        kaijiangStatus(item) {
+            if (item.iscancel == 0) {
+                if (item.isgetprize == 0) {
                     return '未开奖'
-                }
-                else if (item.isgetprize==2){
+                } else if (item.isgetprize == 2) {
                     return '未中奖'
-                }
-                else if (item.isgetprize==1){
-                    if(item.prizestatus==0){
+                } else if (item.isgetprize == 1) {
+                    if (item.prizestatus == 0) {
                         return '未派奖'
-                    }else{
+                    } else {
                         return '已派奖'
                     }
                 }
-            }else if(item.iscancel==1){
+            } else if (item.iscancel == 1) {
                 return '本人撤单'
-            }else if (item.iscancel==2){
+            } else if (item.iscancel == 2) {
                 return '管理员撤单'
-            }else if(item.iscancel==3){
+            } else if (item.iscancel == 3) {
                 return '开错奖撤单'
             }
         },
-        status(item){
-            if(item.status==0){
+        status(item) {
+            if (item.status == 0) {
                 return '进行中'
-            }else if(item.status==1){
-                if(item.can==1){
+            } else if (item.status == 1) {
+                if (item.can == 1) {
                     return '已完成、可撤单'
-                }else{
+                } else {
                     return '已完成、不可撤单'
                 }
-            }else{
+            } else {
                 return '已取消'
             }
         },
-        removeOrder(item,index){
-            if(item.can==0){
-                return 
+        removeOrder(item, index) {
+            if (item.can == 0) {
+                return
             }
             this.index = index
             Dialog.confirm({
                 title: '确定要撤单吗？',
                 message: `${item.issue}期-${item.multiple}倍`,
-                beforeClose:this.beforeClose
-            });
+                beforeClose: this.beforeClose
+            })
         },
         beforeClose(action, done) {
-            traceordercancel(params).then((res)=>{
-                        done()
-                        console.log(res);
-                    })
+            traceordercancel(params).then(res => {
+                done()
+                console.log(res)
+            })
             if (action === 'confirm') {
                 var params = {
-                    taskId:this.detailData.task.taskid,
-                    detailsId:[this.detailData.aTaskdetail[this.index].entry]
+                    taskId: this.detailData.task.taskid,
+                    detailsId: [this.detailData.aTaskdetail[this.index].entry]
                 }
-                var projectId = this.detailData.aTaskdetail[this.index].projectid
-                if(this.detailData.aTaskdetail[this.index].can==1){
-                    traceordercancel(params).then((res)=>{
-                        console.log(res);
+                var projectId = this.detailData.aTaskdetail[this.index]
+                    .projectid
+                if (this.detailData.aTaskdetail[this.index].can == 1) {
+                    traceordercancel(params).then(res => {
+                        console.log(res)
                     })
-                        done()
+                    done()
                 }
-                
             } else {
-                done();
+                done()
             }
         },
-        refresh(){
+        refresh() {
             this.$parent.gettaskhistorydetail(this.$parent.detailId)
         }
-    },
+    }
 }
 </script>
 
 <style lang="stylus" scoped>
 .zhuihaoDetail
-    text-align: center;
+    text-align center
 .table
     width 100%
     text-align center
     th
-        background: #3067a0;
-        color: #fff;
-        border: solid 1px #3067a0;
+        background #3067a0
+        color #fff
+        border solid 1px #3067a0
         height 30px
         line-height 30px
     td
         height 30px
         line-height 30px
-        background: #fff;
-        border: solid 1px #3067a0;
-        color: #000;
+        background #fff
+        border solid 1px #3067a0
+        color #000
 .center
-    text-align: center;
-.button
-    margin-top 10px
+    text-align center
+.buttons
+    display flex
+    justify-content space-evenly
+    margin 10px 0
 </style>
