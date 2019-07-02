@@ -4,7 +4,7 @@
             <DropdownItem @change="tabMenu(value1)" v-model="value1" :options="option1"/>
             <DropdownItem v-model="value2" :options="option2"/>
             <DropdownItem v-model="value3" :options="option3"/>
-            <DropdownItem v-model="value4" :options="option4"/>
+            <DropdownItem v-if="zhiding==''" v-model="value4" :options="option4"/>
         </DropdownMenu>
         <div class="input" @click="dateShowCtrl(1)">
             <Field
@@ -164,7 +164,14 @@ export default {
             }
         })
     },
-    props: ['lotteryid'],
+    props: {
+        lotteryid:{
+            default:'-1'
+        },
+        zhiding:{
+            default:''
+        }
+    },
     data() {
         return {
             page_index: 1,
@@ -240,10 +247,15 @@ export default {
                 'yyyy-MM-dd hh:mm:ss'
             ) //datetime	起始時間
             const endtime = this.currentDate_2.format('yyyy-MM-dd hh:mm:ss') //datetime	終止時間
-            var username =
-                this.value4 == '-1'
-                    ? ''
-                    : this.childlist[this.value4]['username']
+            var username
+            if(this.zhiding==''){
+                username =
+                    this.value4 == '-1'
+                        ? ''
+                        : this.childlist[this.value4]['username']
+            }else{
+                username = this.zhiding
+            }
             var p = this.page_index
             const includechild = this.value4 == '-1' ? 0 : 1
             if (this.buttonLoading == true) return

@@ -187,14 +187,11 @@ export default {
             })
         },
         beforeClose(action, done) {
-            traceordercancel(params).then(res => {
-                done()
-                console.log(res)
-            })
+            console.log('object');
             if (action === 'confirm') {
                 var params = {
                     taskId: this.detailData.task.taskid,
-                    detailsId: [this.detailData.aTaskdetail[this.index].entry]
+                    detailsId:this.detailData.aTaskdetail[this.index].entry
                 }
                 var projectId = this.detailData.aTaskdetail[this.index]
                     .projectid

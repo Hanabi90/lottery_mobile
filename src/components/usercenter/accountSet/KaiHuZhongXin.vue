@@ -123,7 +123,11 @@
                         <div class="flex urlbox">
                             <span>推广链接:</span>
                             <a :href="url">{{url}}</a>
-                            <div id="qrcode" ref="qrcode"></div>
+                            <div class="qrcode">
+                                <canvas id="canvas" style="display:none"></canvas>      
+                                <img :src="imgUrl"/>
+                                <p>长按保存二维码图片</p>
+                            </div>
                         </div>
                     </van-cell>
                 </van-cell-group>
@@ -133,7 +137,8 @@
 </template>
 
 <script>
-import QRCode from 'qrcodejs2'
+// import QRCode from 'qrcodejs2'
+import QRCode from 'qrcode'
 import {
     Tab,
     Tabs,
@@ -165,7 +170,8 @@ export default {
             maxodds: '0',
             minodds: '0',
             url: '',
-            unComputedZtype: ''
+            unComputedZtype: '',
+            imgUrl:''
         }
     },
     created() {
@@ -195,16 +201,11 @@ export default {
             }
             setreglink(params).then(res => {
                 if (res.code == 0) {
-                    console.log(res)
                     this.url = res.data.tuiguan.url + res.data.tuiguan.urlparam
                     this.$nextTick (function () {
-                        document.getElementById('qrcode').innerHTML = ''
                         this.qrCode(this.url)
                     })
                     this.unComputedZtype = res.data.tuiguan.ztype
-                    // var urlDom = document.getElementById('tuiguangUrl')
-                    // urlDom.select()
-                    // document.execCommand("Copy")
                 }
             })
         },
@@ -230,16 +231,31 @@ export default {
             })
         },
         qrCode(url) {
-            let qrcode = new QRCode('qrcode', {
-                width: 150, //图像宽度
-                height: 150, //图像高度
-                colorDark: '#000000', //前景色
-                colorLight: '#ffffff', //背景色
-                typeNumber: 4,
-                correctLevel: QRCode.CorrectLevel.H //容错级别 容错级别有：（1）QRCode.CorrectLevel.L （2）QRCode.CorrectLevel.M （3）QRCode.CorrectLevel.Q （4）QRCode.CorrectLevel.H
+            
+            let canvas = document.getElementById('canvas')
+            QRCode.toCanvas(canvas, url, function(error) {
+                if (error) { console.error(error) } else { console.log('success!'); }
             })
-            qrcode.clear() //清除二维码
-            qrcode.makeCode(url) //生成另一个新的二维码
+            this.saveImg()//保存图片
+        },
+        saveImg(){
+            let myCanvas = document.getElementsByTagName('canvas');
+            this.imgUrl=myCanvas[0].toDataURL("image/jpeg")                          
+        },
+        downloadImg(){
+          var img = document.getElementById('qrcode').getElementsByTagName('img')[0];
+       // 构建画布
+          var canvas = document.createElement('canvas');
+          var gl = canvas.getContext('webgl')
+          console.log( gl.canvas.toDataURL());
+          canvas.width = img.width;
+          canvas.height = img.height;
+          canvas.getContext('2d').drawImage(img, 0, 0);
+      // 构造url
+          var url = gl.canvas.toDataURL();
+          document.getElementById('downloadImg').setAttribute('href', url);
+          document.getElementById('downloadImg').setAttribute('download', '二维码.jpg');
+          document.getElementById('downloadImg').click();
         }
     },
     computed: {

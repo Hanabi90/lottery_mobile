@@ -154,7 +154,14 @@ export default {
             }
         })
     },
-    props:['lotteryid'],
+    props:{
+        lotteryid:{
+            default:'0'
+        },
+        zhiding:{
+            default:false
+        }
+    },
     data() {
         return {
             activeNames:"1",

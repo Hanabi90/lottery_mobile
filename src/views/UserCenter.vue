@@ -45,7 +45,7 @@
             </div>
         </div>
         <my-fotter @bankCtrl="bankCtrl"></my-fotter>
-        <van-popup @closed="closePop" v-model="show" :overlay="false" position="right">
+        <van-popup class="pop_right" @closed="closePop" v-model="show" :overlay="false" position="right">
             <my-header></my-header>
             <div class="popwrap">
                 <bank @closePop="closePop" v-if="showBank"></bank>
@@ -255,6 +255,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.pop_right
+    overflow hidden
 .popupWrap
     margin-bottom 20px
 .text

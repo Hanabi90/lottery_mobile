@@ -152,7 +152,8 @@ export default {
                 if (res.code == 0) {
                     this.show = false
                     const token = res.data.token
-                    this.updateToken({token,method:'login',nickname:res.data.nickname})
+                    var ishuiyuan = res.data.usertype=='1'?ishuiyuan = false:ishuiyuan = true
+                    this.updateToken({token,method:'login',nickname:res.data.nickname,ishuiyuan,username:res.data.username})
                     Notify({
                         message: '登录成功',
                         duration: 2000,

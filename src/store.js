@@ -26,7 +26,8 @@ export default new Vuex.Store({
         zhuihaoArr:[],
         countDown:{days:0,hours:0,minutes:0,seconds:0},
         noticeData:[],
-        isBtnLoading:false
+        isBtnLoading:false,
+        ishuiyuan:false
     },
     mutations: {
         UpdateCenterPop(state,flag){
@@ -102,13 +103,12 @@ export default new Vuex.Store({
             }
         },
         updateToken(state,params){
-            const { token,method,nickname } = { ...params }
+            const { token,method,nickname,ishuiyuan,username } = { ...params }
             var newToken = null
             var newNickname = ''
             switch (method) {
                 case 'login':
                 // console.log(method)
-
                     newNickname = nickname
                     newToken = token
                     state.token = newToken
@@ -124,8 +124,10 @@ export default new Vuex.Store({
                     break;
             }
             state.userInfo['nickname'] = newNickname
+            state.ishuiyuan = ishuiyuan
             sessionStorage.setItem('token', newToken)
             localStorage.setItem('nickname',newNickname)
+            localStorage.setItem('username_2',username)
         },
         updateUserInfo(state, params) {
             // console.log(params)
