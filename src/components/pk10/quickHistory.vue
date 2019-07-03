@@ -16,7 +16,7 @@
                 <span>系统讯息</span>
                 <span></span>
             </div>-->
-            <van-collapse v-model="activeNames">
+            <van-collapse v-model="activeNames" accordion>
                 <van-collapse-item size="large" title="线上客服" name="1" icon="service-o"></van-collapse-item>
                 <van-collapse-item
                     v-if="!istopproxy"
@@ -33,7 +33,7 @@
                 <van-collapse-item
                     size="large"
                     title="未读信息"
-                    name="2"
+                    name="3"
                     icon="comment"
                     class="msg_xiala"
                 >
@@ -64,7 +64,7 @@
                 <van-collapse-item
                     size="large"
                     title="已发送信息"
-                    name="3"
+                    name="4"
                     icon="comment"
                     class="msg_xiala"
                 >
@@ -96,7 +96,7 @@
                     v-if="childlist.length>0"
                     size="large"
                     title="下级用户"
-                    name="4"
+                    name="5"
                     icon="cluster"
                 >
                     <div

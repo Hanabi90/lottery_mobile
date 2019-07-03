@@ -197,7 +197,14 @@ export default {
                     .projectid
                 if (this.detailData.aTaskdetail[this.index].can == 1) {
                     traceordercancel(params).then(res => {
-                        console.log(res)
+                        if(res.code==0){
+                            Notify({
+                            message: '撤单成功',
+                            duration: 500,
+                            background: '#1989fa'
+                            })
+                            this.refresh()
+                        }
                     })
                     done()
                 }

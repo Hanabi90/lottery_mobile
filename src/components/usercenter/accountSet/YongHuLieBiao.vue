@@ -91,9 +91,16 @@
                 <van-cell-group>
                     <van-cell title="用户账号" :value="currentItem.username" />
                     <van-cell title="用户类型" :value="currentItem.groupname" />
-                    <van-cell title="信用额度" :value="currentItem.username" @click="popCtrl()">
+                    <van-cell title="信用额度" :value="currentItem.username" >
                         <template slot="default">
-                            <van-button>升点</van-button>
+                            <van-stepper v-model="credit" :max="creditData!==null?creditData.parentCredit.creditavailable:0" integer />
+                            <span v-if="creditData!==null">可回收余额:<i>{{creditData.rows.creditavailable}}</i>，上级余额：<i>{{creditData.parentCredit.creditavailable}}</i></span>
+                        </template>
+                    </van-cell>
+                    <van-cell title="上级占成" :value="currentItem.username" >
+                        <template slot="default">
+                            <p><van-stepper v-model="proxy_rate" :max="creditData!==null?creditData.max_rate:0" integer />%</p>
+                            <span v-if="creditData!==null">最高可设占成<i>{{creditData.max_rate}}</i>%</span>
                         </template>
                     </van-cell>
                 </van-cell-group>
@@ -110,7 +117,8 @@ import {
     Cell,CellGroup,
     Popup,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    Stepper
 } from 'vant'
 import {
     getgrouplist,
@@ -135,7 +143,11 @@ export default {
             ],
             history:[],
             notfirsttime:false,
-            username:''
+            username:'',
+            credit:0,
+            proxy_rate:0,
+            creditData:null,
+
         }
     },
     created() {
@@ -204,7 +216,7 @@ export default {
         },
         setcredit(){
             setcredit({uid:this.currentItem.userid}).then((res)=>{
-                console.log(res);
+                this.creditData = res.data
             })
         }
     },
@@ -217,7 +229,8 @@ export default {
         'van-popup':Popup,
         orderhistory,
         "van-dropdown-menu":DropdownMenu, 
-        "van-dropdown-item":DropdownItem 
+        "van-dropdown-item":DropdownItem,
+        'van-stepper':Stepper
     }
 }
 </script>

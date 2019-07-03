@@ -928,7 +928,9 @@ export default {
         }
     },
     created() {
+        this.$store.dispatch('UPDATEBALANCE')
         if (this.$route.params.data != undefined) {
+            console.log('this.$route.params.data',this.$route.params.data) 
             const data = this.$route.params.data.data.data
             const menuid = this.$route.params.data.menuid
             const lotteryid = (this.lotteryid = this.$route.params.data.lotteryid)

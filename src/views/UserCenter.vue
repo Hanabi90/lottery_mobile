@@ -15,7 +15,7 @@
                 </p>
                 <div class="text userbalance">
                     <p>信用余额：0.000</p>
-                    <p>现金余额：{{userinfo.money}}</p>
+                    <p class="flex_box align-center">现金余额：{{userinfo.money}}<van-icon @click="getbalance()" color="#f0c67a" name="replay"/></p>
                 </div>
             </div>
             <div class="bottom flex_box">
@@ -45,12 +45,13 @@
             </div>
         </div>
         <my-fotter @bankCtrl="bankCtrl"></my-fotter>
-        <van-popup class="pop_right" @closed="closePop" v-model="show" :overlay="false" position="right">
+        <van-popup :class="[{ovh:navlist[0].active},'pop_right']" @closed="closePop" v-model="show" :overlay="false" position="right">
             <my-header></my-header>
             <div class="popwrap">
                 <bank @closePop="closePop" v-if="showBank"></bank>
                 <bethistory v-else-if="navlist[5].active"></bethistory>
                 <orderhistory v-else-if="navlist[1].active"></orderhistory>
+                <Feiyouxizhangbian v-else-if="navlist[2].active"></Feiyouxizhangbian>
                 <accountSet v-else-if="navlist[0].active"></accountSet>
                 <quickHistory v-else-if="navlist[9].active"></quickHistory>
                 <zhuihaoHistory v-else-if="navlist[6].active"></zhuihaoHistory>
@@ -62,7 +63,7 @@
 </template>
 
 <script>
-import { logout, updatenickname } from '../Api/api'
+import { logout, updatenickname,getbalance } from '../Api/api'
 import { Icon, Popup, Field, Notify } from 'vant'
 import fotter from '../components/common/footer.vue'
 import bank from '../components/usercenter/bank.vue'
@@ -70,6 +71,7 @@ import bethistory from '../components/usercenter/bethistory'
 import zhuihaoHistory from '../components/usercenter/zhuihaoHistory'
 import myHeader from '../components/usercenter/header'
 import orderhistory from '../components/usercenter/orderhistory'
+import Feiyouxizhangbian from '../components/usercenter/Feiyouxizhangbian'
 import accountSet from '../components/usercenter/accountSet'
 import Notice from '../components/usercenter/Notice'
 import quickHistory from '../components/pk10/quickHistory'
@@ -235,7 +237,10 @@ export default {
             }else{
                 this.onEdit = true
             }
-        }
+        },
+        getbalance(){
+            this.$store.dispatch('UPDATEBALANCE')
+        },
     },
     components: {
         vanIcon: Icon,
@@ -244,6 +249,7 @@ export default {
         vanField: Field,
         bethistory,
         orderhistory,
+        Feiyouxizhangbian,
         bank,
         myHeader,
         accountSet,
@@ -255,7 +261,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.pop_right
+.ovh
     overflow hidden
 .popupWrap
     margin-bottom 20px

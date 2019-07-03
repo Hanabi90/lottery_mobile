@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import {getbalance} from './Api/api'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -139,13 +139,22 @@ export default new Vuex.Store({
         editNickName(state,newNickname){
             state.userInfo['nickname'] = newNickname
             localStorage.setItem('nickname',newNickname)
-        }
+        },
     },
     actions: {
         'UPDATEDELAYTIMETOCLOSE'(){
             state.timer = setTimeout(() => {
                 updateDelaytimeToClose(0)
             }, 3000);
+        },
+        'UPDATEBALANCE'(context){
+            getbalance().then((res)=>{
+                if(res.code==0){
+                    const userBalance = res.data.money
+                    context.commit('updateUserInfo',{userBalance})
+                }
+            })
+            
         }
     }
 })

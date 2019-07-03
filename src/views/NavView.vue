@@ -251,7 +251,7 @@ export default {
             })
         },
         getCaizhong(i) {
-            var lotteryData = localStorage.getItem(i.menuid)
+            var lotteryData = null
             lotteryData = JSON.parse(lotteryData)
             console.log(lotteryData);
             if(lotteryData!==null){

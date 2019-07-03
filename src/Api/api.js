@@ -75,6 +75,12 @@ export const getbankreporthistory = formData =>//非遊戲帳變記錄
         url: 'report/getbankreporthistory',
         data: qs.stringify(formData)
     })
+export const getallbankreporttype = formData =>//非遊戲帳變記錄
+    service.request({
+        method: 'post',
+        url: 'report/getallbankreporttype',
+        data: qs.stringify(formData)
+    })
 export const checksecpassexist = formData =>//查询有无资金密码
     service.request({
         method: 'post',
