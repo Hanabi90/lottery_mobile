@@ -126,7 +126,8 @@
                             <div class="qrcode">
                                 <canvas id="canvas" style="display:none"></canvas>      
                                 <img :src="imgUrl"/>
-                                <p>长按保存二维码图片</p>
+                                <a id="downloadImg"></a>
+                                <p @click="downloadImg">长按保存二维码图片</p>
                             </div>
                         </div>
                     </van-cell>
@@ -231,31 +232,21 @@ export default {
             })
         },
         qrCode(url) {
-            
             let canvas = document.getElementById('canvas')
             QRCode.toCanvas(canvas, url, function(error) {
                 if (error) { console.error(error) } else { console.log('success!'); }
             })
-            this.saveImg()//保存图片
+            this.saveImg()
         },
         saveImg(){
             let myCanvas = document.getElementsByTagName('canvas');
-            this.imgUrl=myCanvas[0].toDataURL("image/jpeg")                          
+            this.imgUrl=myCanvas[0].toDataURL("image/png")
         },
         downloadImg(){
-          var img = document.getElementById('qrcode').getElementsByTagName('img')[0];
-       // 构建画布
-          var canvas = document.createElement('canvas');
-          var gl = canvas.getContext('webgl')
-          console.log( gl.canvas.toDataURL());
-          canvas.width = img.width;
-          canvas.height = img.height;
-          canvas.getContext('2d').drawImage(img, 0, 0);
-      // 构造url
-          var url = gl.canvas.toDataURL();
-          document.getElementById('downloadImg').setAttribute('href', url);
-          document.getElementById('downloadImg').setAttribute('download', '二维码.jpg');
-          document.getElementById('downloadImg').click();
+          document.getElementById('downloadImg').setAttribute('href', this.imgUrl);
+        document.getElementById('downloadImg').setAttribute('download', 'qrcode.png');
+        document.getElementById('downloadImg').click();
+          
         }
     },
     computed: {

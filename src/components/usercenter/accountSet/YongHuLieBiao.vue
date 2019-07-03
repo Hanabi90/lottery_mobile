@@ -12,12 +12,12 @@
         </div>
         <div class="bread">
             <span>当前位置:</span>
-            <span @click="goToUser(item,index)" v-for="(item, index) in history" :key="index+'item'">>{{item.username}}</span>
+            <span @click="goToUser(item,index)" v-for="(item, index) in history" :key="index+'item'"><i>></i>{{item.username}}</span>
         </div>
         <div class="box">
             <table class="table">
             <tbody>
-                <tr>
+                <tr class="thead">
                     <th>用户名</th>
                     <th>用户类型</th>
                     <th>奖金组</th>
@@ -29,7 +29,11 @@
                     <td>{{item.groupname}}</td>
                     <td>{{parseInt(item.prizeGroup)}}</td>
                     <td>{{parseInt(item.money)}}</td>
-                    <td @click="chaxunxiaji(item)">查询</td>
+                    <td @click="chaxunxiaji(item)" v-show="item.groupname!=='会员'">查询</td>
+                    <td v-show="item.groupname=='会员'">无</td>
+                </tr>
+                <tr v-show="userList.length==0">
+                    <td colspan="5">该账户无下级</td>
                 </tr>
             </tbody>
         </table>
@@ -143,7 +147,7 @@ export default {
         goToUser(item,index){
             console.log(index);
             if(index==0){
-                this.getgrouplist()
+                this.chaxunxiaji({username:'',userid:''},true,false)
             }else{
                 this.chaxunxiaji(item,'gotoUser')
             }
@@ -272,4 +276,12 @@ export default {
     position fixed
     top 0
     left 0
+.bread
+    i
+        color #000
+        font-weight normal
+    span:last-child
+        color red
+        font-style italic
+        font-weight bold
 </style>
