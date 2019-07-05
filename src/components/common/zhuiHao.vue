@@ -21,8 +21,11 @@
                             </p>
                             <p v-if="item.checked==false">当前投入0元，累计投入0元</p>
                             <p v-else>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
-                            <p>
-                            </p>
+                            <p>盈利金额{{((prize*item.beishu)-item.total_money).toFixed(2)}}，盈利率{{((prize*item.beishu-item.total_money).toFixed(2)/item.total_money*100).toFixed(2)}}%</p>
+                            <!-- (prize*x-item.total_money)/item.total_money*100 = 50 -->
+                            <!-- x = prize / item.total_money *100 /50 -->
+                            <!-- <p>{{(prize / item.total_money*100)/(50+100)}}</p> -->
+                            <p>{{Math.ceil(((50 / 100) * item.total_money + item.total_money) /(prize -item.now_money -(50 / 100) * item.now_money))}}</p>
                         </div>
                     </li>
                 </ul>
@@ -236,7 +239,7 @@ export default {
             issueArr:[]
         }
     },
-    props:['currentIssue','lotteryid'],
+    props:['currentIssue','lotteryid','prize'],
     computed:{
         zhuihaoArr(){
             return this.$store.state.zhuihaoArr
@@ -350,7 +353,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
                     issue++
                 }
             } else if (this.zhuihao_type == 3) {
@@ -374,7 +377,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
                     if (i % geqi_lt_trace_count_input == 0) {
                         beishu *= geqi_beishu
                     }
@@ -397,7 +400,7 @@ export default {
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:issueStr + '-' + issue,lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
                     issue++
                 }
             }
@@ -436,6 +439,9 @@ export default {
                 }
             })
         },
+        lirunlv(){
+
+        },
         formatData(){
             var betparams = {
                 curmid:this.zhuihaoArr[0].betparams['curmid'],
@@ -452,12 +458,15 @@ export default {
             bettraceparams:this.bettraceparams
             }) })
                 .then(res => {
+                    console.log(res)
                     if (res.code == 0) {
                         Notify({
                             message: '投注成功',
-                            duration: 3000,
+                            duration: 1000,
                             background: '#1abc9c'
                         })
+                        this.emptyList()
+
                     } else {
                         if(res.data.msg==undefined){
                             Notify({

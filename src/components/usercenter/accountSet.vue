@@ -8,7 +8,7 @@
         class="slidebar"
        >
             <van-sidebar  :active-key="activeKey" @change="onChange" >
-                <van-sidebar-item title="开户中心" />
+                <van-sidebar-item v-show="!$store.state.ishuiyuan" title="开户中心" />
                 <van-sidebar-item title="用户列表"  />
                 <van-sidebar-item title="我的奖金"  />
                 <van-sidebar-item title="找回资金密码"  />
@@ -63,13 +63,17 @@ export default {
   },
     data() {
         return {
-          activeKey: 0,
+          activeKey: 1,
           slideshow:false
         }
     },
+    mounted(){
+        setTimeout(() => {
+            this.slideshow = true
+        }, 300);
+    },
     methods: {
        onChange(key) {
-         console.log('key')
         this.activeKey = key;
       },
       slide_ctrl(){

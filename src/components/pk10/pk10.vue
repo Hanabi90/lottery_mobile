@@ -3,12 +3,8 @@
         <header>
             <router-link class="icon icon-menu" to="/navview" tag="a"></router-link>
             <div class="text">
-                <a class="logo">
-                    <!-- <img src="../../assets/images/logo.png" width="107.5px" height="28px"> -->
-                </a>
                 <div class="balance">
-                    <span class="userId">Guest</span>
-                    <span class="balance">{{userInfo.money}}</span>
+                    <span class="userId">{{$store.state.userInfo.nickname}}</span>
                 </div>
             </div>
             <div class="login">
@@ -73,7 +69,7 @@
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
+                <zhuihao :prize=prize v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
                 <bethistory v-if="betHistoryShow"></bethistory>
             </div>
         </Popup>
@@ -1422,7 +1418,7 @@ header
             justify-content center
             align-content center
             .ball_a
-                font-size 16px
+                font-size 12px
                 width 40px
                 height 40px
                 background-color #f00
@@ -1472,4 +1468,6 @@ header
     &.transform_fix
         transform none
         top 0
+.userId
+    font-size 16px
 </style>

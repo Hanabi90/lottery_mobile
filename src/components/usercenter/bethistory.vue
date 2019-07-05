@@ -117,7 +117,7 @@
 </template>
 <script>
 import myHeader from './header'
-import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify  } from 'vant'
+import { DropdownMenu, DropdownItem, DatetimePicker,Field,Popup,Button,List,Collapse, CollapseItem,Cell,Notify } from 'vant'
 import { getbethistory,getuserlottery,getuserlotterymethod,getchildlist,ordercancel } from '../../Api/api'
 export default {
     name: 'tab-bar-demo',

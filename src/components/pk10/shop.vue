@@ -231,7 +231,7 @@ export default {
                     if (res.code == 0) {
                         Notify({
                             message: '投注成功',
-                            duration: 3000,
+                            duration: 1000,
                             background: '#1abc9c'
                         })
                         const userBalance = res.data.amount

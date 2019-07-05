@@ -102,8 +102,7 @@
                     </Cell>
                     <Cell>
                         备注:
-                        <span class="cell_span" v-if="item.allowdec==1">{{item.description}}</span>
-                        <span class="cell_span" v-else>---</span>
+                        <span class="cell_span">{{item.description}}</span>
                     </Cell>
                 </van-collapse-item>
             </van-collapse>
