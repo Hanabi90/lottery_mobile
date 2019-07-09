@@ -72,12 +72,15 @@
                 <van-collapse-item v-for="(item, index) in historyListArr"  
                 :title="item.cnname" 
                 :name="index" 
-                :label="item.methodname" 
+                :label="item.iscancel==0?item.methodname:'已撤单'" 
                 :value="item.issue+' '+item.writetime|test"
-                label-class="col_label"
-                v-show="item.iscancel==0"
+                :label-class="item.iscancel==0?'col_label':'col_label_can'"
                 :key="index + item.cnname"
                 >
+                    <Cell v-show="item.iscancel==1">
+                        玩法:
+                        <span class="cell_span">{{item.methodname}}</span>
+                    </Cell>
                     <Cell>
                         投注内容:
                         <span class="cell_span">{{item.code}}</span>
@@ -110,6 +113,7 @@
                     <Cell v-if="item.can">
                         <van-button @click="ordercancel(item.projectid,index)" type="info">撤单</van-button>
                     </Cell>
+                    
                 </van-collapse-item>
             </van-collapse>
         </van-list>
@@ -303,13 +307,16 @@ export default {
         },
         ordercancel(id,index){
             ordercancel({projectid:id}).then((res)=>{
-                if(res.code==0){
-                    Notify({
-                    message: '撤单成功',
-                    duration: 1000,
-                    background: '#1989fa'
-                });
-                this.historyListArr.splice(index,1)
+                    if(res.code==0){
+                        Notify({
+                        message: '撤单成功',
+                        duration: 1000,
+                        background: '#1989fa'
+                    });
+                // this.historyListArr.splice(index,1)
+                // console.log();
+                this.$set(this.historyListArr[index],'iscancel',1)
+                this.$set(this.historyListArr[index],'can',0)
                 }
             })
         },
@@ -379,6 +386,11 @@ export default {
 .col_label
     width: 60%;
     background: #c32026;
+    text-align: center;
+    color #fff
+.col_label_can
+    width: 60%;
+    background: #8d8d8d
     text-align: center;
     color #fff
 .col_value

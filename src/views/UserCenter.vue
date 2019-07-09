@@ -56,6 +56,7 @@
                 <quickHistory v-else-if="navlist[9].active"></quickHistory>
                 <zhuihaoHistory v-else-if="navlist[6].active"></zhuihaoHistory>
                 <Notice v-else-if="navlist[8].active"></Notice>
+                <huodongguanli v-else-if="navlist[7].active"></huodongguanli>
                 <!-- ="navlist[9].active" -->
             </div>
         </van-popup>
@@ -74,6 +75,7 @@ import orderhistory from '../components/usercenter/orderhistory'
 import Feiyouxizhangbian from '../components/usercenter/Feiyouxizhangbian'
 import accountSet from '../components/usercenter/accountSet'
 import Notice from '../components/usercenter/Notice'
+import huodongguanli from '../components/usercenter/huodongguanli'
 import quickHistory from '../components/pk10/quickHistory'
 import { mapMutations } from 'vuex'
 
@@ -255,7 +257,8 @@ export default {
         accountSet,
         quickHistory,
         zhuihaoHistory,
-        Notice
+        Notice,
+        huodongguanli
     }
 }
 </script>

@@ -150,6 +150,7 @@ export default {
                 data : this.formatData()
             }
             this.updateZhuihaoArr(params)
+            this.$emit('emptyNewArr')
             this.$emit('close','open','zhuihao')
         },
         formatData(){
@@ -227,7 +228,6 @@ export default {
             var obj = this.formatData()
             betting({ postdata: JSON.stringify(obj) })
                 .then(res => {
-                    console.log(res.msg);
                     if (res.code == 0) {
                         Notify({
                             message: '投注成功',
@@ -236,6 +236,7 @@ export default {
                         })
                         const userBalance = res.data.amount
                         this.$store.commit('updateUserInfo',{userBalance})
+                        this.$emit('emptyNewArr')
                     } else {
                         Notify({
                             message: res.msg,

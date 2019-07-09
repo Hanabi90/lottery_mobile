@@ -322,6 +322,18 @@ export const topup = formData =>//验证密保问题
         url: 'user/topup',
         data: qs.stringify(formData)
     })
+export const getactivitylist = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'activity/getactivitylist',
+        data: qs.stringify(formData)
+    })
+export const getactivityinfo = formData =>//验证密保问题
+    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+        method: 'post',
+        url: 'activity/getactivityinfo',
+        data: qs.stringify(formData)
+    })
 /* {
     "betparams": {
         "iWalletType": 1,

@@ -311,7 +311,7 @@ export default {
             font-size 16px
             height 49.8px
     .login_foot
-        font-size 0.34375rem
+        font-size 12px
         color #959595
         text-align center
         line-height 20px

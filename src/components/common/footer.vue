@@ -70,6 +70,7 @@ export default {
                 background-size contain
                 background-repeat no-repeat
                 background-position center
+                margin-top: 5px;
         .navItem_home
             .icon
                 background-image url('../../assets/images/n1.png')

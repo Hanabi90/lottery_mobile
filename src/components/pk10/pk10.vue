@@ -69,7 +69,7 @@
             <div :class="[{'gray':iszhuihaoShow},'popwrap']">
                 <my-header @close="popCtrl('close')"></my-header>
                 <prize :lotteryid="lotteryid" v-if="prizeHistoryShow">prizeHistoryShow</prize>
-                <zhuihao :prize=prize v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
+                <zhuihao @close="popCtrl('close')" :prize=prize v-if="iszhuihaoShow" :currentIssue="currentIssue" :lotteryid="lotteryid"></zhuihao>
                 <bethistory v-if="betHistoryShow"></bethistory>
             </div>
         </Popup>
@@ -208,6 +208,7 @@
             @getPrize="getPrizeCtrl"
             @close="popCtrl"
             @mutaNewArr="mutaNewArr"
+            @emptyNewArr="emptyNewArr"
             :currentLabel="currentLabel"
             :newArr="newArr"
             :betinfo="betinfo"
@@ -591,7 +592,7 @@ export default {
 
                 this.currentIssue = res.data.issue
                 var ctime = res.data.nowtime
-                var stime = res.data.opentime
+                var stime = res.data.saleend
                 stime = new Date(stime).getTime()
                 ctime = new Date(ctime).getTime()
                 var diff = stime - ctime
@@ -862,6 +863,12 @@ export default {
                 this.currentGameType
             )
             this.$set(this.betinfo.betparams.lt_project, methodid, '33')
+        },
+        emptyNewArr(){
+            for (let i = 0; i < this.newArr.length; i++) {
+                this.$set(this.newArr,i,[])
+            }
+            console.log(this.newArr)
         }
     },
     computed: {

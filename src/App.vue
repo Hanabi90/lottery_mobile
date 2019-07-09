@@ -27,7 +27,6 @@
 import myPopup from './components/lottery/popup'
 import betCallBack from './components/lottery/betCallBack'
 import Nav from '@/components/nav.vue'
-import Footer from '@/components/footer.vue'
 import betSlip from '@/components/lottery/betslip.vue'
 import { NumberKeyboard } from 'vant'
 import {mapState} from 'vuex'

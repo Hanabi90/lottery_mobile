@@ -20,7 +20,7 @@
             <div class="listTeam">
                 <div class="title" ref="title">
                     <div class="gamename">{{title}}</div>
-                    <div class="back" @click="tabLeftMain"></div>
+                    <div v-show="lastitem!==null" class="back" @click="tabLeftMain"></div>
                 </div>
                 <div class="list-container">
                     <template v-for="(listitem,outerIndex) in gameMenu">
@@ -227,7 +227,8 @@ export default {
                 }
             ],
             gamelist: [{}],
-            gameMenu: []
+            gameMenu: [],
+            lastitem:null
         }
     },
     methods: {
@@ -253,7 +254,6 @@ export default {
         getCaizhong(i) {
             var lotteryData = null
             lotteryData = JSON.parse(lotteryData)
-            console.log(lotteryData);
             if(lotteryData!==null){
                 const data = {
                     data:lotteryData.data,
@@ -269,6 +269,7 @@ export default {
                 })
             }else{
                 console.log(i);
+                sessionStorage.setItem('lastitem',JSON.stringify(i))
                 getCaizhong({ memnuid: i.menuid }).then(res => {
                 const data = {
                     data:res,
@@ -296,7 +297,9 @@ export default {
             
         },
         tabLeftMain() {
-            this.isLeftOrMain = false
+            // this.isLeftOrMain = false
+            var item = this.lastitem = JSON.parse(sessionStorage.getItem('lastitem'))
+            this.getCaizhong(item)
         },
         tabActive(i) {
             for (let i = 0; i < this.gameMenu.length; i++) {
@@ -336,6 +339,7 @@ export default {
     },
     created() {
         this.getMenu()
+        this.lastitem = JSON.parse(sessionStorage.getItem('lastitem'))
     },
     mounted() {
         setTimeout(() => {

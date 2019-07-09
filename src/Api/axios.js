@@ -6,7 +6,7 @@ import Router from '../router'
 
 const service = axios.create({
     // 设置超时时间
-    timeout: 6000,
+    timeout: 15000,
     baseURL: process.env.VUE_APP_BASE_URL
 })
 service.defaults.headers.post['Content-Type'] =
@@ -31,11 +31,14 @@ service.interceptors.request.use(
  */
 service.interceptors.response.use(
     response => {
+        setTimeout(() => {
+            console.log('object');
+        }, 10000);
         // 请求响应后关闭加载框
         // LoadingBar.start()
-        if (typeof response.data == 'string') {
-            response.data = JSON.parse(response.data.toString())
-        }
+        // if (typeof response.data == 'string') {
+        //     response.data = JSON.parse(response.data.toString())
+        // }
         const responseCode = response.status
         // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据
         // 否则的话抛出错误

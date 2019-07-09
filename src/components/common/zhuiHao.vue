@@ -21,11 +21,11 @@
                             </p>
                             <p v-if="item.checked==false">当前投入0元，累计投入0元</p>
                             <p v-else>当前投入{{item.now_money}}元，累计投入{{item.total_money}}元</p>
-                            <p>盈利金额{{((prize*item.beishu)-item.total_money).toFixed(2)}}，盈利率{{((prize*item.beishu-item.total_money).toFixed(2)/item.total_money*100).toFixed(2)}}%</p>
+                            <p v-show="zhuihao_type==1">盈利金额{{((prize*item.beishu)-item.total_money).toFixed(2)}}，盈利率{{((prize*item.beishu-item.total_money).toFixed(2)/item.total_money*100).toFixed(2)}}%</p>
                             <!-- (prize*x-item.total_money)/item.total_money*100 = 50 -->
                             <!-- x = prize / item.total_money *100 /50 -->
                             <!-- <p>{{(prize / item.total_money*100)/(50+100)}}</p> -->
-                            <p>{{Math.ceil(((50 / 100) * item.total_money + item.total_money) /(prize -item.now_money -(50 / 100) * item.now_money))}}</p>
+                            <!-- <p>{{Math.ceil(((50 / 100) * item.total_money + item.total_money) /(prize -item.now_money -(50 / 100) * item.now_money))}}</p> -->
                         </div>
                     </li>
                 </ul>
@@ -211,7 +211,12 @@ export default {
         currentIssue(){
             Dialog({ message: '奖期已更新' });
             this.getcreateissues(true)
-            
+        },
+        zhuihaoArr(val){
+            if(val.length==0){
+                Dialog({ message: '追号列表为空,请重新选择' });
+                this.$emit('close')
+            }
         }
     },
     data() {
@@ -272,8 +277,7 @@ export default {
         update_list_steper(index){
             var total_money = 0
             var list = []
-            this.zhuitouArr[this.zhuihao_type-1][index].total_money = this.zhuitouArr[this.zhuihao_type-1][index].now_money*this.zhuitouArr[this.zhuihao_type-1][index].beishu
-
+            // this.zhuitouArr[this.zhuihao_type-1][index].total_money = this.zhuitouArr[this.zhuihao_type-1][index].now_money*this.zhuitouArr[this.zhuihao_type-1][index].beishu
             for (let i = 0; i < this.zhuitouArr[this.zhuihao_type-1].length; i++) {
                 const el = this.zhuitouArr[this.zhuihao_type-1][i];
                 // if(el.checked==false)return
@@ -323,6 +327,18 @@ export default {
             })
         },
         tabNav(index, type) {
+            console.log(type)
+            if(type==1){
+                console.log(Number(this.prize)) 
+                if(this.zhuihaoArr.length>1){
+                    Notify('利润率追号只支持单笔注单')
+                    return
+                }
+                if(isNaN(Number(this.prize))){
+                    Notify('利润率追号不支持此模式')
+                    return
+                }
+            }
             for (let i = 0; i < this.tabNavArr.length; i++) {
                 this.$set(this.tabNavArr[i], 'active', false)
             }
@@ -346,14 +362,14 @@ export default {
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
                     zhuitouArr.push({
-                        issue: this.issueArr[i],
+                        issue: this.issueArr[i-1],
                         beishu: beishu,
                         now_money: now_money,
                         total_money: total_money,
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i-1],lt_trace_times: beishu})
                     issue++
                 }
             } else if (this.zhuihao_type == 3) {
@@ -370,14 +386,14 @@ export default {
                     var now_money_1 = now_money * beishu
                     total_money += now_money_1
                     zhuitouArr.push({
-                        issue: this.issueArr[i],
+                        issue: this.issueArr[i-1],
                         beishu: beishu,
                         now_money: now_money_1,
                         total_money: total_money,
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i-1],lt_trace_times: beishu})
                     if (i % geqi_lt_trace_count_input == 0) {
                         beishu *= geqi_beishu
                     }
@@ -393,14 +409,14 @@ export default {
                 for (let i = 1; i <= lt_trace_count_input; i++) {
                     const total_money = now_money * i
                     zhuitouArr.push({
-                        issue: this.issueArr[i],
+                        issue: this.issueArr[i-1],
                         beishu: beishu,
                         now_money: now_money,
                         total_money: total_money,
                         checked: true,
                         profit: ''
                     })
-                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i],lt_trace_times: beishu})
+                    lt_trace_issues.push({lt_trace_issues:this.issueArr[i-1],lt_trace_times: beishu})
                     issue++
                 }
             }
@@ -422,7 +438,14 @@ export default {
             }
             console.log('bettraceparams',bettraceparams);
             this.bettraceparams = bettraceparams
-
+            if(this.zhuihao_type == 1){
+                for (let i = 0; i < this.zhuitouArr[this.zhuihao_type - 1].length; i++) {
+                    const item = this.zhuitouArr[this.zhuihao_type - 1][i];
+                    item.beishu = Math.ceil(((50 / 100) * item.total_money + item.total_money) /(this.prize -item.now_money -(50 / 100) * item.now_money))
+                    this.update_list_steper(i)
+                    
+                }
+            }
         },
         getcreateissues(flag){
             var params = {
@@ -466,6 +489,7 @@ export default {
                             background: '#1abc9c'
                         })
                         this.emptyList()
+                        this.$store.commit('updateZhuihaoArr',{type:'empty'})
 
                     } else {
                         if(res.data.msg==undefined){
@@ -507,12 +531,12 @@ export default {
         align-items center
         margin-bottom 10px
         .left
-            width 20%
+            width 15%
         .right
             display flex
-            width 80%
+            width 85%
             flex-direction column
-            justify-content space-between
+            justify-content space-evenly
             height 100%
             p
                 width 100%
