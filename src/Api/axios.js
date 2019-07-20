@@ -24,6 +24,17 @@ service.interceptors.request.use(
     error => {
         return Promise.reject(error)
     }
+    // logout().then(res => {
+    //     sessionStorage.removeItem('token')
+    //     this.updateToken({
+    //         token: null,
+    //         method: 'logout',
+    //         nickname: ''
+    //     })
+    //     this.$router.push('/')
+    //     Notify('您已经登出')
+    //     console.log(res)
+    // })
 )
 /**
  * 请求响应拦截
@@ -31,9 +42,6 @@ service.interceptors.request.use(
  */
 service.interceptors.response.use(
     response => {
-        setTimeout(() => {
-            console.log('object');
-        }, 10000);
         // 请求响应后关闭加载框
         // LoadingBar.start()
         // if (typeof response.data == 'string') {

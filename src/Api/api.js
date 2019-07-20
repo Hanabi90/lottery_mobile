@@ -328,8 +328,8 @@ export const getactivitylist = formData =>//验证密保问题
         url: 'activity/getactivitylist',
         data: qs.stringify(formData)
     })
-export const getactivityinfo = formData =>//验证密保问题
-    service.request({//flag%string && ques_num%ini &&  dna_ques%int && ans%string
+export const getactivityinfo = formData =>
+    service.request({
         method: 'post',
         url: 'activity/getactivityinfo',
         data: qs.stringify(formData)

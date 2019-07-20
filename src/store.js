@@ -28,8 +28,12 @@ export default new Vuex.Store({
         noticeData:[],
         isBtnLoading:false,
         ishuiyuan:false,
+        currentTitle:''
     },
     mutations: {
+        UpdateCurrentTitle(state,title){
+            state.currentTitle = title
+        },
         UpdateCenterPop(state,flag){
             state.userCenterPop = flag
         },

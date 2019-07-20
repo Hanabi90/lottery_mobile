@@ -1,5 +1,6 @@
 <template>
     <div id="app" @click="tab()">
+        <!-- <my-header></my-header> -->
         <transition name="slide">
             <router-view/>
         </transition>
@@ -28,6 +29,7 @@ import myPopup from './components/lottery/popup'
 import betCallBack from './components/lottery/betCallBack'
 import Nav from '@/components/nav.vue'
 import betSlip from '@/components/lottery/betslip.vue'
+import Myheader from '@/components/usercenter/header.vue'
 import { NumberKeyboard } from 'vant'
 import {mapState} from 'vuex'
 import {mapMutations} from 'vuex'
@@ -52,7 +54,8 @@ export default {
         'my-popup':myPopup,
         betSlip,
         'van-number-keyboard': NumberKeyboard,
-        betCallBack
+        betCallBack,
+        'my-header':Myheader
     },
     methods: {
         ...mapMutations([

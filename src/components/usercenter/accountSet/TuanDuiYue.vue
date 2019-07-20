@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="tuanduiyue">
        团队余额
     </div>
 </template>
@@ -31,5 +31,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+.tuanduiyue
+    width 100%
 </style>

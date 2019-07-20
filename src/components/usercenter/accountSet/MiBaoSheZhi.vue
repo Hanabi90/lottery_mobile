@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mibaoshezhi">
         <template v-if="!unSetMiBao">
             <div class="serverQue">
                 <p v-if="serverQue!=-1">{{serverQue_text}}</p>
@@ -218,6 +218,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.mibaoshezhi
+    width 100%
 .que_wrap
     margin-bottom 30px
 .header

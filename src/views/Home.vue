@@ -1,16 +1,16 @@
 <template>
     <div id="home">
         <div class="header">
-            <div class="leng">
+            <!-- <div class="leng">
                 <i class="flag"></i>
                 <span>简中</span>
                 <i class="b_icon"></i>
-            </div>
+            </div> -->
             <div class="logo"></div>
             <div class="right">
-                <div class="btn-sign">
+                <!-- <div class="btn-sign">
                     <span>签到</span>
-                </div>
+                </div> -->
                 <div class="msg"></div>
             </div>
         </div>
@@ -30,7 +30,7 @@
             </van-swipe>
             <div class="marquee">
                 <div class="box">
-                    <van-notice-bar mode="closeable" :speed="noticeStr.length/50">{{noticeStr}}</van-notice-bar>
+                    <van-notice-bar @click="goTo"  :speed="noticeStr.length/50">{{noticeStr}}</van-notice-bar>
                     <!-- <marquee-text :duration="15">{{this.test_text}}</marquee-text> -->
                 </div>
             </div>
@@ -148,6 +148,9 @@ export default {
     },
     methods: {
         ...mapMutations(['updateToken', 'updateUserInfo', 'updateLogin']),
+        goTo(){
+            this.$router.push({name:'重要消息'})
+        },
         getbalance() {
             getbalance().then(res => {
                 if (res.code == 0) {
@@ -176,6 +179,7 @@ export default {
                         username: res.data.username,
                         userid:res.data.userid
                     })
+                    console.log('1');
                     Notify({
                         message: '登录成功',
                         duration: 2000,
@@ -384,6 +388,7 @@ export default {
         display flex
         width 100px
         height 49px
+        justify-content: flex-end;
         .btn-sign
             width 50%
             span

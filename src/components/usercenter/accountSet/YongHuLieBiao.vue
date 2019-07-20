@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="yonghuliebiao">
         <div class="chat_userpage">
             <Search
                 v-model="searchVal"
@@ -421,6 +421,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.yonghuliebiao
+    width 100%
 .dropdown_menu
     text-align: left;
     background: transparent;

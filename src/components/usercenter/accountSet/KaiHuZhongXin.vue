@@ -279,6 +279,7 @@ export default {
 
 <style lang="stylus">
 .kaihu
+    width 100%
     .flex
         display flex
         &.align

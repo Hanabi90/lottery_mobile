@@ -2,25 +2,25 @@
     <div class="footer">
         <ul class="footer-box">
             <router-link class="navItem navItem_home" to="/" tag="li">
-                <i class="icon"></i>
+                <van-icon :color="$route.name=='home'?'#d01a20':'#000'" name="wap-home" size="30px"/>
                 <span>首页</span>
             </router-link>
             <router-link class="navItem navItem_activity" to="/" tag="li">
-                <i class="icon"></i>
+                <van-icon name="star-o" size="30px"/>
                 <span>优惠</span>
             </router-link>
             <router-link v-if="!isLogin" class="navItem navItem_register" to="/register" tag="li">注册</router-link>
             <span v-else class="navItem navItem_register" tag="li" @click="$emit('bankCtrl',true)">存款</span>
             <router-link class="navItem navItem_wallet" to="/usercenter" tag="li">
-                <i class="icon"></i>
+                <van-icon name="balance-pay" size="30px"/>
                 <span>钱包</span>
             </router-link>
             <li v-if="!isLogin" class="navItem navItem_login" @click="$emit('popCtrl',true)">
-                <i class="icon"></i>
+                <van-icon name="user-o" size="30px"/>
                 <span>登录</span>
             </li>
             <router-link to="/usercenter" v-else class="navItem navItem_login" tag="li">
-                <i class="icon"></i>
+                <van-icon :color="$route.name=='home'?'#000':'#d01a20'" name="user-o" size="30px"/>
                 <span>个人中心</span>
             </router-link>
         </ul>
@@ -28,7 +28,11 @@
 </template>
 
 <script>
+import { Icon } from 'vant';
 export default {
+    components:{
+        'van-icon':Icon
+    },
     data() {
         return {
         }
@@ -38,7 +42,7 @@ export default {
             return this.$store.state.islogin
         }
     },
-    methods: {}
+    methods: {},
 }
 </script>
 
@@ -61,6 +65,7 @@ export default {
             flex-direction column
             text-align center
             height 100%
+            justify-content: center;
             span
                 font-size 12px
                 margin-top 4px

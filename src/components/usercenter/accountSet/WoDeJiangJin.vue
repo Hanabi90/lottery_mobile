@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="wodejiangjin">
        我的奖金
     </div>
 </template>
@@ -21,5 +21,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+.wodejiangjin
+    width 100%
 </style>

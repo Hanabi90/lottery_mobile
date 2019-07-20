@@ -3,7 +3,7 @@
         <div class="leng">
             <span @click="close">返回</span>
         </div>
-        <div class="logo"></div>
+        <div class="logo">{{$store.state.currentTitle}}</div>
         <div class="right">
             <div class="btn-sign"></div>
             <div class="msg"></div>
@@ -18,9 +18,14 @@ export default {
     },
     methods: {
         close() {
+            this.$router.back()
             this.$store.commit('UpdateCenterPop',false)
-            this.$emit('close')
+            // this.$store.commit('UpdateCurrentTitle',this.$route.name)
+            // this.$emit('close')
         },
+    },
+    mounted(){
+        this.$store.commit('UpdateCurrentTitle',this.$route.name)
     }
 }
 </script>
@@ -72,14 +77,18 @@ export default {
     .logo
         position absolute
         left 50%
+        text-align center
+        font-size 20px
+        color #fff
         transform translateX(-50%)
-        background-image url('../../assets/images/logo.png')
+        // background-image url('../../assets/images/logo.png')
         width 135px
         height 49px
-        background-position center center
-        background-size 100% auto
-        background-repeat no-repeat
-        display inline
+        line-height 49px
+        // background-position center center
+        // background-size 100% auto
+        // background-repeat no-repeat
+        // display inline
     .right
         position absolute
         right 0

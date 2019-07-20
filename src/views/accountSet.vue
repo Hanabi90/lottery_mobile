@@ -33,10 +33,6 @@
         </div>
     </div> -->
     <div class="accountSet">
-        <div>
-            我了个擦
-        </div>
-        <router-view></router-view>
         <!-- <div>
             <ul class="zhanghushezhi">
                 <li v-for="(item) in zhanghuguanliArr" :key="item"  @click="goTo(item)">{{item}}</li>
@@ -45,35 +41,23 @@
                 <li v-for="(item) in tuanduiduanliArr" :key="item"  @click="goTo(item)">{{item}}</li>
             </ul>
         </div> -->
+        <my-header></my-header>
+        <router-view>
+            
+        </router-view>
     </div>
 </template>
 
 <script>
 import {Sidebar,SidebarItem,Icon,Popup} from 'vant'
-import KaiHuZhongXin from './accountSet/KaiHuZhongXin'
-import MiBaoSheZhi from './accountSet/MiBaoSheZhi'
-import LianXiXinXi from './accountSet/LianXiXinXi'
-import TuanDuiYue from './accountSet/TuanDuiYue'
-import WoDeJiangJin from './accountSet/WoDeJiangJin'
-import XiuGaiDengLu from './accountSet/XiuGaiDengLu'
-import XiuGaiZiJin from './accountSet/XiuGaiZiJin'
-import YongHuLieBiao from './accountSet/YongHuLieBiao'
-import ZhaoHuiZiJin from './accountSet/ZhaoHuiZiJin'
+import Myheader from '../components/usercenter/header'
 export default {
   components:{
     "van-sidebar":Sidebar,
     "van-sidebar-item":SidebarItem,
-    KaiHuZhongXin,
-    MiBaoSheZhi,
-    LianXiXinXi,
-    TuanDuiYue,
-    WoDeJiangJin,
-    XiuGaiDengLu,
-    YongHuLieBiao,
-    ZhaoHuiZiJin,
-    XiuGaiZiJin,
     'van-icon':Icon,
-    'van-popup':Popup
+    'van-popup':Popup,
+    'my-header':Myheader
   },
     data() {
         return {
@@ -99,12 +83,15 @@ export default {
             this.slideshow = true
         }, 300);
     },
+    beforeRouteUpdate(to,from,next){
+        next()
+        this.$store.commit('UpdateCurrentTitle',this.$route.name)
+    },
     methods: {
        onChange(key) {
         this.activeKey = key;
       },
       goTo(item){
-          console.log('item',item);
           this.$router.push({name:item})
       },
       slide_ctrl(){
@@ -115,13 +102,14 @@ export default {
                 this.$refs.popup.inited = false
             }, 100);
         },
-    },
+    }
 }
 </script>
 
 <style lang="stylus" scoped>
 .accountSet
     display flex
+    padding-top 49px
     .btn
         position absolute
         top 50%

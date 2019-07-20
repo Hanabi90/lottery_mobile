@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="xiugaidenglu">
         <div class="form_group">
             <div class="flex col warning">
                 <div class="flex col">
@@ -85,6 +85,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.xiugaidenglu
+    width 100%
 .form_group
     background-color #fff
     border-radius 3px
