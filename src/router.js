@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from './views/home.vue'
 Vue.use(Router)
-
-export default new Router({
+const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     linkExactActiveClass: 'is-active',
@@ -14,10 +13,20 @@ export default new Router({
             component: Home
         },
         {
-            path: '/',
+            path: '/login',
             name: 'login',
             component: () =>
                 import(/* webpackChunkName: "login" */ './views/login.vue')
         }
     ]
 })
+router.beforeEach((to, from, next) => {
+    if (!sessionStorage.getItem('token')) {
+        if (from.fullPath != '/login' && to.name != 'login') {
+            router.push({ name: 'login' })
+        }
+    }
+    next()
+})
+
+export default router
