@@ -1,166 +1,142 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getbalance} from './Api/api'
-Vue.use(Vuex)
 
+Vue.use(Vuex)
+let oState = {
+    lotteryMenue: {}, //彩票菜单
+    loginCode: 0, // 0 未登录 1 登录
+    money: '',
+    nickname: '',
+    drawerRight: true, //个人中心开关
+    userCenter: false, //用户中心
+    lotteryId: '', //彩种id
+    lotteryNumber: '', //选择的号码
+    hackReset: true, //利用v-if 重组组件lottery 组件
+    issue: '', //当前奖期
+    orderList: [], //投购篮
+    orderHistory: [], //投注历史记录
+    openList: [], //开奖历史
+    unReadAmount: 0, //未读消息
+    bonues: '', //奖金,
+    trace: false, //追号开关
+}
 export default new Vuex.Store({
-    state: {
-        token:null,
-        nums:'',
-        newsel:'',
-        watchLock:false,
-        islogin:false,
-        hotOrLeak:'leak',
-        keyboardshow:false,
-        myPopShow:false,
-        betArr:[],
-        ispending:false,
-        delayTimeToClose:3000,
-        isPopResults:false,
-        timer:null,
-        userInfo:{
-            nickname:'',
-            money:'0'
-        },
-        userCenterPop:false,
-        zhuihaoArr:[],
-        countDown:{days:0,hours:0,minutes:0,seconds:0},
-        noticeData:[],
-        isBtnLoading:false,
-        ishuiyuan:false,
-        currentTitle:''
-    },
+    state: { ...oState },
     mutations: {
-        UpdateCurrentTitle(state,title){
-            state.currentTitle = title
-        },
-        UpdateCenterPop(state,flag){
-            state.userCenterPop = flag
-        },
-        UpdateIsBtnLoading(state,status){
-            state.isBtnLoading = status
-        },
-        UpdateNoticeData(state,noticeData){
-            state.noticeData = noticeData
-            console.log(state.noticeData);
-        },
-        updateNewsel(state){
-            state.newsel = []
-        },
-        UpdateWatchLock(state,flag){
-            state.watchLock = flag
-        },
-        UpdateCountDown(state,params){
-            state.countDown[params.key] = params.value
-        },
-        tabHotOrLeak(state,status) {
-            if (status == 'hot') {
-                state.hotOrLeak = 'hot'
-            } else {
-                state.hotOrLeak = 'leak'
+        reset(state) {
+            for (const iterator in oState) {
+                state[iterator] = oState[iterator]
             }
         },
-        updateKeyboardshow(state,status) {
-            state.keyboardshow = status
+
+        lotteryMenue(state, data) {
+            state.lotteryMenue = { ...data }
         },
-        myPopCtrl(state,flag){
-            if(flag==false){
-                state.myPopShow = false
-                state.isPopResults = false
-                state.keyboardshow = false
-                clearTimeout(state.timer)
-            }else{
-                state.myPopShow = true
-            }
+        login(state, data) {
+            // 变更状态
+            state.loginCode = data
         },
-        updateBetArr(state,betArr){
-            state.betArr = betArr
-            // console.log('state.betArr',state.betArr);
+        money(state, data) {
+            state.money = data
         },
-        updateZhuihaoArr(state,params){
-            if(params.type=='add'){
-                // console.log('add');
-                state.zhuihaoArr.push(params.data)
-            }else if(params.type=='delete'){
-                // console.log('delete',1,params.index);
-                state.zhuihaoArr.splice(params.index,1)
-            }else{
-                state.zhuihaoArr = []
-            }
-            // console.log('state.zhuihaoArr',state.zhuihaoArr);
+        nickname(state, data) {
+            state.nickname = data
         },
-        updateIspending(state,status){
-            state.ispending = status
+        lotteryId(state, data) {
+            state.lotteryId = data
         },
-        updateIsPopResults(state){
-            state.isPopResults = true
-            state.timer = setTimeout(() => {
-                state.isPopResults = false
-                state.myPopShow = false
-            }, 3000);
+
+        userCenter(state, data) {
+            state.userCenter = data
         },
-        updateLogin(state,flag){
-            state.islogin = flag
-            if(state.islogin){
-                var newNickName = localStorage.getItem('nickname')
-                state.userInfo['nickname'] = newNickName
-            }
+        lotteryNumber(state, data) {
+            state.lotteryNumber = { ...data }
         },
-        updateToken(state,params){
-            const { token,method,nickname,ishuiyuan,username,userid } = { ...params }
-            console.log('ishuiyuan',ishuiyuan);
-            var newToken = null
-            var newNickname = ''
-            switch (method) {
-                case 'login':
-                // console.log(method)
-                    newNickname = nickname
-                    newToken = token
-                    state.token = newToken
-                    state.islogin = true
-                    break;
-                case 'logout':
-                    newNickname = ''
-                    newToken = null
-                    state.token = newToken
-                    state.islogin = false
-                    break;
+        hackReset(state, data) {
+            state.hackReset = data
+        },
+        issue(state, data) {
+            state.issue = data
+        },
+        orderList(state, data) {
+            switch (data.type) {
+                case 'add':
+                    state.orderList.unshift(data.data)
+                    break
+                case 'delete':
+                    state.orderList = [...data.data]
+                    break
+                case 'clear':
+                    state.orderList = []
+                    break
                 default:
-                    break;
-            }
-            state.userInfo['nickname'] = newNickname
-            state.ishuiyuan = ishuiyuan
-            sessionStorage.setItem('token', newToken)
-            localStorage.setItem('nickname',newNickname)
-            localStorage.setItem('username_2',username)
-            localStorage.setItem('userid',userid)
-        },
-        updateUserInfo(state, params) {
-            // console.log(params)
-            const {userBalance} = {...params}
-            if(userBalance){
-                state.userInfo.money = parseInt(userBalance)
+                    break
             }
         },
-        editNickName(state,newNickname){
-            state.userInfo['nickname'] = newNickname
-            localStorage.setItem('nickname',newNickname)
+        orderHistory(state, data) {
+            state.orderHistory = [...data]
         },
+        openList(state, data) {
+            state.openList = [...data]
+        },
+        unReadAmount(state, data) {
+            state.unReadAmount = data
+        },
+        bonues(state, data) {
+            state.bonues = data
+        },
+        trace(state, data) {
+            state.trace = data
+        }
     },
     actions: {
-        'UPDATEDELAYTIMETOCLOSE'(){
-            state.timer = setTimeout(() => {
-                updateDelaytimeToClose(0)
-            }, 3000);
+        handleReset(context) {
+            context.commit('reset')
         },
-        'UPDATEBALANCE'(context){
-            getbalance().then((res)=>{
-                if(res.code==0){
-                    const userBalance = res.data.money
-                    context.commit('updateUserInfo',{userBalance})
-                }
-            })
-            
+        handleLotteryMenue(context, data) {
+            context.commit('lotteryMenue', data)
+        },
+        handleLogin(context, data) {
+            context.commit('login', data)
+        },
+        handleMoney(context, data) {
+            context.commit('money', data)
+        },
+        handleNickName(context, data) {
+            context.commit('nickname', data)
+        },
+        handleLotteryId(context, data) {
+            context.commit('lotteryId', data)
+        },
+        handleUserCenter(context, data) {
+            context.commit('userCenter', data)
+        },
+        handleLotteryNumber(context, data) {
+            context.commit('lotteryNumber', data)
+        },
+        handleHackReset(context, data) {
+            context.commit('hackReset', data)
+        },
+        handleIssue(context, data) {
+            context.commit('issue', data)
+        },
+        handleOrderList(context, data) {
+            context.commit('orderList', data)
+        },
+        handleOrderHistory(context, data) {
+            context.commit('orderHistory', data)
+        },
+        handleOpenList(context, data) {
+            context.commit('openList', data)
+        },
+        handleUnReadAmount(context, data) {
+            context.commit('unReadAmount', data)
+        },
+        handleBonues(context, data) {
+            context.commit('bonues', data)
+        },
+        handleTrace(context, data) {
+            context.commit('trace', data)
         }
     }
 })

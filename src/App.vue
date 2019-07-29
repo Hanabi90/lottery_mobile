@@ -1,121 +1,15 @@
 <template>
-    <div id="app" @click="tab()">
-        <!-- <my-header></my-header> -->
-        <transition name="slide">
-            <router-view/>
-        </transition>
-        <transition name="fade">
-            <my-popup v-if="myPopShow">
-                <template v-slot:footer>
-                    <betSlip ref="betSlip" @showKeyBoard=showKeyBoard :iskeyboardshow = show></betSlip>
-                </template>
-                <template v-slot:betCallBack>
-                    <betCallBack></betCallBack>
-                </template>
-            </my-popup>
-        </transition>
-        <van-number-keyboard
-            :hide-on-click-outside='false'
-            :show="show"
-            @blur="show = false"
-            @input="onInput"
-            @delete="onDelete"
-            style="z-index:99999"
-        />
+    <div>
+        <router-view></router-view>
     </div>
 </template>
 <script>
-import myPopup from './components/lottery/popup'
-import betCallBack from './components/lottery/betCallBack'
-import Nav from '@/components/nav.vue'
-import betSlip from '@/components/lottery/betslip.vue'
-import Myheader from '@/components/usercenter/header.vue'
-import { NumberKeyboard } from 'vant'
-import {mapState} from 'vuex'
-import {mapMutations} from 'vuex'
+import { XButton } from 'vux'
 export default {
-    data() {
-        return {
-            isHide:false
-        }
-    },
-    computed:{
-        myPopShow(){
-            return this.$store.state.myPopShow
-        },
-        show(){
-            return this.$store.state.keyboardshow
-        }
-    },
-    created() {
-        this.tab()
-    },
-    components: {
-        'my-popup':myPopup,
-        betSlip,
-        'van-number-keyboard': NumberKeyboard,
-        betCallBack,
-        'my-header':Myheader
-    },
-    methods: {
-        ...mapMutations([
-            'updateKeyboardshow'
-        ]),
-        showKeyBoard(isShowOrNot){
-            // console.log(selectedItem);
-            // console.log('this.$refs.betSlip.selectedItem',this.$refs.betSlip.selectedItem);
-            this.updateKeyboardshow(isShowOrNot)
-
-        },
-        closeKeyBoard(){
-            this.updateKeyboardshow(false)
-        },
-        tab() {
-            // this.show = !this.show
-        },
-        onInput(value) {
-            this.$refs.betSlip.onInput(value)
-        },
-        onDelete(value) {
-            this.$refs.betSlip.onDelete(value)
-        }
-    }
+    name: 'app',
+    components: {}
 }
 </script>
-<style lang="stylus">
-.van-key
-    height 10.5vw
-#app
-    background-color #eee
-    height 100%
-    font-family 'Microsoft yahei'
-    width 375px
-    overflow-x hidden
-.swiper-pagination-bullet.swiper-pagination-bullet-active
-    background #fff
-    transform scale(1.5, 1.5)
-.swiper-pagination-bullet
-    width 6px !important
-    height 6px !important
-    margin 0 2px !important
-
-@import 'styles/rest.styl'
-@import 'styles/common.styl'
-
-.fade-enter-active, .fade-leave-active
-    transition transform 0.5s
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-    transform translateX(0) 
-.slide-enter-active {
-  transition: opacity .3s ease;
-}
-.slide-leave-active {
-  transition: all .3s ease;
-}
-.slide-enter, .slide-leave-to
-{
-    position: absolute;
-  transform: translateX(375px);
-  opacity: 0;
-}
+<style lang="less">
+@import '~vux/src/styles/reset.less';
 </style>

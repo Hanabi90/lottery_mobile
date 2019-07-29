@@ -2,22 +2,7 @@ const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 module.exports = {
-    configureWebpack: {
-        optimization: {
-            minimizer: [
-                new UglifyJsPlugin({
-                    uglifyOptions: {
-                        compress: {
-                            warnings: false,
-                            drop_console: true, //console
-                            drop_debugger: false,
-                            pure_funcs: ['console.log'] //移除console
-                        }
-                    }
-                })
-            ]
-        }
-    },
+    transpileDependencies: ['vux'],
     chainWebpack: config => {
         if (process.env.NODE_ENV === 'production') {
             config
@@ -37,6 +22,11 @@ module.exports = {
         types.forEach(type =>
             addStyleResource(config.module.rule('stylus').oneOf(type))
         )
+    },
+    configureWebpack: config => {
+        require('vux-loader').merge(config, {
+            plugins: ['vux-ui', 'duplicate-style']
+        })
     }
 }
 

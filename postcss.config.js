@@ -2,19 +2,14 @@ module.exports = {
     plugins: {
         autoprefixer: {},
         'postcss-px-to-viewport': {
-            viewportWidth: 375,
-            viewportHeight: 667,
+            viewportWidth: 1920,
+            viewportHeight: 938,
             unitPrecision: 5,
             viewportUnit: 'vw',
             selectorBlackList: ['fixed_layout'],
             minPixelValue: 1,
-            mediaQuery: true,
+            mediaQuery: false,
             propList: ['*']
-        },
-        // 'postcss-pxtorem':{
-        //     rootValue: 100,
-        //     minPixelValue: 2,
-        //     propWhiteList: []
-        //   }
+        }
     }
 }
