@@ -1,15 +1,35 @@
 <template>
-    <div class="login"></div>
+    <div class="login">
+        <img src="../assets/images/logo.png" alt class="logo" />
+        <group>
+            <x-input v-model="userName"></x-input>
+        </group>
+    </div>
 </template>
 
 <script>
-export default {}
+import { Group, XInput } from 'vux'
+export default {
+    data() {
+        return {
+            userName: ''
+        }
+    },
+    components: {
+        Group,
+        XInput
+    }
+}
 </script>
 
 <style lang="stylus" scoped>
 .login
-    li
-        height 500px
-        border 1px solid #ff0000
-        background blue
+    background #222
+    height 100%
+    overflow hidden
+    .logo
+        display block
+        width 372px
+        margin auto
+        margin-top 100px
 </style>
