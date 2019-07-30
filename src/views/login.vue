@@ -1,16 +1,15 @@
 <template>
-    <div class="login">32132112321</div>
+    <div class="login"></div>
 </template>
 
 <script>
-export default {
-    name: 'login'
-}
+export default {}
 </script>
 
 <style lang="stylus" scoped>
 .login
-    background #000
-    height 10000px
-    border 20px solid #ff0000
+    li
+        height 500px
+        border 1px solid #ff0000
+        background blue
 </style>
