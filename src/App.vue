@@ -1,28 +1,26 @@
 <template>
     <div id="lottery">
-        <drawer v-if="routerName!='login'" width="200px;" :show="showMenus" placement="right">
+        <drawer
+            class="drawerMap"
+            v-if="routerName!='login'"
+            :show.sync="showMenus"
+            placement="right"
+        >
             <!-- drawer content -->
             <div slot="drawer">
-                <group title="Drawer demo(beta)" style="margin-top:20px;">
-                    <cell title="Demo" link="/demo" value="演示" @click.native="showMenus = false"></cell>
-                    <cell
-                        title="Buy me a coffee"
-                        link="project/donate"
-                        @click.native="showMenus = false"
-                    ></cell>
-                    <cell
-                        title="Github"
-                        link="http://github.com/airyland/vux"
-                        value="Star me"
-                        @click.native="showMenus = false"
-                    ></cell>
-                </group>
+                <DrawerList />
             </div>
-
             <!-- main content -->
-            <view-box ref="viewBox" body-padding-top="46px" body-padding-bottom="55px">
-                <x-header style="width:100%;position:absolute;left:0;top:0;z-index:100;">
-                    <span>overwrite-right</span>
+            <view-box ref="viewBox" body-padding-top="40px" body-padding-bottom="50px">
+                <x-header class="headerContent fixed_layout" ref="headerTop">
+                    <img
+                        v-if="routerName=='home'"
+                        class="logo fixed_layout"
+                        slot="overwrite-left"
+                        src="./assets/images/logo.png"
+                        alt
+                    />
+                    <span v-if="routerName!='home'">首页</span>
                     <x-icon
                         slot="right"
                         type="navicon"
@@ -37,16 +35,19 @@
                     <router-view class="router-view"></router-view>
                 </transition>
 
-                <tabbar class="vux-demo-tabbar" icon-class="vux-center" slot="bottom">
-                    <tabbar-item>
+                <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
+                    <tabbar-item :link="{path:'/'}" :selected="true">
+                        <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/demo'}" badge="9">
+                    <tabbar-item :link="{path:'/demo'}">
+                        <x-icon slot="icon" type="ios-paper" class="homeIcon"></x-icon>
                         <span slot="label">
                             <span>开奖记录</span>
                         </span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/demo'}" badge="9">
+                    <tabbar-item :link="{path:'/demo'}">
+                        <x-icon slot="icon" type="ios-body" class="homeIcon"></x-icon>
                         <span slot="label">
                             <span>我的</span>
                         </span>
@@ -58,7 +59,8 @@
     </div>
 </template>
 <script>
-import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer, Group, Cell } from 'vux'
+import DrawerList from '@/components/home/drawerList'
+import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer, Group } from 'vux'
 export default {
     name: 'app',
     data() {
@@ -69,6 +71,9 @@ export default {
     computed: {
         routerName() {
             return this.$route.name
+        },
+        headerTop() {
+            return this.$refs.headerTop
         }
     },
     components: {
@@ -78,7 +83,7 @@ export default {
         TabbarItem,
         Drawer,
         Group,
-        Cell
+        DrawerList
     }
 }
 </script>
@@ -92,3 +97,53 @@ html, body, #lottery
     width 100%
     overflow-x hidden
 </style>
+<style lang="stylus" scoped>
+.headerContent
+    width 100%
+    position absolute
+    left 0
+    top 0
+    z-index 100
+    overflow hidden
+    background #222
+    &.fixed_layout
+        height 40px
+        >>>.vux-header-title
+            height 40px
+            line-height 40px
+            font-size 14px
+        >>>.vux-header-left
+            top 17px
+        >>>.vux-header-right
+            top 14px
+.vux-demo-tabbar
+    background #222
+    &.fixed_layout
+        height 50px
+        >>>.weui-tabbar__label
+            color #fff
+        .homeIcon
+            position relative
+            top -2px
+            left -6px
+            fill #fff
+        >>> .weui-bar__item_on
+            .homeIcon
+                fill #f7ff20
+            .weui-tabbar__label
+                color #f7ff20
+.logo
+    &.fixed_layout
+        width 60px
+        margin-top -4px
+.drawerMap
+    >>>.vux-drawer-content
+        background #222
+    >>>.weui-cells
+        background #222
+        &::before
+            border-top none
+        &::after
+            border-bottom none
+</style>
+

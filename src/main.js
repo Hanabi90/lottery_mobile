@@ -2,6 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+//import { AlertPlugin, ToastPlugin ,ConfirmPlugin,LoadingPlugin } from 'vux'
+
+import ToastPlugin from 'vux/src/plugins/toast'
+
+Vue.use(ToastPlugin)
+
 Vue.config.productionTip = false
 
 new Vue({

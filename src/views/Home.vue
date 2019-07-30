@@ -1,13 +1,19 @@
 <template>
-    <div class="home">aaaaaaaaaaaa</div>
+    <div class="home">
+        <Homeswiper />
+    </div>
 </template>
 
 <script>
-export default {}
+import Homeswiper from '@/components/home/homeSwiper'
+export default {
+    components: {
+        Homeswiper
+    }
+}
 </script>
 
 <style lang="stylus" scoped>
 .home
-    background #ff0000
     height 100000px
 </style>
