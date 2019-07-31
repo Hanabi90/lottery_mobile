@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/home.vue'
+import Login from './views/login.vue'
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
@@ -9,20 +9,20 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: Home
+            name: 'login',
+            component: Login
         },
         {
-            path: '/login',
-            name: 'login',
+            path: '/home',
+            name: 'home',
             component: () =>
-                import(/* webpackChunkName: "login" */ './views/login.vue')
+                import(/* webpackChunkName: "home" */ './views/home.vue')
         }
     ]
 })
 router.beforeEach((to, from, next) => {
     if (!sessionStorage.getItem('token')) {
-        if (from.fullPath != '/login' && to.name != 'login') {
+        if (to.name != 'login') {
             router.push({ name: 'login' })
         }
     }

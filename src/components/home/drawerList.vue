@@ -1,6 +1,6 @@
 <template>
-    <div class="drawerContent">
-        <group title="彩票游戏" style="padding:20px 0;height:calc(100vh - 40px);overflow-y:scroll">
+    <view-box class="drawerContent" ref="viewBox">
+        <group title="彩票游戏" style="padding:20px 0;">
             <group title="时时彩" style="margin-top:20px;">
                 <div class="list">
                     <span v-for="(item,index) of timesLottery" :key="index">{{item.title}}</span>
@@ -22,11 +22,11 @@
                 </div>
             </group>
         </group>
-    </div>
+    </view-box>
 </template>
 
 <script>
-import { Group } from 'vux'
+import { Group, ViewBox } from 'vux'
 import { getMenu } from '@/api/index.js'
 export default {
     name: 'drawerList',
@@ -66,9 +66,11 @@ export default {
         getMenu().then(res => {
             this.$store.dispatch('handleLotteryMenue', { ...res.data })
         })
+        console.log('这是列表从新加载')
     },
     components: {
-        Group
+        Group,
+        ViewBox
     }
 }
 </script>
@@ -78,6 +80,10 @@ export default {
     width 600px
     height 100%
     padding 0 10px
+    overflow hidden
+    overflow-y scroll
+    >>>.weui-cells__title
+        font-size 30px
     .list
         display flex
         width 100%

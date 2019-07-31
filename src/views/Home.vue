@@ -15,5 +15,5 @@ export default {
 
 <style lang="stylus" scoped>
 .home
-    height 100000px
+    height 80000px
 </style>
