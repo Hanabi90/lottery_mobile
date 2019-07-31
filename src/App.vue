@@ -7,12 +7,12 @@
             placement="right"
         >
             <!-- drawer content -->
-            <div slot="drawer">
+            <div class="box" slot="drawer">
                 <DrawerList />
             </div>
             <!-- main content -->
             <view-box ref="viewBox" body-padding-top="40px" body-padding-bottom="50px">
-                <x-header class="headerContent fixed_layout" ref="headerTop">
+                <x-header slot="header" class="headerContent fixed_layout" ref="headerTop">
                     <img
                         v-if="routerName=='home'"
                         class="logo fixed_layout"
@@ -36,7 +36,7 @@
                 </transition>
 
                 <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
-                    <tabbar-item :link="{path:'/'}" :selected="true">
+                    <tabbar-item :link="{path:'/home'}" :selected="true">
                         <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
@@ -60,7 +60,7 @@
 </template>
 <script>
 import DrawerList from '@/components/home/drawerList'
-import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer, Group } from 'vux'
+import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer } from 'vux'
 export default {
     name: 'app',
     data() {
@@ -82,7 +82,6 @@ export default {
         Tabbar,
         TabbarItem,
         Drawer,
-        Group,
         DrawerList
     }
 }
@@ -101,10 +100,10 @@ html, body, #lottery
 <style lang="stylus" scoped>
 .headerContent
     width 100%
-    position absolute
     left 0
     top 0
     z-index 100
+    position absolute
     overflow hidden
     background #222
     &.fixed_layout
@@ -123,6 +122,8 @@ html, body, #lottery
         height 50px
         >>>.weui-tabbar__label
             color #fff
+            font-size 14px
+            line-height normal
         .homeIcon
             position relative
             top -2px
@@ -138,6 +139,10 @@ html, body, #lottery
         width 60px
         margin-top -4px
 .drawerMap
+    height 100%
+    width 100%
+    .box
+        height 100%
     >>>.vux-drawer-content
         background #222
     >>>.weui-cells

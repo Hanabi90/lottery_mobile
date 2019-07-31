@@ -7,29 +7,23 @@
                     <selector
                         class="selector"
                         ref="defaultValueRef"
-                        direction="rtl"
+                        direction="ltr"
                         :options="lotteryList"
                         v-model="bettingRecord.lotteryid"
                     ></selector>
                 </flexbox-item>
                 <flexbox-item class="condition-item" :span="1/2">
                     <span>彩种奖期</span>
-                    <selector
-                        class="selector"
-                        ref="defaultValueRef"
-                        direction="rtl"
-                        :options="lotteryList"
-                        v-model="bettingRecord.lotteryid"
-                    ></selector>
+                    <x-input v-model="bettingRecord.issue" :show-clear="false"></x-input>
                 </flexbox-item>
                 <flexbox-item class="condition-item" :span="1/2">
                     <span>奖金组类型</span>
                     <selector
                         class="selector"
                         ref="defaultValueRef"
-                        direction="rtl"
-                        :options="lotteryList"
-                        v-model="bettingRecord.lotteryid"
+                        direction="ltr"
+                        :options="userPointTypeList"
+                        v-model="bettingRecord.userpointtype"
                     ></selector>
                 </flexbox-item>
                 <flexbox-item class="condition-item" :span="1/2">
@@ -37,9 +31,9 @@
                     <selector
                         class="selector"
                         ref="defaultValueRef"
-                        direction="rtl"
-                        :options="lotteryList"
-                        v-model="bettingRecord.lotteryid"
+                        direction="ltr"
+                        :options="userList"
+                        v-model="bettingRecord.username"
                     ></selector>
                 </flexbox-item>
                 <flexbox-item class="condition-item" :span="1/2">
@@ -47,7 +41,8 @@
                     <span class="datetime-container">
                             <!-- @on-change="change" -->
                         <datetime
-                            v-model="timeArr.startTime"
+                            format="YYYY-MM-DD HH:mm"
+                            v-model="bettingRecord.starttime"
                             @on-cancel="onCancel"
                             @on-confirm="onConfirm"
                             @on-hide="onCancel"
@@ -60,7 +55,8 @@
                     <span class="datetime-container">
                             <!-- @on-change="change" -->
                         <datetime
-                            v-model="timeArr.endTime"
+                            format="YYYY-MM-DD HH:mm"
+                            v-model="bettingRecord.endtime"
                             @on-cancel="onCancel"
                             @on-confirm="onConfirm"
                             @on-hide="onCancel"
@@ -68,7 +64,7 @@
                     </span>
                 </flexbox-item>
             </flexbox>
-            <x-button class="btn search" type="orange">查询</x-button>
+            <x-button class="btn search" @click.native="getBetHistory" type="orange">查询</x-button>
         </div>
         <scroller
             class="scroller"
@@ -83,7 +79,13 @@
             <div class="box2">
                 <ul>
                     <li class="data_wrap" v-for="i in bottomCount" :key="i">
-                        <div class="title"></div>
+                        <div class="title">
+                            <div class="icon-wrap">
+                                <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
+                                <span class="username">username</span>
+                            </div>
+                            <span class="date">2019-7-16 15:30:55</span>
+                        </div>
                         <flexbox class="detail" justify="flex-end" :gutter="0" wrap="wrap">
                             <flexbox-item :span="1/2">
                                 彩种：
@@ -141,7 +143,8 @@ import {
     FlexboxItem,
     Selector,
     Datetime,
-    XButton
+    XButton,
+    XInput
 } from 'vux'
 
 import {
@@ -164,19 +167,21 @@ export default {
                 lotteryid: '0', //彩种名称
                 starttime: '', //起始时间
                 pn: 10, //请求的数据记录数量
-                p: 1 //请求的页面序号
+                p: 1, //请求的页面序号
+                starttime:'',
+                endtime:'',
             },
             timeArr: {
                 startTime: '2015-11-12',
                 endTime: '2015-11-12'
             },
-            lotteryList: ['哈哈哈', '嘻嘻嘻', '啦啦啦'], //彩票id
+            lotteryList: [], //彩票id
             lotteryMethodList: [], //玩法id
             userList: [],
             userPointTypeList: [
-                { value: '2', name: '所有类型' },
-                { value: '-1', name: '不含超级2000' },
-                { value: '1', name: '只有超级2000' }
+                { key: '2', value: '所有类型' },
+                { key: '-1', value: '不含超级2000' },
+                { key: '1', value: '只有超级2000' }
             ],
             userHistory: [],
             total: 0, //页数
@@ -190,8 +195,82 @@ export default {
     },
     methods: {
         //跳转按钮
-        test(e){
-            console.log(e);
+        getUserLotterymethod() {
+            getuserlotterymethod({
+                lotteryid: this.bettingRecord.lotteryid
+            }).then(res => {
+                this.lotteryMethodList = [...res.data]
+            })
+        },
+        getBetHistory() {
+            console.log('object');
+            let bettingRecord = { ...this.bettingRecord }
+            bettingRecord.p = 1
+            bettingRecord.starttime = this.bettingRecord.starttime + ':00'
+            bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+            this.$set(this.bettingRecord, 'p', 1)
+            getbethistory({ ...bettingRecord }).then(res => {
+                if (res.data.page_data) {
+                    this.userHistory = [...res.data.page_data]
+                    this.total = res.data.total_count
+                    this.total_betmoney = res.data.total_betmoney
+                    this.total_bonus = res.data.total_bonus
+                } else {
+                    this.userHistory = []
+                    this.pages = 0
+                    this.total_betmoney = 0
+                    this.total_bonus = 0
+                }
+            })
+        },
+        handleReachBottom(value) {
+            let bettingRecord = { ...this.bettingRecord }
+            bettingRecord.starttime = this.dataformat(
+                this.bettingRecord.starttime[0]
+            )
+            bettingRecord.endtime = this.dataformat(
+                this.bettingRecord.starttime[1]
+            )
+            bettingRecord.p = value
+
+            getbethistory({ ...bettingRecord }).then(res => {
+                if (res.data.page_data) {
+                    this.userHistory = [...res.data.page_data]
+                    this.total = res.data.total_count
+
+                    this.total_betmoney = res.data.total_betmoney
+                    this.total_bonus = res.data.total_bonus
+                } else {
+                    this.userHistory = []
+                    this.pages = 0
+                    this.total_betmoney = 0
+                    this.total_bonus = 0
+                }
+            })
+        },
+        dataformat(str) {
+            let time = new Date(str)
+            time =
+                time.getFullYear() +
+                '-' +
+                (time.getMonth() + 1 > 9
+                    ? time.getMonth() + 1
+                    : '0' + (time.getMonth() + 1)) +
+                '-' +
+                (time.getDate() > 9 ? time.getDate() : '0' + time.getDate()) +
+                ' ' +
+                (time.getHours() > 9
+                    ? time.getHours()
+                    : '0' + time.getHours()) +
+                ':' +
+                (time.getMinutes() > 9
+                    ? time.getMinutes()
+                    : '0' + time.getMinutes()) +
+                ':' +
+                (time.getSeconds() > 9
+                    ? time.getSeconds()
+                    : '0' + time.getSeconds())
+            return time
         },
         onScrollBottom() {
             if (this.onFetching) {
@@ -233,7 +312,29 @@ export default {
             console.log('onConfirm')
         }
     },
-    mounted() {},
+    mounted() {
+        getuserlottery().then(res => {
+            for (const key in res.data) {
+                if (res.data.hasOwnProperty(key)) {
+                    const value = res.data[key];
+                    this.lotteryList.push({key:key,value:value})
+                }
+            }
+            this.$set(this.lotteryList, 0, {key:0,value:'所有游戏'})
+        })
+        //获取用户下级
+        getchildlist().then(res => {
+            if (res.data) {
+                for (const key in res.data) {
+                    if (res.data.hasOwnProperty(key)) {
+                        const value = res.data[key];
+                        this.userList.push(value['username'])
+                    }
+                }
+            }
+        })
+        this.getBetHistory()
+    },
     components: {
         Scroller,
         LoadMore,
@@ -241,12 +342,28 @@ export default {
         FlexboxItem,
         Datetime,
         Selector,
-        XButton
+        XButton,
+        XInput
     }
 }
 </script>
 
 <style lang="stylus" scoped>
+>>>.vux-datetime.weui-cell.weui-cell_access
+    padding 0
+    padding-right 0
+    width 190px
+    height 58px
+    .vux-cell-value
+        color #000
+>>>.vux-x-input.weui-cell
+    box-sizing: border-box;
+    background-color #fff
+    color #000
+    width 190px
+    height 58px
+    border-radius: 8px;
+    font-size 10px
 .btn
     &.search
         margin-top 10px
@@ -256,12 +373,16 @@ export default {
         margin 10px 0
         width 200px
         font-size 30px
+.icons
+    &.contact
+        fill #f8ff35
 .bettingRecord
     background #222222
 .condition
     background #444444
     padding 30px 15px
     box-sizing border-box
+    font-size 30px
     color #e6e6e6
     height 440px
     margin-bottom 10px
@@ -276,10 +397,15 @@ export default {
             background-color #fff
             width 190px
             height 58px
+            border-radius: 8px;
+            font-size 10px
         .datetime-container
             align-items center
             background #fff
             display flex
+            white-space: nowrap;
+            overflow hidden
+            border-radius: 8px;
 .data_wrap
     background #444444
     color #fff
@@ -288,6 +414,17 @@ export default {
     box-sizing border-box
     >>>.vux-flexbox-item
         line-height 60px
+    .title
+        display flex
+        align-items center
+        color #f8ff35
+        margin 20px 0
+        .icon-wrap
+            display flex
+            align-items center
+        .date
+            margin 0 40px
+            color #bbbbbb
 .total-container
     height 90px
     background #ff3939
