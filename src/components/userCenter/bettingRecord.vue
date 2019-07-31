@@ -46,7 +46,6 @@
                             @on-cancel="onCancel"
                             @on-confirm="onConfirm"
                             @on-hide="onCancel"
-                            @mousedown="test($event)"
                         ></datetime>
                     </span>
                 </flexbox-item>
@@ -69,7 +68,7 @@
         <scroller
             class="scroller"
             lock-x
-            @on-scroll-bottom="onScrollBottom"
+            @on-scroll-bottom="handleReachBottom"
             @on-scroll="onCScroll"
             :height="conditionStatus==true?'310px':'534px'"
             ref="scrollerBottom"
@@ -78,59 +77,59 @@
         >
             <div class="box2">
                 <ul>
-                    <li class="data_wrap" v-for="i in bottomCount" :key="i">
+                    <li class="data_wrap" v-for="(item,value) of userHistory" :key="value">
                         <div class="title">
                             <div class="icon-wrap">
                                 <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
-                                <span class="username">username</span>
+                                <span class="username">{{item.username}}</span>
                             </div>
-                            <span class="date">2019-7-16 15:30:55</span>
+                            <span class="date">{{item.writetime}}</span>
                         </div>
                         <flexbox class="detail" justify="flex-end" :gutter="0" wrap="wrap">
                             <flexbox-item :span="1/2">
                                 彩种：
-                                <span>东京11选5</span>
+                                <span>{{item.cnname}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 投注期数：
-                                <span>2019-7-23</span>
+                                <span>{{item.issue}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 投注内容：
-                                <span>05 07 08 09</span>
+                                <span>{{item.code}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 玩法名称：
-                                <span>前三直选</span>
+                                <span>{{item.methodname}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 投注金额：
-                                <span>555</span>
+                                <span>{{item.totalprice}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 奖金：
-                                <span>0.00</span>
+                                <span>{{item.bonus}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 开奖号码：
-                                <span>05 08 09 10</span>
+                                <span></span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
                                 状态：
-                                <span>未中奖</span>
+                                <span>{{handleStatus(item.iscancel,item.isgetprize,item.prizestatus)}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
-                                <x-button class="btn cancel" type="blue">撤单</x-button>
+                                <x-button  :disabled="item.can==0" @click.native="handleCancel(item.projectid,value)" class="btn cancel" :type="item.can==0?'grey':'blue'">撤单</x-button>
                             </flexbox-item>
                         </flexbox>
                     </li>
                 </ul>
-                <load-more tip="loading"></load-more>
+                <load-more :tip="onFetching?'加载数据中...':'下拉加载更多'" :show-loading="false"></load-more>
             </div>
         </scroller>
             <div class="total-container">
-                <span>总投注：762.00</span>
-                <span>总奖金：762.00</span>
+                <span>总投注：{{parseInt(total_betmoney)}}</span>
+                <span>总奖金：{{parseInt(total_bonus)}}</span>
             </div>
     </div>
 </template>
@@ -190,7 +189,8 @@ export default {
             total_bonus: 0,
             bottomCount: 20,
             top:0,
-            conditionStatus:true
+            conditionStatus:true,
+            onFetching:false
         }
     },
     methods: {
@@ -203,11 +203,17 @@ export default {
             })
         },
         getBetHistory() {
-            console.log('object');
             let bettingRecord = { ...this.bettingRecord }
-            bettingRecord.p = 1
-            bettingRecord.starttime = this.bettingRecord.starttime + ':00'
-            bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+            if(this.bettingRecord.starttime==''){
+                bettingRecord.starttime = ''
+            }else{
+                bettingRecord.starttime = this.bettingRecord.starttime + ':00'
+            }
+            if(this.bettingRecord.endtime==''){
+                bettingRecord.endtime = ''
+            }else{
+                    bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+            }
             this.$set(this.bettingRecord, 'p', 1)
             getbethistory({ ...bettingRecord }).then(res => {
                 if (res.data.page_data) {
@@ -223,30 +229,62 @@ export default {
                 }
             })
         },
-        handleReachBottom(value) {
-            let bettingRecord = { ...this.bettingRecord }
-            bettingRecord.starttime = this.dataformat(
-                this.bettingRecord.starttime[0]
-            )
-            bettingRecord.endtime = this.dataformat(
-                this.bettingRecord.starttime[1]
-            )
-            bettingRecord.p = value
-
+        handleCancel(projectid, value) {
+            ordercancel({ projectid }).then(res => {
+                this.$set(this.userHistory[value], 'can', 0)
+            })
+        },
+        handleStatus(iscancel, isgetprize, prizestatus) {
+            if (iscancel == 0) {
+                if (isgetprize == 0) {
+                    return '未开奖'
+                } else if (isgetprize == 2) {
+                    return '未中奖'
+                } else if (isgetprize == 1) {
+                    if (prizestatus == 0) {
+                        return '未派奖'
+                    } else {
+                        return '已派奖'
+                    }
+                }
+            }
+            if (iscancel == 1) {
+                return '本人撤单'
+            }
+            if (iscancel == 2) {
+                return '平台撤单'
+            }
+            if (iscancel == 3) {
+                return '错开撤单'
+            }
+        },
+        handleReachBottom() {
+            if (this.onFetching) {
+                // do nothing
+            } else {
+                this.onFetching = true
+                this.bettingRecord.p++
+                let bettingRecord = { ...this.bettingRecord }
+            if(this.bettingRecord.starttime==''){
+                bettingRecord.starttime = ''
+            }else{
+                bettingRecord.starttime = this.bettingRecord.starttime + ':00'
+            }
+            if(this.bettingRecord.endtime==''){
+                bettingRecord.endtime = ''
+            }else{
+                    bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+            }
             getbethistory({ ...bettingRecord }).then(res => {
                 if (res.data.page_data) {
-                    this.userHistory = [...res.data.page_data]
+                    this.userHistory= this.userHistory.concat(res.data.page_data)
                     this.total = res.data.total_count
-
                     this.total_betmoney = res.data.total_betmoney
                     this.total_bonus = res.data.total_bonus
-                } else {
-                    this.userHistory = []
-                    this.pages = 0
-                    this.total_betmoney = 0
-                    this.total_bonus = 0
                 }
+                this.onFetching = false
             })
+            }
         },
         dataformat(str) {
             let time = new Date(str)
@@ -363,7 +401,8 @@ export default {
     width 190px
     height 58px
     border-radius: 8px;
-    font-size 10px
+    font-size 20px
+
 .btn
     &.search
         margin-top 10px
@@ -412,6 +451,7 @@ export default {
     margin-bottom 10px
     padding 6px 14px 
     box-sizing border-box
+    font-size 28px
     >>>.vux-flexbox-item
         line-height 60px
     .title

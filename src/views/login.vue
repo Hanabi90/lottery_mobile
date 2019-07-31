@@ -26,7 +26,7 @@ import { login } from '@/api/index.js'
 export default {
     data() {
         return {
-            userName: 'tzdricci',
+            userName: 'devpeter',
             passWorde: '1234qwer'
         }
     },

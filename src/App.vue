@@ -40,7 +40,7 @@
                         <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/demo'}">
+                    <tabbar-item :link="{path:'/bettingRecord'}">
                         <x-icon slot="icon" type="ios-paper" class="homeIcon"></x-icon>
                         <span slot="label">
                             <span>开奖记录</span>
