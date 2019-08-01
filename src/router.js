@@ -24,6 +24,24 @@ const router = new Router({
             component: () =>
                 import(/* webpackChunkName: "bettingRecord" */ './components/userCenter/bettingRecord.vue')
         },
+        {
+            path: '/usercenter',
+            name: 'usercenter',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/usercenter.vue')
+        },
+        {
+            path: '/openAccountLine',
+            name: 'openAccountLine',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/openAccountLine.vue')
+        },
+        {
+            path: '/openLine',
+            name: 'openLine',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/openLine.vue')
+        },
     ]
 })
 router.beforeEach((to, from, next) => {

@@ -5,7 +5,9 @@ import store from './store'
 //import { AlertPlugin, ToastPlugin ,ConfirmPlugin,LoadingPlugin } from 'vux'
 
 import ToastPlugin from 'vux/src/plugins/toast'
-
+import VueClipboard from 'vue-clipboard2'
+VueClipboard.config.autoSetContainer = true
+Vue.use(VueClipboard)
 Vue.use(ToastPlugin)
 
 Vue.config.productionTip = false

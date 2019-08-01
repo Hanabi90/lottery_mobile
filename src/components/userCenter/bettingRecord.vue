@@ -362,6 +362,7 @@ export default {
         })
         //获取用户下级
         getchildlist().then(res => {
+            // this.userList.push()
             if (res.data) {
                 for (const key in res.data) {
                     if (res.data.hasOwnProperty(key)) {
@@ -437,7 +438,7 @@ export default {
             width 190px
             height 58px
             border-radius: 8px;
-            font-size 10px
+            font-size 26px
         .datetime-container
             align-items center
             background #fff

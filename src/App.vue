@@ -46,7 +46,7 @@
                             <span>开奖记录</span>
                         </span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/demo'}">
+                    <tabbar-item :link="{path:'/usercenter'}">
                         <x-icon slot="icon" type="ios-body" class="homeIcon"></x-icon>
                         <span slot="label">
                             <span>我的</span>
@@ -96,6 +96,7 @@ html, body, #lottery
     height 100%
     width 100%
     overflow-x hidden
+    background: #333;
 </style>
 <style lang="stylus" scoped>
 .headerContent

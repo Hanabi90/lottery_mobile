@@ -15,7 +15,7 @@ module.exports = {
                     minRatio: 0.8,
                     cache: true
                 })
-                .tap(args => {})
+                .tap(args => { })
         }
 
         const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
@@ -30,10 +30,12 @@ module.exports = {
     }
 }
 
-function addStyleResource(rule) {
+function addStyleResource (rule) {
     rule.use('style-resource')
         .loader('style-resources-loader')
         .options({
-            patterns: [path.resolve(__dirname, './src/styles/imports.styl')]
+            patterns: [
+                path.resolve(__dirname, './src/styles/imports.styl'),
+            ],
         })
 }
