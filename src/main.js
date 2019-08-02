@@ -6,7 +6,10 @@ import store from './store'
 
 import ToastPlugin from 'vux/src/plugins/toast'
 
-Vue.use(ToastPlugin)
+Vue.use(ToastPlugin, {
+    position: 'middle',
+    width: '50%'
+})
 
 Vue.config.productionTip = false
 

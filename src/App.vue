@@ -94,6 +94,7 @@ export default {
 html, body, #lottery
     height 100%
     width 100%
+    background #222
     overflow-x hidden
 </style>
 <style lang="stylus" scoped>

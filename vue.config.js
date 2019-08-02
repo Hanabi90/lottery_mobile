@@ -1,6 +1,7 @@
 const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const vuxLoader = require('vux-loader')
 module.exports = {
     transpileDependencies: ['vux'],
     chainWebpack: config => {
@@ -17,23 +18,10 @@ module.exports = {
                 })
                 .tap(args => {})
         }
-
-        const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
-        types.forEach(type =>
-            addStyleResource(config.module.rule('stylus').oneOf(type))
-        )
     },
     configureWebpack: config => {
         require('vux-loader').merge(config, {
             plugins: ['vux-ui', 'duplicate-style']
         })
     }
-}
-
-function addStyleResource(rule) {
-    rule.use('style-resource')
-        .loader('style-resources-loader')
-        .options({
-            patterns: [path.resolve(__dirname, './src/styles/imports.styl')]
-        })
 }
