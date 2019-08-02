@@ -30,10 +30,10 @@
             <div class="router_container">
                 <p>个人管理</p>
                 <ul>
-                    <router-link class="li_grey" to="usercenter" tag="li">登录密码</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">提款密码</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">绑定银行卡</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">密保设定</router-link>
+                    <router-link class="li_grey" to="/changePassword" tag="li">登录密码</router-link>
+                    <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
+                    <router-link class="li_grey" to="/bank" tag="li">绑定银行卡</router-link>
+                    <router-link class="li_grey" to="/bindquestion" tag="li">密保设定</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">站内信</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">系统公告</router-link>
                 </ul>

@@ -42,6 +42,30 @@ const router = new Router({
             component: () =>
                 import(/* webpackChunkName: "bettingRecord" */ './views/openLine.vue')
         },
+        {
+            path: '/changePassword',
+            name: 'changePassword',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/changePassword.vue')
+        },
+        {
+            path: '/changeSecPassword',
+            name: 'changeSecPassword',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/changeSecPassword.vue')
+        },
+        {
+            path: '/bindquestion',
+            name: 'bindquestion',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/bindquestion.vue')
+        },
+        {
+            path: '/bank',
+            name: 'bank',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/bank.vue')
+        },
     ]
 })
 router.beforeEach((to, from, next) => {

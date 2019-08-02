@@ -92,11 +92,15 @@ export default {
 </style>
 
 <style lang="stylus">
+$bgLight = #444444
+$bgDark = #333333
+$gold = #f8ff35
 html, body, #lottery
     height 100%
     width 100%
     overflow-x hidden
     background: #333;
+    position relative
 </style>
 <style lang="stylus" scoped>
 .headerContent

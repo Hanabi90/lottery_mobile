@@ -261,4 +261,5 @@ $gold = #f8ff35
         button
             width 28%
             color #eee
+            font-size 26px
 </style>

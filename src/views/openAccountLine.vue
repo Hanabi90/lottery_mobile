@@ -22,8 +22,8 @@
         </group>
         <div class="range_container">
             <span>奖金组：</span>
-            <range class="range" :range-bar-height="10" v-model="range" :min="0" :max="1980"></range>
-            <input type="number" v-model="range" />
+            <range class="range" :range-bar-height="10" v-model="range" :min="bonusGroup.minodds" :max="bonusGroup.maxodds"></range>
+            <input type="number" v-model.lazy="range" />
         </div>
         <div class="usertype radio">
             <span>用户类型：</span>
@@ -36,13 +36,13 @@
                 <label for="radio-2" class="radio-label">会员</label>
             </div>
         </div>
-        <x-button class="btn adduser"  type="orange">添加用户</x-button>
+        <x-button class="btn adduser" type="orange">添加用户</x-button>
     </div>
 </template>
  
 <script>
-import { Range, XInput,XButton, Group, Cell } from 'vux'
-import { addnewuser, RSAencrypt } from '@/api/index'
+import { Range, XInput, XButton, Group } from 'vux'
+import { addnewuser, RSAencrypt, getreglink } from '@/api/index'
 export default {
     name: 'openAccountLine',
     data() {
@@ -116,19 +116,27 @@ export default {
             })
         }
     },
+    created() {
+        getreglink().then(res => {
+            this.$set(this.bonusGroup, 'maxodds', Number(res.data.maxodds))
+            this.$set(this.bonusGroup, 'minodds', Number(res.data.minodds))
+        })
+    },
     components: {
         Range,
         XInput,
         Group,
-        Cell,
         XButton
     }
 }
 </script>
 <style lang="stylus" scoped>
-$bgLight = #444444
-$bgDark = #333333
-$gold = #f8ff35
+@import '../styles/imports'
+>>>.weui-cells.vux-no-group-title
+    margin 0 0 20px 0
+>>>.weui-cell__hd
+    width: 120px;
+    overflow: hidden;
 .btn
     &.adduser
         width 300px
@@ -139,27 +147,16 @@ $gold = #f8ff35
     padding 40px
     .range
         margin-left 0 !important
-        width 50%
+        width 46%
         margin-right 40px !important
-    >>>.weui-cells
-        background $bgLight
-        margin-top 0
-        font-size 30px
-    >>>.weui-cell__bd
-        background #fff
-        color #000
-        line-height 60px
-        border-radius 2px
-    >>>.weui-cell__hd
-        width 120px
-        overflow hidden
     .usertype
         display flex
         align-items center
     .range_container
         display flex
+        padding 0 15px
         align-items center
-        justify-content center
+        justify-content space-between
         input
             width 20%
             line-height 60px
@@ -180,10 +177,9 @@ $gold = #f8ff35
             .range-max, .range-min
                 color #fff
                 display none
-        
 .radio
     margin 20px
-    margin-left: 0;
+    margin-left 0
 .radio input[type='radio']
     position absolute
     opacity 0

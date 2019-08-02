@@ -426,6 +426,8 @@ export default {
     color #e6e6e6
     height 440px
     margin-bottom 10px
+    >>>.weui-cell__bd
+        background: transparent;
     .condition-item
         display flex
         align-items center
@@ -467,13 +469,16 @@ export default {
             margin 0 40px
             color #bbbbbb
 .total-container
-    height 90px
+    height 100px
     background #ff3939
     color #f8ff35
+    font-size 26px
     width 100%
     display flex
     justify-content space-between
     align-items center
     padding 0 20px
     box-sizing border-box
+    position absolute
+    bottom 90px
 </style>
