@@ -98,6 +98,7 @@ $gold = #f8ff35
 html, body, #lottery
     height 100%
     width 100%
+    background #222
     overflow-x hidden
     background: #333;
     position relative

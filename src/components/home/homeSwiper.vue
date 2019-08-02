@@ -1,9 +1,10 @@
 <template>
     <div class="homeSwiper">
-        <swiper auto height="200px" :loop="true">
+        <swiper auto height="aspect-ratio" :loop="true">
             <swiper-item class="black" v-for="(item,index) of list" :key="index">
                 <img
-                    style="width:100;height:100%"
+                    width="100%"
+                    height="100%"
                     class="title fadeInUp animated"
                     :src="item.frontend_mobile_show_picture"
                     alt

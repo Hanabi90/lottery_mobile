@@ -10,6 +10,11 @@ VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
 Vue.use(ToastPlugin)
 
+Vue.use(ToastPlugin, {
+    position: 'middle',
+    width: '50%'
+})
+
 Vue.config.productionTip = false
 
 new Vue({

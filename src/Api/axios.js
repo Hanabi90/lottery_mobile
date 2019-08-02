@@ -2,8 +2,14 @@ import axios from 'axios'
 import Vue from 'vue'
 import store from '../store'
 import Router from '../router'
-import { LoadingBar, Message, Modal } from 'iview'
-Vue.use(LoadingBar, Message, Modal)
+import ToastPlugin from 'vux/src/plugins/toast'
+import ConfirmPlugin from 'vux/src/plugins/confirm'
+import LoadingPlugin from 'vux/src/plugins/loading'
+Vue.use(LoadingPlugin, ConfirmPlugin)
+Vue.use(ToastPlugin, {
+    position: 'middle',
+    width: '50%'
+})
 
 let CancelToken = axios.CancelToken //取消实例
 window._axiosPromiserArr = []
@@ -28,9 +34,15 @@ let userUpdate = function() {
             Router.push('/')
             clearInterval(timeout)
             USERTIMEOUT = 900
-            Modal.warning({
+            Vue.$vux.confirm.show({
+                // 组件除show外的属性
                 title: '温馨提示',
-                content: '登录超时，请重新登录'
+                content: '登录超时，请重新登录',
+                showCancelButton: false,
+                onCancel: () => {
+                    console.log() //当前 vm
+                },
+                onConfirm: () => {}
             })
         }
     }, 1000)
@@ -40,15 +52,22 @@ service.defaults.headers.post['Content-Type'] =
 let loading = null
 service.interceptors.request.use(
     config => {
+        // 在请求先展示加载框
+        const token = sessionStorage.getItem('token')
         //如果是不是轮训接口，就重置倒计时
 
         if (config.url.indexOf('getissue') == -1) {
             //重置倒计时
             USERTIMEOUT = 900
+            //显示loading
+            Vue.$vux.loading.show({
+                text: 'Loading'
+            })
+        }
+        if (config.url.indexOf('userlogin') != -1) {
+            userUpdate()
         }
 
-        // 在请求先展示加载框
-        const token = sessionStorage.getItem('token')
         if (token) {
             config.headers['Authorization'] = token
         }
@@ -66,26 +85,28 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     response => {
         // 请求响应后关闭加载框
-        LoadingBar.start()
+        if (response.config.url.indexOf('getissue') == -1) {
+            //显示loading
+            Vue.$vux.loading.hide()
+        }
         const responseCode = response.status
         // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据
         // 否则的话抛出错误
         if (responseCode === 200) {
-            LoadingBar.finish()
             let code = response.data.code
             switch (code) {
                 //已从其他端口登录
                 case 0:
-                    if (response.config.url.indexOf('userlogin') != -1) {
-                        userUpdate()
-                    }
                     return Promise.resolve(response.data)
                 //其他地方登陆
                 case -15:
                 //操作超时，未登录
                 case -13:
                 case -51:
-                    Message.error(response.data.msg)
+                    Vue.$vux.toast.show({
+                        text: response.data.msg,
+                        type: 'warn'
+                    })
                     store.dispatch('handleReset')
                     sessionStorage.clear()
                     Router.push('/')
@@ -93,23 +114,34 @@ service.interceptors.response.use(
                 case -81:
                     return Promise.reject(response.data)
                 default:
-                    Message.error(response.data.msg)
+                    Vue.$vux.toast.show({
+                        text: response.data.msg,
+                        type: 'warn'
+                    })
                     return new Promise(() => {})
             }
         } else {
-            LoadingBar.error()
             return Promise.resolve(response)
         }
     },
     error => {
         // 请求响应后关闭加载框
-        LoadingBar.error()
+
+        //显示loading
+        Vue.$vux.loading.hide()
+
         if (!error.response) {
             // 请求超时状态
             if (error.message.includes('timeout')) {
-                Message.error('链接超时,请从新操作')
+                Vue.$vux.toast.show({
+                    text: '链接超时,请从新操作',
+                    type: 'warn'
+                })
             } else {
-                Message.error('断网了')
+                Vue.$vux.toast.show({
+                    text: '断网了',
+                    type: 'warn'
+                })
             }
         } else {
             const responseCode = error.response.status
@@ -118,7 +150,10 @@ service.interceptors.response.use(
                 case 403:
                 case 404:
                 case 500:
-                    Message.error('服务器链接错误...请稍后登录')
+                    Vue.$vux.toast.show({
+                        text: '服务器链接错误...请稍后登录',
+                        type: 'warn'
+                    })
                     store.dispatch('handleReset')
                     sessionStorage.clear()
                     Router.push('/')

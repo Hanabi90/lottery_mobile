@@ -1,5 +1,9 @@
 <template>
     <view-box class="drawerContent" ref="viewBox">
+        <div class="titlebox">
+            <span>首页</span>
+            <span @click="exit">退出登录</span>
+        </div>
         <group title="彩票游戏" style="padding:20px 0;">
             <group title="时时彩" style="margin-top:20px;">
                 <div class="list">
@@ -27,7 +31,7 @@
 
 <script>
 import { Group, ViewBox } from 'vux'
-import { getMenu } from '@/api/index.js'
+import { getMenu, loginOut } from '@/api/index.js'
 export default {
     name: 'drawerList',
     computed: {
@@ -62,11 +66,25 @@ export default {
             }
         }
     },
+    methods: {
+        exit() {
+            loginOut().then(res => {
+                if (res.code == 0) {
+                    sessionStorage.clear()
+                    this.$vux.toast.show({
+                        text: '退出成功',
+                        type: 'success'
+                    })
+                    this.$store.dispatch('handleReset')
+                    this.$router.push('/')
+                }
+            })
+        }
+    },
     mounted() {
         getMenu().then(res => {
             this.$store.dispatch('handleLotteryMenue', { ...res.data })
         })
-        console.log('这是列表从新加载')
     },
     components: {
         Group,
@@ -80,10 +98,11 @@ export default {
     width 600px
     height 100%
     padding 0 10px
-    overflow hidden
-    overflow-y scroll
+    padding-top 80px
+    position relative
     >>>.weui-cells__title
         font-size 30px
+        background #222
     .list
         display flex
         width 100%
@@ -99,4 +118,17 @@ export default {
             margin 20px
     >>>.weui-cells__title
         margin-bottom 20px
+    .titlebox
+        color #999999
+        position absolute
+        top 0
+        right 0
+        height 80px
+        font-size 32px
+        display flex
+        width 100%
+        text-indent 40px
+        line-height 80px
+        span
+            flex 1
 </style>
