@@ -88,10 +88,12 @@ export default {
 </script>
 <style lang="less">
 @import '~vux/src/styles/reset.less';
-@import '../src/styles/cover';
+@import '../src/styles/cover.less';
 </style>
 
 <style lang="stylus">
+
+
 $bgLight = #444444
 $bgDark = #333333
 $gold = #f8ff35
@@ -119,9 +121,9 @@ html, body, #lottery
             line-height 40px
             font-size 14px
         >>>.vux-header-left
-            top 17px
+            top 12px
         >>>.vux-header-right
-            top 14px
+            top 12px
 .vux-demo-tabbar
     background #222
     &.fixed_layout
@@ -133,7 +135,7 @@ html, body, #lottery
         .homeIcon
             position relative
             top -2px
-            left -6px
+            left 0
             fill #fff
         >>> .weui-bar__item_on
             .homeIcon

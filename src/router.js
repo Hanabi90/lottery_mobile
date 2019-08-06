@@ -28,62 +28,62 @@ const router = new Router({
             path: '/usercenter',
             name: 'usercenter',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/usercenter.vue')
+                import(/* webpackChunkName: "usercenter" */ './views/usercenter.vue')
         },
         {
             path: '/openAccountLine',
             name: 'openAccountLine',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/openAccountLine.vue')
+                import(/* webpackChunkName: "openAccountLine" */ './views/openAccountLine.vue')
         },
         {
             path: '/openLine',
             name: 'openLine',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/openLine.vue')
+                import(/* webpackChunkName: "openLine" */ './views/openLine.vue')
         },
         {
             path: '/changePassword',
             name: 'changePassword',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/changePassword.vue')
+                import(/* webpackChunkName: "changePassword" */ './views/changePassword.vue')
         },
         {
             path: '/changeSecPassword',
             name: 'changeSecPassword',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/changeSecPassword.vue')
+                import(/* webpackChunkName: "changeSecPassword" */ './views/changeSecPassword.vue')
         },
         {
             path: '/bindquestion',
             name: 'bindquestion',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/bindquestion.vue')
+                import(/* webpackChunkName: "bindquestion" */ './views/bindquestion.vue')
         },
         {
             path: '/bank',
             name: 'bank',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/bank.vue')
+                import(/* webpackChunkName: "bank" */ './views/bank.vue')
         },
         {
             path: '/editBank',
             name: 'editBank',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/editBank.vue')
+                import(/* webpackChunkName: "editBank" */ './views/editBank.vue')
         },
         {
             path: '/notice',
             name: 'notice',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/notice.vue')
+                import(/* webpackChunkName: "notice" */ './views/notice.vue')
         },
         {
             path: '/agentManagement',
             name: 'agentManagement',
             component: () =>
-                import(/* webpackChunkName: "bettingRecord" */ './views/agentManagement.vue')
-        },
+                import(/* webpackChunkName: "agentManagement" */ './views/agentManagement.vue')
+        }
     ]
 })
 router.beforeEach((to, from, next) => {

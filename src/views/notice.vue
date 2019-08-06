@@ -86,4 +86,5 @@ export default {
 .popup_container
     padding 0 40px 40px 40px 
     box-sizing border-box
+    background #333
 </style>
