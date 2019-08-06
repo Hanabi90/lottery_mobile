@@ -87,7 +87,7 @@ const router = new Router({
     ]
 })
 router.beforeEach((to, from, next) => {
-    console.log(to);
+    console.log(to)
     if (!sessionStorage.getItem('token')) {
         if (to.name != 'login') {
             router.push({ name: 'login' })

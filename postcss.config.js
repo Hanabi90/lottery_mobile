@@ -9,7 +9,9 @@ module.exports = {
             selectorBlackList: ['fixed_layout'],
             minPixelValue: 1,
             mediaQuery: false,
-            propList: ['*']
+            propList: ['*'],
+            mediaQuery: false,
+            exclude: /(\/|\\)(node_modules)(\/|\\)/
         }
     }
 }
