@@ -16,7 +16,7 @@ const router = new Router({
             path: '/home',
             name: 'home',
             component: () =>
-                import(/* webpackChunkName: "home" */ './views/Home.vue')
+                import(/* webpackChunkName: "home" */ './views/home.vue')
         },
         {
             path: '/bettingRecord',
@@ -65,11 +65,11 @@ const router = new Router({
             name: 'bank',
             component: () =>
                 import(/* webpackChunkName: "bettingRecord" */ './views/bank.vue')
-        },
+        }
     ]
 })
 router.beforeEach((to, from, next) => {
-    console.log(to);
+    console.log(to)
     if (!sessionStorage.getItem('token')) {
         if (to.name != 'login') {
             router.push({ name: 'login' })

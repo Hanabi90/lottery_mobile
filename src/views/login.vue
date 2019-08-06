@@ -12,7 +12,6 @@
                     <x-icon style="margin-right:2px;margin-left:4px" slot="label" type="key"></x-icon>
                 </x-input>
             </group>
-
             <x-button @click.native="handlelogin" class="btn" style="margin:10px 0" type="warn">登录</x-button>
 
             <x-button class="btn" style="background:#ffd336;color:#854909" type="warn">注册</x-button>
@@ -27,7 +26,9 @@ export default {
     data() {
         return {
             userName: 'devpeter',
-            passWorde: '1234qwer'
+            passWorde: '1234qwer',
+            show: true,
+            data1: 2
         }
     },
     methods: {
