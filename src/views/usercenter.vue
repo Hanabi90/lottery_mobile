@@ -20,7 +20,7 @@
             <div class="router_container">
                 <p>团队管理</p>
                 <ul>
-                    <router-link class="li_grey" to="usercenter" tag="li">团队首页</router-link>
+                    <router-link class="li_grey" to="/agentManagement" tag="li">团队首页</router-link>
                     <router-link class="li_grey" to="/openAccountLine" tag="li">注册开户</router-link>
                     <router-link class="li_grey" to="/openLine" tag="li">推广链接</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">彩票日工资</router-link>
@@ -35,7 +35,7 @@
                     <router-link class="li_grey" to="/bank" tag="li">绑定银行卡</router-link>
                     <router-link class="li_grey" to="/bindquestion" tag="li">密保设定</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">站内信</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">系统公告</router-link>
+                    <router-link class="li_grey" to="/notice" tag="li">系统公告</router-link>
                 </ul>
             </div>
             <div class="router_container">

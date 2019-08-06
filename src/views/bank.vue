@@ -94,7 +94,7 @@
                 <Button shape="circle" type="error" long @click="handleSubmit('formInline')">设置银行卡</Button>
             </FormItem>
         </Form> -->
-        <group>
+        <div class="top_container">
             <div class="cell">
                 <span><i>*</i>开户银行</span>
                 <selector
@@ -106,8 +106,9 @@
                 ></selector>
             </div>
             <div class="cell">
-                <span>答案</span>
+                <span><i>*</i>开户银行省份</span>
                 <selector
+                    @on-change="changeCity"
                     class="selector"
                     ref="defaultValueRef"
                     direction="ltr"
@@ -126,10 +127,34 @@
                 ></selector>
             </div>
             <div class="cell">
-                <span>支行名称</span>
-                
+                <span><i>*</i>支行名称</span>
+                <x-input
+                    :show-clear="false"
+                    name="username"
+                    placeholder="请输入支行名称"
+                    type="text"
+                ></x-input>
             </div>
-        </group>
+            <div class="cell">
+                <span><i>*</i>开户人姓名</span>
+                <x-input
+                    :show-clear="false"
+                    name="username"
+                    placeholder="请输入开户人姓名"
+                    type="text"
+                ></x-input>
+            </div>
+            <div class="cell">
+                <span><i>*</i>银行卡号</span>
+                <x-input
+                    :show-clear="false"
+                    name="username"
+                    placeholder="请输入银行卡号"
+                    type="text"
+                ></x-input>
+            </div>
+            <x-button class="btn recharge"  type="orange">设置银行卡</x-button>
+        </div>
     </div>
 </template>
 <script>
@@ -144,7 +169,7 @@ import {
 } from '@/api/index.js'
 import {
     Group,
-    Selector,XButton
+    Selector,XButton,XInput
 } from 'vux'
 export default {
     name: 'bank',
@@ -235,9 +260,13 @@ export default {
             }
         },
         changeCity(value) {
-            getcitylist({ province: value.substr(0, value.indexOf('#')) }).then(
-                res => {
-                    this.cityList = res.data
+            getcitylist({ province: value }).then(res => {
+                var data = res.data
+                    for (const item of data) {
+                        item.key = item.id
+                        item.value = item.name
+                    }
+                    this.cityList = data
                 }
             )
         },
@@ -251,23 +280,34 @@ export default {
         })
         //获取行政区域列表
         getprovincelist().then(res => {
-            this.provinceList = res.data
+            var data = res.data
+            for (const item of data) {
+                item.key = item.id
+                item.value = item.name
+            }
+            this.provinceList = data
         })
         //获取银行列表
         getbanklist().then(res => {
-            this.branchList = res.data
+            var data = res.data
+            for (const item of data) {
+                item.key = item.id
+                item.value = item.bank_name
+            }
+            this.branchList = data
         })
     },
     components: {
         Group,
-        Selector,XButton
+        Selector,XButton,XInput
     }
 }
 </script>
 
 <style lang="stylus" scoped>
+@import '../styles/imports'
 .top_container
-    padding: 30px 100px;
+    padding: 40px 50px;
     background $bgLight
 .cell
     display: flex;
@@ -275,30 +315,45 @@ export default {
     justify-content space-between
     color: #fff;
     margin-bottom 30px
-    text-align right
+    text-align left
     position relative
     color $fontColor_grey
-    &:nth-child(even)
+    &:nth-child(4)
         margin-bottom 80px
         &::after
-            content '长度最多为25个字符'
+            font-size 26px
+            content '由1至20个字符或汉字组成，不能使用特殊字符'
             position absolute
-            bottom -46px
-            left 160px
+            bottom -70px
+            left 250px
+            line-height 32px
+            color $fontColor_grey
+    &:nth-child(6)
+        margin-bottom 70px
+        &::after
+            font-size 26px
+            content '银行卡卡号由16位到19位数字组成'
+            position absolute
+            bottom -70px
+            left 250px
+            line-height 32px
             color $fontColor_grey
     span
         text-align right
-        width 100px
         i
             color $gold
     >>>.vux-selector
-        max-width 400px
-.btns
-    display flex
-    justify-content space-around
-    .btn
-        max-width 250px
-        height 70px
+        min-width 400px
+    >>>.vux-x-input
+        min-width 400px
+        padding 0
+        &::before
+            border none
+.btn
+    max-width 320px
+    height 70px
+    margin-right 0px
+    font-size 26px
 .beizhu
         background $bgDark
         padding 30px 20px

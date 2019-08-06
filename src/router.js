@@ -16,7 +16,7 @@ const router = new Router({
             path: '/home',
             name: 'home',
             component: () =>
-                import(/* webpackChunkName: "home" */ './views/Home.vue')
+                import(/* webpackChunkName: "home" */ './views/home.vue')
         },
         {
             path: '/bettingRecord',
@@ -65,6 +65,24 @@ const router = new Router({
             name: 'bank',
             component: () =>
                 import(/* webpackChunkName: "bettingRecord" */ './views/bank.vue')
+        },
+        {
+            path: '/editBank',
+            name: 'editBank',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/editBank.vue')
+        },
+        {
+            path: '/notice',
+            name: 'notice',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/notice.vue')
+        },
+        {
+            path: '/agentManagement',
+            name: 'agentManagement',
+            component: () =>
+                import(/* webpackChunkName: "bettingRecord" */ './views/agentManagement.vue')
         },
     ]
 })

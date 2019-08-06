@@ -14,6 +14,19 @@
         background-color: #fff;
     }
 }
+.weui-btn.weui-btn_lightblue {
+    border-radius: 8px;
+    background-color: #ffbc3b;
+    box-shadow: 8px 8px 10px #333333;
+    background-image: linear-gradient(226deg, #d3f6ff 0%, #57cfec 80%);
+    &:not(.weui-btn_disabled):visited {
+        color: #fff;
+    }
+    &:not(.weui-btn_disabled):active {
+        color: @weuiBtnActiveFontColor;
+        background-color: #fff;
+    }
+}
 .weui-btn + .weui-btn {
     margin-top: 0 !important;
 }
@@ -120,7 +133,7 @@
     font-size: 26px;
 }
 .vux-x-input.weui-cell{
-    background: @bgLight;
+    // background: @bgLight;
     border-radius: 8px;
 }
 .weui-cell__bd{

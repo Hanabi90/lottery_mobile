@@ -39,7 +39,7 @@
                 <flexbox-item class="condition-item" :span="1/2">
                     <span>开始日期</span>
                     <span class="datetime-container">
-                            <!-- @on-change="change" -->
+                        <!-- @on-change="change" -->
                         <datetime
                             format="YYYY-MM-DD HH:mm"
                             v-model="bettingRecord.starttime"
@@ -52,7 +52,7 @@
                 <flexbox-item class="condition-item" :span="1/2">
                     <span>结束日期</span>
                     <span class="datetime-container">
-                            <!-- @on-change="change" -->
+                        <!-- @on-change="change" -->
                         <datetime
                             format="YYYY-MM-DD HH:mm"
                             v-model="bettingRecord.endtime"
@@ -80,7 +80,12 @@
                     <li class="data_wrap" v-for="(item,value) of userHistory" :key="value">
                         <div class="title">
                             <div class="icon-wrap">
-                                <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
+                                <x-icon
+                                    slot="icon"
+                                    size="30"
+                                    type="ios-contact"
+                                    class="icons contact"
+                                ></x-icon>
                                 <span class="username">{{item.username}}</span>
                             </div>
                             <span class="date">{{item.writetime}}</span>
@@ -119,7 +124,12 @@
                                 <span>{{handleStatus(item.iscancel,item.isgetprize,item.prizestatus)}}</span>
                             </flexbox-item>
                             <flexbox-item :span="1/2">
-                                <x-button  :disabled="item.can==0" @click.native="handleCancel(item.projectid,value)" class="btn cancel" :type="item.can==0?'grey':'blue'">撤单</x-button>
+                                <x-button
+                                    :disabled="item.can==0"
+                                    @click.native="handleCancel(item.projectid,value)"
+                                    class="btn cancel"
+                                    :type="item.can==0?'grey':'blue'"
+                                >撤单</x-button>
                             </flexbox-item>
                         </flexbox>
                     </li>
@@ -127,10 +137,10 @@
                 <load-more :tip="onFetching?'加载数据中...':'下拉加载更多'" :show-loading="false"></load-more>
             </div>
         </scroller>
-            <div class="total-container">
-                <span>总投注：{{parseInt(total_betmoney)}}</span>
-                <span>总奖金：{{parseInt(total_bonus)}}</span>
-            </div>
+        <div class="total-container">
+            <span>总投注：{{parseInt(total_betmoney)}}</span>
+            <span>总奖金：{{parseInt(total_bonus)}}</span>
+        </div>
     </div>
 </template>
 
@@ -167,8 +177,8 @@ export default {
                 starttime: '', //起始时间
                 pn: 10, //请求的数据记录数量
                 p: 1, //请求的页面序号
-                starttime:'',
-                endtime:'',
+                starttime: '',
+                endtime: ''
             },
             timeArr: {
                 startTime: '2015-11-12',
@@ -188,9 +198,9 @@ export default {
             total_betmoney: 0,
             total_bonus: 0,
             bottomCount: 20,
-            top:0,
-            conditionStatus:true,
-            onFetching:false
+            top: 0,
+            conditionStatus: true,
+            onFetching: false
         }
     },
     methods: {
@@ -204,15 +214,15 @@ export default {
         },
         getBetHistory() {
             let bettingRecord = { ...this.bettingRecord }
-            if(this.bettingRecord.starttime==''){
+            if (this.bettingRecord.starttime == '') {
                 bettingRecord.starttime = ''
-            }else{
+            } else {
                 bettingRecord.starttime = this.bettingRecord.starttime + ':00'
             }
-            if(this.bettingRecord.endtime==''){
+            if (this.bettingRecord.endtime == '') {
                 bettingRecord.endtime = ''
-            }else{
-                    bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+            } else {
+                bettingRecord.endtime = this.bettingRecord.endtime + ':00'
             }
             this.$set(this.bettingRecord, 'p', 1)
             getbethistory({ ...bettingRecord }).then(res => {
@@ -265,25 +275,28 @@ export default {
                 this.onFetching = true
                 this.bettingRecord.p++
                 let bettingRecord = { ...this.bettingRecord }
-            if(this.bettingRecord.starttime==''){
-                bettingRecord.starttime = ''
-            }else{
-                bettingRecord.starttime = this.bettingRecord.starttime + ':00'
-            }
-            if(this.bettingRecord.endtime==''){
-                bettingRecord.endtime = ''
-            }else{
-                    bettingRecord.endtime = this.bettingRecord.endtime + ':00'
-            }
-            getbethistory({ ...bettingRecord }).then(res => {
-                if (res.data.page_data) {
-                    this.userHistory= this.userHistory.concat(res.data.page_data)
-                    this.total = res.data.total_count
-                    this.total_betmoney = res.data.total_betmoney
-                    this.total_bonus = res.data.total_bonus
+                if (this.bettingRecord.starttime == '') {
+                    bettingRecord.starttime = ''
+                } else {
+                    bettingRecord.starttime =
+                        this.bettingRecord.starttime + ':00'
                 }
-                this.onFetching = false
-            })
+                if (this.bettingRecord.endtime == '') {
+                    bettingRecord.endtime = ''
+                } else {
+                    bettingRecord.endtime = this.bettingRecord.endtime + ':00'
+                }
+                getbethistory({ ...bettingRecord }).then(res => {
+                    if (res.data.page_data) {
+                        this.userHistory = this.userHistory.concat(
+                            res.data.page_data
+                        )
+                        this.total = res.data.total_count
+                        this.total_betmoney = res.data.total_betmoney
+                        this.total_bonus = res.data.total_bonus
+                    }
+                    this.onFetching = false
+                })
             }
         },
         dataformat(str) {
@@ -321,27 +334,26 @@ export default {
                         this.$refs.scrollerBottom.reset()
                     })
                     this.onFetching = false
-                    console.log(this.onFetching);
+                    console.log(this.onFetching)
                 }, 2000)
             }
         },
-        onCScroll(pos){
+        onCScroll(pos) {
             var top = pos.top
-            if(top==this.top||top<=0){
+            if (top == this.top || top <= 0) {
                 return
-            }else{
-                if(top>this.top){
-                    if(this.conditionStatus){
+            } else {
+                if (top > this.top) {
+                    if (this.conditionStatus) {
                         this.conditionStatus = false
                     }
-                }else{
-                    if(!this.conditionStatus){
+                } else {
+                    if (!this.conditionStatus) {
                         this.conditionStatus = true
                     }
                 }
                 this.top = top
             }
-            
         },
         onConfirm() {
             console.log('onConfirm')
@@ -354,11 +366,11 @@ export default {
         getuserlottery().then(res => {
             for (const key in res.data) {
                 if (res.data.hasOwnProperty(key)) {
-                    const value = res.data[key];
-                    this.lotteryList.push({key:key,value:value})
+                    const value = res.data[key]
+                    this.lotteryList.push({ key: key, value: value })
                 }
             }
-            this.$set(this.lotteryList, 0, {key:0,value:'所有游戏'})
+            this.$set(this.lotteryList, 0, { key: 0, value: '所有游戏' })
         })
         //获取用户下级
         getchildlist().then(res => {
@@ -366,7 +378,7 @@ export default {
             if (res.data) {
                 for (const key in res.data) {
                     if (res.data.hasOwnProperty(key)) {
-                        const value = res.data[key];
+                        const value = res.data[key]
                         this.userList.push(value['username'])
                     }
                 }
@@ -396,14 +408,13 @@ export default {
     .vux-cell-value
         color #000
 >>>.vux-x-input.weui-cell
-    box-sizing: border-box;
+    box-sizing border-box
     background-color #fff
     color #000
     width 190px
     height 58px
-    border-radius: 8px;
+    border-radius 8px
     font-size 20px
-
 .btn
     &.search
         margin-top 10px
@@ -427,7 +438,7 @@ export default {
     height 440px
     margin-bottom 10px
     >>>.weui-cell__bd
-        background: transparent;
+        background transparent
     .condition-item
         display flex
         align-items center
@@ -439,20 +450,20 @@ export default {
             background-color #fff
             width 190px
             height 58px
-            border-radius: 8px;
+            border-radius 8px
             font-size 26px
         .datetime-container
             align-items center
             background #fff
             display flex
-            white-space: nowrap;
+            white-space nowrap
             overflow hidden
-            border-radius: 8px;
+            border-radius 8px
 .data_wrap
     background #444444
     color #fff
     margin-bottom 10px
-    padding 6px 14px 
+    padding 6px 14px
     box-sizing border-box
     font-size 28px
     >>>.vux-flexbox-item
