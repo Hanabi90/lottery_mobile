@@ -169,7 +169,9 @@ export default {
         >>>.range-bar
             height 20px !important
             .range-handle
-                transform translateY(50%)
+                height 40px
+                width 40px
+                top -50% !important
                 border 4px solid #ff3939
                 box-sizing border-box
             .range-quantity
