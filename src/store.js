@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import * as api from "./api/index"
 Vue.use(Vuex)
 let oState = {
     lotteryMenue: {}, //彩票菜单
@@ -90,6 +90,10 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        test(context){
+            var res = api.getbalance()
+            return res
+        },
         handleReset(context) {
             context.commit('reset')
         },

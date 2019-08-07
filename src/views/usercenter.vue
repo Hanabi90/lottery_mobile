@@ -3,7 +3,7 @@
         <div class="top_container">
             <div class="icon-wrap">
                 <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
-                <span class="username">欢迎您,哈哈哈</span>
+                <span class="username">欢迎您,{{$store.state.nickname}}</span>
             </div>
             <div class="balance">
                 <span>余额：￥0.00000</span>
@@ -24,7 +24,8 @@
                     <router-link class="li_grey" to="/openAccountLine" tag="li">注册开户</router-link>
                     <router-link class="li_grey" to="/openLine" tag="li">推广链接</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">彩票日工资</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">彩票分红契约</router-link>
+                    <!-- <router-link class="li_grey" to="usercenter" @click="test" tag="li">彩票分红契约</router-link> -->
+                    <li class="li_grey" to="usercenter" @click="test">彩票分红契约</li>
                 </ul>
             </div>
             <div class="router_container">
@@ -60,7 +61,13 @@ export default {
             
         }
     },
-    methods: {},
+    methods: {
+        test(){
+            this.$store.dispatch('test').then((res)=>{
+                console.log(res);
+            })
+        }
+    },
     components:{
         XButton
     }
