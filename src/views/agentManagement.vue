@@ -91,6 +91,7 @@
                         </div>
                         <!-- <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon> -->
                     </div>
+                    <!-- <component class="content" :uid="pointUserId" :is="alertComponent"></component> -->
                     <div class="content">
                         <div class="datas">
                             <p>
@@ -119,7 +120,7 @@
                             <x-button class="btn recharge" type="blue">提交</x-button>
                         </div>
                     </div>
-                    <div class="content">
+                    <!-- <div class="content">
                         <x-table :cell-bordered="false" style="background-color:#fff;">
                             <thead>
                                 <tr>
@@ -141,7 +142,7 @@
                                 </tr>
                             </tbody>
                         </x-table>
-                    </div>
+                    </div> -->
                 </div>
             </x-dialog>
         </div>
@@ -276,6 +277,7 @@ export default {
 .agentManagement
     height 100%
     color $fontColor_grey
+    overflow: hidden;
     .top_container
         background $bgLight
         padding 20px
@@ -299,6 +301,7 @@ export default {
     .card
         background-color $bgLight
         padding 20px 20px
+        margin-bottom 14px
         .title
             display flex
             align-items center
