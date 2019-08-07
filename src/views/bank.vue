@@ -342,11 +342,14 @@ export default {
         text-align right
         i
             color $gold
-    >>>.vux-selector
-        min-width 400px
+    >>>.weui-select
+        width 400px
     >>>.vux-x-input
-        min-width 400px
+        width 400px
         padding 0
+        .weui-cell__primary
+            line-height 88px
+            padding-left 30px
         &::before
             border none
 .btn

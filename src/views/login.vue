@@ -42,6 +42,7 @@ export default {
                 sessionStorage.setItem('userSeting', JSON.stringify(res.data))
                 this.$vux.toast.text(res.msg, 'top')
                 this.$router.push({ name: 'home' })
+                this.$store.dispatch('handleNickName',res.data.username)
             })
         }
     },

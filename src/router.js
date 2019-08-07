@@ -79,6 +79,12 @@ const router = new Router({
                 import(/* webpackChunkName: "notice" */ './views/notice.vue')
         },
         {
+            path: '/daySalary',
+            name: 'daySalary',
+            component: () =>
+                import(/* webpackChunkName: "daySalary" */ './views/daySalary.vue')
+        },
+        {
             path: '/agentManagement',
             name: 'agentManagement',
             component: () =>

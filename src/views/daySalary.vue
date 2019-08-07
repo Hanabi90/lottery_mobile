@@ -70,7 +70,7 @@
             lock-x
             @on-scroll-bottom="handleReachBottom"
             @on-scroll="onCScroll"
-            height="-130"
+            :height="conditionStatus==true?'310px':'534px'"
             ref="scrollerBottom"
             :scroll-bottom-offst="200"
             :bounce="false"
@@ -400,9 +400,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.bettingRecord
-    height: 100%;
-    position relative
 >>>.vux-datetime.weui-cell.weui-cell_access
     padding 0
     padding-right 0
@@ -494,14 +491,5 @@ export default {
     padding 0 20px
     box-sizing border-box
     position absolute
-    bottom 0
-// >>>.vux-loadmore
-//     margin-top 0
-//     margin-bottom 0
-//     height 80px
-//     position relative
-//     &::before
-//         top 10px
-//     &::after
-//         top 10px
+    bottom 90px
 </style>
