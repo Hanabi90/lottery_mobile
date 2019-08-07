@@ -8,6 +8,7 @@
             class="text-scroll"
             :show-dots="false"
             :loop="true"
+            v-if="list.length"
         >
             <swiper-item v-for="(item,index) of list" :key="index">
                 <p class="fixed_layout">

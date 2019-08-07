@@ -70,7 +70,7 @@
             lock-x
             @on-scroll-bottom="handleReachBottom"
             @on-scroll="onCScroll"
-            height="-130"
+            height="-140"
             ref="scrollerBottom"
             :scroll-bottom-offst="200"
             :bounce="false"
@@ -401,107 +401,99 @@ export default {
 
 <style lang="stylus" scoped>
 .bettingRecord
-    height: 100%;
+    height 100%
     position relative
->>>.vux-datetime.weui-cell.weui-cell_access
-    padding 0
-    padding-right 0
-    width 190px
-    height 58px
-    .vux-cell-value
+    padding-bottom 100px
+    >>>.vux-datetime.weui-cell.weui-cell_access
+        padding 0
+        padding-right 0
+        width 190px
+        height 58px
+        .vux-cell-value
+            color #000
+    >>>.vux-x-input.weui-cell
+        box-sizing border-box
+        background-color #fff
         color #000
->>>.vux-x-input.weui-cell
-    box-sizing border-box
-    background-color #fff
-    color #000
-    width 190px
-    height 58px
-    border-radius 8px
-    font-size 20px
-.btn
-    &.search
-        margin-top 10px
-        width 376px
+        width 190px
+        height 58px
+        border-radius 8px
+        font-size 20px
+    .btn
+        &.search
+            margin-top 10px
+            width 376px
+            font-size 30px
+        &.cancel
+            margin 10px 0
+            width 200px
+            font-size 30px
+    .icons
+        &.contact
+            fill #f8ff35
+    .bettingRecord
+        background #222222
+    .condition
+        background #444444
+        padding 30px 15px
+        box-sizing border-box
         font-size 30px
-    &.cancel
-        margin 10px 0
-        width 200px
-        font-size 30px
-.icons
-    &.contact
-        fill #f8ff35
-.bettingRecord
-    background #222222
-.condition
-    background #444444
-    padding 30px 15px
-    box-sizing border-box
-    font-size 30px
-    color #e6e6e6
-    height 440px
-    margin-bottom 10px
-    >>>.weui-cell__bd
-        background transparent
-    .condition-item
-        display flex
-        align-items center
-        justify-content flex-end
-        padding 20px 0
-        span:nth-child(1)
-            padding-right 10px
-        .selector
-            background-color #fff
-            width 190px
-            height 58px
-            border-radius 8px
-            font-size 26px
-        .datetime-container
-            align-items center
-            background #fff
+        color #e6e6e6
+        height 440px
+        margin-bottom 10px
+        >>>.weui-cell__bd
+            background transparent
+        .condition-item
             display flex
-            white-space nowrap
-            overflow hidden
-            border-radius 8px
-.data_wrap
-    background #444444
-    color #fff
-    margin-bottom 10px
-    padding 6px 14px
-    box-sizing border-box
-    font-size 28px
-    >>>.vux-flexbox-item
-        line-height 60px
-    .title
-        display flex
-        align-items center
+            align-items center
+            justify-content flex-end
+            padding 20px 0
+            span:nth-child(1)
+                padding-right 10px
+            .selector
+                background-color #fff
+                width 190px
+                height 58px
+                border-radius 8px
+                font-size 26px
+            .datetime-container
+                align-items center
+                background #fff
+                display flex
+                white-space nowrap
+                overflow hidden
+                border-radius 8px
+    .data_wrap
+        background #444444
+        color #fff
+        margin-bottom 10px
+        padding 6px 14px
+        box-sizing border-box
+        font-size 28px
+        >>>.vux-flexbox-item
+            line-height 60px
+        .title
+            display flex
+            align-items center
+            color #f8ff35
+            margin 20px 0
+            .icon-wrap
+                display flex
+                align-items center
+            .date
+                margin 0 40px
+                color #bbbbbb
+    .total-container
+        height 100px
+        background #ff3939
         color #f8ff35
-        margin 20px 0
-        .icon-wrap
-            display flex
-            align-items center
-        .date
-            margin 0 40px
-            color #bbbbbb
-.total-container
-    height 100px
-    background #ff3939
-    color #f8ff35
-    font-size 26px
-    width 100%
-    display flex
-    justify-content space-between
-    align-items center
-    padding 0 20px
-    box-sizing border-box
-    position absolute
-    bottom 0
-// >>>.vux-loadmore
-//     margin-top 0
-//     margin-bottom 0
-//     height 80px
-//     position relative
-//     &::before
-//         top 10px
-//     &::after
-//         top 10px
+        font-size 26px
+        width 100%
+        display flex
+        justify-content space-between
+        align-items center
+        padding 0 20px
+        box-sizing border-box
+        position absolute
+        bottom 0
 </style>

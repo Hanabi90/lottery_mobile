@@ -51,20 +51,9 @@
 </template>
 
 <script>
-import { getactivitylist } from '@/api/index'
 import { Swiper, SwiperItem } from 'vux'
 export default {
     name: 'homeSwiper',
-    data() {
-        return {
-            list: []
-        }
-    },
-    mounted() {
-        getactivitylist().then(res => {
-            this.list = res.data.activitylist
-        })
-    },
     components: {
         Swiper,
         SwiperItem
