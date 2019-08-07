@@ -10,7 +10,7 @@
             :loop="true"
         >
             <swiper-item v-for="(item,index) of list" :key="index">
-                <p>
+                <p class="fixed_layout">
                     <span>{{item.subject}}:</span>
                     <span>{{item.content}}</span>
                 </p>
@@ -42,11 +42,13 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .notice
-    p
+    .fixed_layout
         width 100%
         overflow hidden
         text-overflow ellipsis
         white-space nowrap
-        font-size 20px
+        font-size 14px
         color #fff
+        height 30px
+        line-height 30px
 </style>

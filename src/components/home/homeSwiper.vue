@@ -1,12 +1,48 @@
 <template>
     <div class="homeSwiper">
         <swiper auto height="aspect-ratio" :loop="true">
-            <swiper-item class="black" v-for="(item,index) of list" :key="index">
+            <swiper-item class="black">
                 <img
                     width="100%"
                     height="100%"
                     class="title fadeInUp animated"
-                    :src="item.frontend_mobile_show_picture"
+                    src="../../assets/images/banner1.jpg"
+                    alt
+                />
+            </swiper-item>
+            <swiper-item class="black">
+                <img
+                    width="100%"
+                    height="100%"
+                    class="title fadeInUp animated"
+                    src="../../assets/images/banner2.jpg"
+                    alt
+                />
+            </swiper-item>
+            <swiper-item class="black">
+                <img
+                    width="100%"
+                    height="100%"
+                    class="title fadeInUp animated"
+                    src="../../assets/images/banner3.jpg"
+                    alt
+                />
+            </swiper-item>
+            <swiper-item class="black">
+                <img
+                    width="100%"
+                    height="100%"
+                    class="title fadeInUp animated"
+                    src="../../assets/images/banner4.jpg"
+                    alt
+                />
+            </swiper-item>
+            <swiper-item class="black">
+                <img
+                    width="100%"
+                    height="100%"
+                    class="title fadeInUp animated"
+                    src="../../assets/images/banner5.jpg"
                     alt
                 />
             </swiper-item>

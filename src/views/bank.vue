@@ -36,7 +36,7 @@
                 锁定后无法新增及修改提款银行卡信息；
                 只能选择向在线客服提出申请并提交相关资料复核通过后方可解除锁定。
             </p>
-        </div> -->
+        </div>-->
         <!-- <Form v-else ref="formInline" :model="formInline" :rules="ruleInline">
             <FormItem prop="account_name">
                 <Input type="text" v-model="formInline.account_name" placeholder="银行卡用户名">
@@ -93,10 +93,12 @@
             <FormItem>
                 <Button shape="circle" type="error" long @click="handleSubmit('formInline')">设置银行卡</Button>
             </FormItem>
-        </Form> -->
+        </Form>-->
         <div class="top_container">
             <div class="cell">
-                <span><i>*</i>开户银行</span>
+                <span>
+                    <i>*</i>开户银行
+                </span>
                 <selector
                     class="selector"
                     ref="defaultValueRef"
@@ -106,7 +108,9 @@
                 ></selector>
             </div>
             <div class="cell">
-                <span><i>*</i>开户银行省份</span>
+                <span>
+                    <i>*</i>开户银行省份
+                </span>
                 <selector
                     @on-change="changeCity"
                     class="selector"
@@ -117,7 +121,9 @@
                 ></selector>
             </div>
             <div class="cell">
-                <span><i>*</i>开户银行城市</span>
+                <span>
+                    <i>*</i>开户银行城市
+                </span>
                 <selector
                     class="selector"
                     ref="defaultValueRef"
@@ -127,33 +133,24 @@
                 ></selector>
             </div>
             <div class="cell">
-                <span><i>*</i>支行名称</span>
-                <x-input
-                    :show-clear="false"
-                    name="username"
-                    placeholder="请输入支行名称"
-                    type="text"
-                ></x-input>
+                <span>
+                    <i>*</i>支行名称
+                </span>
+                <x-input :show-clear="false" name="username" placeholder="请输入支行名称" type="text"></x-input>
             </div>
             <div class="cell">
-                <span><i>*</i>开户人姓名</span>
-                <x-input
-                    :show-clear="false"
-                    name="username"
-                    placeholder="请输入开户人姓名"
-                    type="text"
-                ></x-input>
+                <span>
+                    <i>*</i>开户人姓名
+                </span>
+                <x-input :show-clear="false" name="username" placeholder="请输入开户人姓名" type="text"></x-input>
             </div>
             <div class="cell">
-                <span><i>*</i>银行卡号</span>
-                <x-input
-                    :show-clear="false"
-                    name="username"
-                    placeholder="请输入银行卡号"
-                    type="text"
-                ></x-input>
+                <span>
+                    <i>*</i>银行卡号
+                </span>
+                <x-input :show-clear="false" name="username" placeholder="请输入银行卡号" type="text"></x-input>
             </div>
-            <x-button class="btn recharge"  type="orange">设置银行卡</x-button>
+            <x-button class="btn recharge" type="orange">设置银行卡</x-button>
         </div>
     </div>
 </template>
@@ -167,10 +164,7 @@ import {
     adduserbank,
     updateuserbankcard
 } from '@/api/index.js'
-import {
-    Group,
-    Selector,XButton,XInput
-} from 'vux'
+import { Selector, XButton, XInput } from 'vux'
 export default {
     name: 'bank',
     data() {
@@ -262,13 +256,12 @@ export default {
         changeCity(value) {
             getcitylist({ province: value }).then(res => {
                 var data = res.data
-                    for (const item of data) {
-                        item.key = item.id
-                        item.value = item.name
-                    }
-                    this.cityList = data
+                for (const item of data) {
+                    item.key = item.id
+                    item.value = item.name
                 }
-            )
+                this.cityList = data
+            })
         },
         changeBranch(value) {}
     },
@@ -298,22 +291,24 @@ export default {
         })
     },
     components: {
-        Group,
-        Selector,XButton,XInput
+        Selector,
+        XButton,
+        XInput
     }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '../styles/imports'
+
 .top_container
-    padding: 40px 50px;
+    padding 40px 50px
     background $bgLight
 .cell
-    display: flex;
-    align-items: center;
+    display flex
+    align-items center
     justify-content space-between
-    color: #fff;
+    color #fff
     margin-bottom 30px
     text-align left
     position relative
@@ -355,9 +350,9 @@ export default {
     margin-right 0px
     font-size 26px
 .beizhu
-        background $bgDark
-        padding 30px 20px
-        color $fontColor_grey
-        font-size 30px
-        line-height 40px
+    background $bgDark
+    padding 30px 20px
+    color $fontColor_grey
+    font-size 30px
+    line-height 40px
 </style>

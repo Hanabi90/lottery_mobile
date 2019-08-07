@@ -34,6 +34,7 @@ import { Group, ViewBox } from 'vux'
 import { getMenu, loginOut } from '@/api/index.js'
 export default {
     name: 'drawerList',
+    props: ['that'],
     computed: {
         timesLottery() {
             if (this.$store.state.lotteryMenue.times_lottery) {
@@ -69,15 +70,14 @@ export default {
     methods: {
         exit() {
             loginOut().then(res => {
-                if (res.code == 0) {
-                    sessionStorage.clear()
-                    this.$vux.toast.show({
-                        text: '退出成功',
-                        type: 'success'
-                    })
-                    this.$store.dispatch('handleReset')
-                    this.$router.push('/')
-                }
+                this.that.showMenus = false
+                sessionStorage.clear()
+                this.$vux.toast.show({
+                    text: '退出成功',
+                    type: 'success'
+                })
+                this.$store.dispatch('handleReset')
+                this.$router.push('/')
             })
         }
     },
