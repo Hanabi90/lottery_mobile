@@ -8,7 +8,7 @@
         >
             <!-- drawer content -->
             <div class="box" slot="drawer">
-                <DrawerList />
+                <DrawerList :that="this" />
             </div>
             <!-- main content -->
             <view-box ref="viewBox" body-padding-top="40px" body-padding-bottom="50px">
@@ -31,9 +31,9 @@
                 </x-header>
 
                 <!-- remember to import BusPlugin in main.js if you use components: x-img and sticky -->
-                <transition>
-                    <router-view class="router-view"></router-view>
-                </transition>
+                <vue-page-transition name="fade-in-right">
+                    <router-view />
+                </vue-page-transition>
 
                 <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
                     <tabbar-item :link="{path:'/home'}" :selected="true">
@@ -44,6 +44,12 @@
                         <x-icon slot="icon" type="ios-paper" class="homeIcon"></x-icon>
                         <span slot="label">
                             <span>开奖记录</span>
+                        </span>
+                    </tabbar-item>
+                    <tabbar-item>
+                        <x-icon slot="icon" type="ios-gift" class="homeIcon"></x-icon>
+                        <span slot="label">
+                            <span>优惠活动</span>
                         </span>
                     </tabbar-item>
                     <tabbar-item :link="{path:'/usercenter'}">
@@ -92,8 +98,6 @@ export default {
 </style>
 
 <style lang="stylus">
-
-
 $bgLight = #444444
 $bgDark = #333333
 $gold = #f8ff35
@@ -102,7 +106,6 @@ html, body, #lottery
     width 100%
     background #222
     overflow-x hidden
-    background #333
     position relative
 </style>
 <style lang="stylus" scoped>
