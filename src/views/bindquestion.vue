@@ -1,59 +1,69 @@
 <template>
     <div>
-        <div class="top_container">
-            <div class="cell">
-                <span><i>*</i>问题1</span>
-                <selector
-                    class="selector"
-                    ref="defaultValueRef"
-                    direction="ltr"
-                    :options="questionList"
-                    v-model="formInline.dna_ques_1"
-                ></selector>
+        <template v-show="!listIndex">
+            <div class="top_container">
+                <group>
+                    <div>
+                        <selector
+                            title="*问题1"
+                            class="selector"
+                            ref="defaultValueRef"
+                            direction="ltr"
+                            :options="questionList"
+                            v-model="formInline.dna_ques_1"
+                        ></selector>
+                    </div>
+                    <div>
+                        <x-input
+                            ref="input"
+                            :show-clear="false"
+                            :required="true"
+                            title="答案"
+                            name="username"
+                            type="text"
+                            v-model="formInline.ans1"
+                        ></x-input>
+                        <span class="rules">长度最多为25个字符</span>
+                    </div>
+                    <div>
+                        <selector
+                            title="*问题2"
+                            class="selector"
+                            ref="defaultValueRef"
+                            direction="ltr"
+                            :options="questionList"
+                            v-model="formInline.dna_ques_2"
+                        ></selector>
+                    </div>
+                    <div>
+                        <x-input
+                            ref="input"
+                            :show-clear="false"
+                            :required="true"
+                            title="答案"
+                            name="username"
+                            v-model="formInline.ans2"
+                            type="text"
+                        ></x-input>
+                        <span class="rules">长度最多为25个字符</span>
+                    </div>
+                    <div class="btns">
+                        <x-button class="btn withdrawal" type="blue">重置</x-button>
+                        <x-button
+                            class="btn recharge"
+                            type="orange"
+                            @click.native="handleSubmit('formInline')"
+                        >修改</x-button>
+                    </div>
+                </group>
             </div>
-            <div class="cell">
-                <span>答案</span>
-                <selector
-                    class="selector"
-                    ref="defaultValueRef"
-                    direction="ltr"
-                    :options="questionList"
-                    v-model="formInline.dna_ques_1"
-                ></selector>
-            </div>
-            <div class="cell">
-                <span><i>*</i>问题2</span>
-                <selector
-                    class="selector"
-                    ref="defaultValueRef"
-                    direction="ltr"
-                    :options="questionList"
-                    v-model="formInline.dna_ques_1"
-                ></selector>
-            </div>
-            <div class="cell">
-                <span>答案</span>
-                <selector
-                    class="selector"
-                    ref="defaultValueRef"
-                    direction="ltr"
-                    :options="questionList"
-                    v-model="formInline.dna_ques_1"
-                ></selector>
-            </div>
-            <div class="btns">
-                <x-button class="btn withdrawal"  type="blue">重置</x-button>
-                <x-button class="btn recharge"  type="orange">修改</x-button>
-            </div>
-        </div>
-        <div class="beizhu">
-            备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案
-        </div>
+            <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案</div>
+        </template>
     </div>
 </template>
 
 <script>
-import {Selector,XButton}from 'vux'
+import { Selector, XButton, XInput, Group } from 'vux'
 import {
     setsequestion,
     checksequestion,
@@ -158,39 +168,33 @@ export default {
     },
     methods: {
         handleSubmit(name) {
-            this.$refs[name].validate(valid => {
-                if (valid) {
-                    if (name == 'answerInline') {
-                        checksequestion({
-                            flag: 'check',
-                            ...this.listIndex,
-                            ans: this.answerInline.answer
-                        }).then(res => {
-                            this.listIndex = ''
-                        })
-                    }
-                    if (name == 'formInline') {
-                        setsequestion({ ...this.formInline }).then(res => {
-                            this.$Message.success('Success!')
-                        })
-                    }
-                    if (name == 'resetPassword') {
-                        let oJosn = {
-                            newpass: md5(this.resetPassword.password),
-                            confirm_newpass: md5(this.resetPassword.password)
-                        }
-
-                        changeusersecpass({
-                            flag: 'sequestion',
-                            json: RSAencrypt(JSON.stringify(oJosn))
-                        }).then(res => {
-                            this.$Message.success('重置资金密码成功')
-                        })
-                    }
-                } else {
-                    this.$Message.error('信息填写不完整!')
+            if (name == 'answerInline') {
+                checksequestion({
+                    flag: 'check',
+                    ...this.listIndex,
+                    ans: this.answerInline.answer
+                }).then(res => {
+                    this.listIndex = ''
+                })
+            }
+            if (name == 'formInline') {
+                setsequestion({ ...this.formInline }).then(res => {
+                    this.$Message.success('Success!')
+                })
+            }
+            if (name == 'resetPassword') {
+                let oJosn = {
+                    newpass: md5(this.resetPassword.password),
+                    confirm_newpass: md5(this.resetPassword.password)
                 }
-            })
+
+                changeusersecpass({
+                    flag: 'sequestion',
+                    json: RSAencrypt(JSON.stringify(oJosn))
+                }).then(res => {
+                    this.$Message.success('重置资金密码成功')
+                })
+            }
         },
         changeContent(value) {
             this.tableIndex = value
@@ -204,51 +208,57 @@ export default {
         })
     },
     components: {
-        Selector,XButton
+        Selector,
+        XButton,
+        XInput,
+        Group
     }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '../styles/imports'
+
 .top_container
-    padding: 30px 100px;
     background $bgLight
-.cell
-    display: flex;
-    align-items: center;
-    justify-content space-between
-    color: #fff;
-    margin-bottom 30px
-    text-align right
-    position relative
-    color $fontColor_grey
-    &:nth-child(even)
-        margin-bottom 80px
-        &::after
-            content '长度最多为25个字符'
-            position absolute
-            bottom -46px
-            left 160px
-            color $fontColor_grey
-    span
-        text-align right
+    padding 40px 100px
+    .rules
+        padding-left 100px
+        font-size 30px
+        margin-bottom 20px
+        width 100%
+        display block
+        color $fontColor_grey
+    >>>.weui-cells
+        background-color $bgLight
+        .weui-cell
+            padding 0
+    >>>.weui-cell__hd
         width 100px
-        i
-            color $gold
-    >>>.vux-selector
-        max-width 400px
+        text-align left
+        .weui-label
+            width 100%
+    >>>.weui-cell__bd
+        width 200px
+        line-height 70px
+        margin-bottom 20px
+        &::after
+            margin-top -16px
+        .weui-select
+            line-height 70px
+            height 70px
 .btns
     display flex
     justify-content space-around
     .btn
         max-width 250px
         height 70px
+        font-size 26px
 .beizhu
-        background $bgDark
-        padding 30px 20px
-        color $fontColor_grey
-        font-size 30px
-        line-height 40px
+    background $bgDark
+    padding 30px 20px
+    color $fontColor_grey
+    font-size 30px
+    line-height 40px
 </style>
 

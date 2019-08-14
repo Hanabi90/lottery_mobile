@@ -5,36 +5,31 @@
             <li>银行大厅余额：{{childrenMoney}}</li>
             <li>您的银行大厅余额：{{parentMoney}}</li>
             <li>
-                充值金额
-                <InputNumber
-                    :max="Number(parentMoney)"
-                    :min="1"
-                    size="small"
-                    v-model="money"
-                    style="width: 300px"
-                    active-change
-                ></InputNumber>
+                <x-input :min="1" :max="Number(parentMoney)"
+                        :show-clear="false"
+                        :required="false"
+                        title="充值金额"
+                        v-model="money"></x-input>
             </li>
             <li>
-                资金密码
-                <Input
-                    v-model="moneyPassword"
-                    size="small"
-                    type="password"
-                    clearable
-                    placeholder="请输入资金密码"
-                    style="width: 300px"
-                />
+                <x-input
+                        v-model="moneyPassword"
+                        :show-clear="false"
+                        :required="false"
+                        title="资金密码:"
+                        placeholder="请输入资金密码"
+                        type="password"
+                    ></x-input>
             </li>
             <li>
-                <Button @click="handleSubmint" type="primary">充值</Button>
+                <x-button class="btn" @click="handleSubmint" type="purple">充值</x-button>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
-import { Button, Input, InputNumber } from 'iview'
+import { XInput,XButton } from 'vux'
 import { topup, RSAencrypt } from '@/api/index'
 export default {
     name: 'subordinateRecharge',
@@ -75,16 +70,34 @@ export default {
         })
     },
     components: {
-        Button,
-        Input,
-        InputNumber
+        XInput,
+        XButton
     }
 }
 </script>    
 <style lang="stylus" scoped>
 .subordinateRecharge
+    padding 40px
+    box-sizing border-box
+    font-size 26px
+    color #666666
     ul
+        text-align left
         li
             line-height 30px
-            margin-bottom 10px
+            margin-bottom 20px
+            >>>.vux-x-input.weui-cell
+                padding 0
+            >>>.weui-cell__bd
+                border 1px solid #ddd
+            >>>.weui-cell__hd
+                width 130px
+            >>>.weui-label
+                color #666666
+            .btn
+                width 168px
+                margin-left 120px
+                line-height 70px
+                font-size 26px
+                box-shadow 1.06667vw 1.06667vw 1.33333vw #c2c2c2
 </style>

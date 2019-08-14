@@ -4,7 +4,7 @@
         <Notice />
         <QuickFuc />
         <HotLottery />
-        <LotteryList />
+        <!-- <LotteryList /> -->
     </div>
 </template>
 

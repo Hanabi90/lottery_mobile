@@ -1,5 +1,15 @@
 <template>
     <div class="usercenter">
+        <div v-transfer-dom>
+            <confirm
+            v-model="alert"
+            :close-on-confirm="false"
+            :show-input="true"
+            :title="'请输入您的资金密码'"
+            :input-attrs="{ 'type': 'password' }"
+            @on-confirm="onConfirm">
+            </confirm>
+        </div>
         <div class="top_container">
             <div class="icon-wrap">
                 <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
@@ -12,8 +22,8 @@
             </div>
             <div class="btns">
                 <x-button class="btn recharge"  type="orange">充值</x-button>
-                <x-button class="btn withdrawal"  type="blue">提现</x-button>
-                <x-button class="btn history"  type="purple">账变记录</x-button>
+                <x-button class="btn withdrawal" link="/withdrawal"  type="blue">提现</x-button>
+                <x-button class="btn history" link="/deposit"  type="purple">转账</x-button>
             </div>
         </div>
         <div class="main_container">
@@ -23,9 +33,9 @@
                     <router-link class="li_grey" to="/agentManagement" tag="li">团队首页</router-link>
                     <router-link class="li_grey" to="/openAccountLine" tag="li">注册开户</router-link>
                     <router-link class="li_grey" to="/openLine" tag="li">推广链接</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">彩票日工资</router-link>
+                    <!-- <router-link class="li_grey" to="usercenter" tag="li">彩票日工资</router-link> -->
                     <!-- <router-link class="li_grey" to="usercenter" @click="test" tag="li">彩票分红契约</router-link> -->
-                    <li class="li_grey" to="usercenter" @click="test">彩票分红契约</li>
+                    <!-- <li class="li_grey" to="usercenter" @click="handleAlert('bank')">彩票分红契约</li> -->
                 </ul>
             </div>
             <div class="router_container">
@@ -33,32 +43,35 @@
                 <ul>
                     <router-link class="li_grey" to="/changePassword" tag="li">登录密码</router-link>
                     <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
-                    <router-link class="li_grey" to="/bank" tag="li">绑定银行卡</router-link>
+                    <li class="li_grey" to="usercenter" @click="handleAlert('bank')">绑定银行卡</li>
                     <router-link class="li_grey" to="/bindquestion" tag="li">密保设定</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">站内信</router-link>
+                    <router-link class="li_grey" to="/information" tag="li">站内信</router-link>
                     <router-link class="li_grey" to="/notice" tag="li">系统公告</router-link>
                 </ul>
             </div>
-            <div class="router_container">
+            <!-- <div class="router_container">
                 <p>彩票报表</p>
                 <ul>
                     <router-link class="li_grey" to="usercenter" tag="li">投注记录</router-link>
-                    <router-link class="li_grey" to="usercenter" tag="li">游戏追号记录</router-link>
+                    <router-link class="li_grey" to="/traceHistory" tag="li">游戏追号记录</router-link>
                     <router-link class="li_grey" to="usercenter" tag="li">游戏账变记录</router-link>
                     <router-link class="li_grey fix_lineheight" to="usercenter" tag="li">非游戏<br>账变记录</router-link>
                 </ul>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
 
 <script>
-import {XButton } from 'vux'
+import {XButton,Confirm,TransferDomDirective as TransferDom } from 'vux'
+import { checksecpass,RSAencrypt,getsecpass } from '@/api/index.js'
+import md5 from 'js-md5'
 export default {
     name: 'usercenter',
     data() {
         return {
-            
+            alert:false,
+            routename:null
         }
     },
     methods: {
@@ -66,10 +79,34 @@ export default {
             this.$store.dispatch('test').then((res)=>{
                 console.log(res);
             })
+        },
+        handleAlert(routename){
+            getsecpass().then((res)=>{
+                console.log(res);
+                if(!res){
+                    this.$router.push('changeSecPassword')
+                    return
+                }else{
+                    this.alert=true
+                    this.routename = routename
+                }
+            })
+            
+        },
+        onConfirm(value){
+            var secpass = RSAencrypt(md5(value))
+            checksecpass({ secpass}).then((res)=>{
+                if(res.code==0){
+                    this.$router.push({name:'bank',params:{secpass:value}})
+                }
+            })
         }
     },
     components:{
-        XButton
+        XButton,Confirm,
+    },
+    directives: {
+        TransferDom
     }
 }
 </script>

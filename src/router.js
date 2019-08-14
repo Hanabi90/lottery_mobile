@@ -25,6 +25,12 @@ const router = new Router({
                 import(/* webpackChunkName: "bettingRecord" */ './components/userCenter/bettingRecord.vue')
         },
         {
+            path: '/traceHistory',
+            name: 'traceHistory',
+            component: () =>
+                import(/* webpackChunkName: "traceHistory" */ './components/userCenter/traceHistory.vue')
+        },
+        {
             path: '/usercenter',
             name: 'usercenter',
             component: () =>
@@ -63,6 +69,7 @@ const router = new Router({
         {
             path: '/bank',
             name: 'bank',
+            props:true,
             component: () =>
                 import(/* webpackChunkName: "bank" */ './views/bank.vue')
         },
@@ -85,10 +92,34 @@ const router = new Router({
                 import(/* webpackChunkName: "daySalary" */ './views/daySalary.vue')
         },
         {
+            path: '/information',
+            name: 'information',
+            component: () =>
+                import(/* webpackChunkName: "information" */ './views/information.vue')
+        },
+        {
             path: '/agentManagement',
             name: 'agentManagement',
             component: () =>
                 import(/* webpackChunkName: "agentManagement" */ './views/agentManagement.vue')
+        },
+        {
+            path: '/wallet',
+            name: 'wallet',
+            component: () =>
+                import(/* webpackChunkName: "wallet" */ './views/wallet.vue')
+        },
+        {
+            path: '/withdrawal',
+            name: 'withdrawal',
+            component: () =>
+                import(/* webpackChunkName: "withdrawal" */ './views/withdrawal.vue')
+        },
+        {
+            path: '/deposit',
+            name: 'deposit',
+            component: () =>
+                import(/* webpackChunkName: "deposit" */ './views/deposit.vue')
         }
     ]
 })

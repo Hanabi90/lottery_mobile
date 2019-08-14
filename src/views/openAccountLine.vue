@@ -2,6 +2,7 @@
     <div class="openAccountLine">
         <group>
             <x-input
+                v-model="addUserList.userName"
                 :show-clear="false"
                 :required="true"
                 title="用户名："
@@ -12,6 +13,7 @@
         </group>
         <group>
             <x-input
+                v-model="addUserList.password"
                 :show-clear="false"
                 :required="true"
                 title="密码："
@@ -22,21 +24,39 @@
         </group>
         <div class="range_container">
             <span>奖金组：</span>
-            <range class="range" :range-bar-height="10" v-model="range" :min="bonusGroup.minodds" :max="bonusGroup.maxodds"></range>
+            <range
+                class="range"
+                :range-bar-height="10"
+                v-model="range"
+                :min="bonusGroup.minodds"
+                :max="bonusGroup.maxodds"
+            ></range>
             <input type="number" v-model.lazy="range" />
         </div>
         <div class="usertype radio">
             <span>用户类型：</span>
             <div class="radio">
-                <input id="radio-1" name="radio" type="radio" checked />
+                <input
+                    id="radio-1"
+                    value="1"
+                    name="radio"
+                    type="radio"
+                    v-model="addUserList.userType"
+                />
                 <label for="radio-1" class="radio-label">代理</label>
             </div>
             <div class="radio">
-                <input id="radio-2" name="radio" type="radio" />
+                <input
+                    id="radio-2"
+                    value="0"
+                    name="radio"
+                    type="radio"
+                    v-model="addUserList.userType"
+                />
                 <label for="radio-2" class="radio-label">会员</label>
             </div>
         </div>
-        <x-button class="btn adduser" type="orange">添加用户</x-button>
+        <x-button class="btn adduser" type="orange" @click.native="handleSubmit">添加用户</x-button>
     </div>
 </template>
  
@@ -87,33 +107,26 @@ export default {
         },
         //提交
         handleSubmit() {
-            this.$refs.addUserList.validate(valid => {
-                if (valid) {
-                    this.loading = true
-                    let dataJson = {
-                        onekeyodds: this.addUserList.bonus, //奖金
-                        usertype: this.addUserList.userType, //用户类型
-                        username: this.addUserList.userName, //用户名
-                        userpass: this.addUserList.password //密码
-                    }
-                    addnewuser({
-                        ...dataJson,
-                        pdata: RSAencrypt(JSON.stringify(dataJson))
-                    })
-                        .then(res => {
-                            this.loading = false
-                            this.$Message.success(res.msg)
-                            this.$refs.addUserList.resetFields()
-                        })
-                        .catch(error => {
-                            this.loading = false
-                            this.$Message.error(error.msg)
-                        })
-                } else {
-                    this.loading = false
-                    this.$Message.error('信息输入不完整!')
-                }
+            this.loading = true
+            let dataJson = {
+                onekeyodds: this.addUserList.bonus, //奖金
+                usertype: this.addUserList.userType, //用户类型
+                username: this.addUserList.userName, //用户名
+                userpass: this.addUserList.password //密码
+            }
+            addnewuser({
+                ...dataJson,
+                pdata: RSAencrypt(JSON.stringify(dataJson))
             })
+                .then(res => {
+                    this.loading = false
+                    this.$Message.success(res.msg)
+                    this.$refs.addUserList.resetFields()
+                })
+                .catch(error => {
+                    this.loading = false
+                    this.$Message.error(error.msg)
+                })
         }
     },
     created() {
@@ -132,11 +145,12 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../styles/imports'
+
 >>>.weui-cells.vux-no-group-title
     margin 0 0 20px 0
 >>>.weui-cell__hd
-    width: 120px;
-    overflow: hidden;
+    width 120px
+    overflow hidden
 .btn
     &.adduser
         width 300px

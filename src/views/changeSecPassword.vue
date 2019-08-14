@@ -3,51 +3,55 @@
         <div class="top_container">
             <group>
                 <x-input
+                    ref="input"
                     :show-clear="false"
                     :required="true"
                     title="输入旧提款密码："
                     name="username"
                     placeholder="输入旧提款密码"
                     type="password"
+                    v-model="formCustom.oldPasswd"
                 ></x-input>
             </group>
             <div class="tip_container">
                 <group>
                     <x-input
+                        ref="input"
                         :show-clear="false"
                         :required="true"
                         title="输入新提款密码："
                         name="username"
                         placeholder="输入新提款密码"
                         type="password"
+                        v-model="formCustom.passwd"
                     ></x-input>
                 </group>
-                <span>由字母和数字组成6-16个字符，不可连续三个相同字符，提款密码不能和登录密码相同</span>
+                <span>由字母和数字组成6-16个字符，不可连续3个相同字符，提款密码不能和登录密码相同</span>
             </div>
             <group>
                 <x-input
+                    ref="input"
                     :show-clear="false"
                     :required="true"
                     title="确认新提款密码："
                     name="username"
                     placeholder="确认新提款密码"
                     type="password"
+                    v-model="formCustom.passwdCheck"
                 ></x-input>
             </group>
             <div class="btns">
-                <x-button class="btn withdrawal"  type="blue">重置</x-button>
-                <x-button class="btn recharge"  type="orange">修改</x-button>
+                <x-button class="btn withdrawal" @click.native="handleReset" type="blue">重置</x-button>
+                <x-button class="btn recharge" type="orange" @click.native="handleSubmit">修改</x-button>
             </div>
         </div>
-        <div class="beizhu">
-            备注：请妥善保管您的提款密码，如遗忘请使密保功能找回或联系在线客服处理。
-        </div>
+        <div class="beizhu">备注：请妥善保管您的提款密码，如遗忘请使用密保功能找回或联系在线客服处理</div>
     </div>
 </template>
 
 <script>
 import md5 from 'js-md5'
-import { Group, XInput,XButton } from 'vux'
+import { Group, XInput, XButton } from 'vux'
 import {
     RSAencrypt,
     changeuserloginpass,
@@ -95,42 +99,43 @@ export default {
                 passwd: [{ validator: validatePass, trigger: 'blur' }],
                 passwdCheck: [{ validator: validatePassCheck, trigger: 'blur' }]
             },
-            navIndex: 1
+            navIndex: 0
         }
     },
-    created() {
-        this.navIndex = this.params
-    },
-    props: ['params'],
     methods: {
-        handleSubmit(name) {
-            this.$refs[name].validate(valid => {
-                if (valid) {
-                    let oJson = {
-                        oldpass: md5(this.formCustom.oldPasswd),
-                        newpass: md5(this.formCustom.passwd),
-                        confirm_newpass: md5(this.formCustom.passwdCheck)
-                    }
-                    if (this.navIndex == 1) {
-                        changeuserloginpass({
-                            json: RSAencrypt(JSON.stringify(oJson))
-                        }).then(res => {
-                            this.$Message.success(res.msg)
-                        })
-                    } else {
-                        changeusersecpass({
-                            json: RSAencrypt(JSON.stringify(oJson))
-                        }).then(res => {
-                            this.$Message.success(res.msg)
-                        })
-                    }
-                } else {
-                    this.$Message.error('信息输入不完整!')
-                }
-            })
+        handleSubmit() {
+            let oJson = {
+                oldpass: md5(this.formCustom.oldPasswd),
+                newpass: md5(this.formCustom.passwd),
+                confirm_newpass: md5(this.formCustom.passwdCheck)
+            }
+            if (this.navIndex == 1) {
+                changeuserloginpass({
+                    json: RSAencrypt(JSON.stringify(oJson))
+                }).then(res => {
+                    this.$vux.toast.show({
+                        text: res.msg,
+                        type: 'success'
+                    })
+                })
+            } else {
+                changeusersecpass({
+                    json: RSAencrypt(JSON.stringify(oJson))
+                }).then(res => {
+                    this.$vux.toast.show({
+                        text: res.msg,
+                        type: 'success'
+                    })
+                })
+            }
         },
         handleReset(name) {
-            this.$refs[name].resetFields()
+            this.formCustom= {
+                oldPasswd: '',
+                passwd: '',
+                passwdCheck: ''
+            }
+            // this.$refs[name].resetFields()
         },
         changeContent(value) {
             ;(this.formCustom = {
@@ -143,25 +148,32 @@ export default {
     },
     components: {
         Group,
-        XInput,XButton
+        XInput,
+        XButton
     }
 }
 </script>
 
 <style lang="stylus" scoped>
-@import '../styles/imports';
+@import '../styles/imports'
+
 .changePassword
     background $bgLight
     .top_container
         background $bgLight
         padding 30px
+        >>>.weui-cells
+            background-color $bgLight
+            .weui-cell__bd
+                input
+                    font-size 26px
         .tip_container
             display flex
             flex-direction column
             span
                 color $fontColor_grey
                 font-size 26px
-                max-width 444px
+                max-width 410px
                 line-height 50px
                 align-self flex-end
                 padding 5px 7.5px
@@ -177,4 +189,5 @@ export default {
         .btn
             max-width 250px
             height 70px
+            font-size 26px
 </style>

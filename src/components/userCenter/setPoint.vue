@@ -1,34 +1,44 @@
 <template>
-    <div class="setPoint">
-        <div class="list">
-            <span>用户名：{{userName}}</span>
-            <span>用户昵称：{{nickName}}</span>
-            <span>奖金限额：{{limitBonues}}</span>
+    <div class="content">
+        <div class="datas">
+            <p>
+                <span>用户名：</span>devasaa
+            </p>
+            <p>
+                <span>用户昵称：</span>1968
+            </p>
+            <p>
+                <span>奖金限额</span>212321
+            </p>
         </div>
-        <span>奖金组</span>
-        <span style="margin-left:20px" v-if="min==max">{{max}}</span>
-        <Slider
-            v-if="min!=max"
-            :min="Number(min)"
-            :max="Number(max)"
-            v-model="bonues"
-            :active-change="false"
-            show-input
-        ></Slider>
-        <Button v-if="min!=max" type="primary" @click="handleSetPoint">提交</Button>
+        <div class="range_container">
+            <span>奖金组：</span>
+            <range
+                class="range"
+                :range-bar-height="10"
+                v-model="range"
+                :min="Number(1300)"
+                :max="Number(1900)"
+            ></range>
+            <input class="range_input" type="number" v-model.lazy="range" />
+        </div>
+        <div class="btns">
+            <x-button class="btn recharge" type="blue">提交</x-button>
+        </div>
     </div>
 </template>
 
 <script>
 import { setpoints } from '@/api/index'
-import { Slider, Button } from 'iview'
+import { XButton, Range } from 'vux'
 export default {
     name: 'setPoint',
     props: ['uid'],
     data() {
         return {
             bonues: 0,
-            dataList: ''
+            dataList: '',
+            range:0
         }
     },
     computed: {
@@ -94,17 +104,66 @@ export default {
         }
     },
     components: {
-        Slider,
-        Button
+        XButton,
+        Range
     }
 }
 </script>
 
 <style lang="stylus" scoped>
-.setPoint
-    padding 20px
-    .list
-        margin-bottom 30px
-        span
-            margin-right 20px
+.content
+    width 100%
+    height 280px
+    .btns
+        position relative
+        height 100px
+        margin 0 20px
+        .btn
+            width 168px
+            line-height 70px
+            font-size 26px
+            position absolute
+            left 0
+            box-shadow 1.06667vw 1.06667vw 1.33333vw #c2c2c2
+            bottom 0
+    .datas
+        display flex
+        justify-content space-around
+        font-size 26px
+        p
+            line-height 60px
+.range_container
+    display flex
+    padding 0 15px
+    align-items center
+    justify-content space-between
+    input
+        width 20%
+        line-height 60px
+        border-radius 2px
+        outline none
+        border 0
+        font-size 26px
+        background #c9c9c9
+        text-align center
+    span
+        width 20%
+        font-size 24px
+    .range
+        margin-left 0 !important
+        width 46%
+        margin-right 20px !important
+    >>>.range-bar
+        height 20px !important
+        .range-handle
+            height 40px
+            width 40px
+            top -50% !important
+            border 4px solid #ff3939
+            box-sizing border-box
+        .range-quantity
+            background-color #ff3939
+        .range-max, .range-min
+            color #fff
+            display none
 </style>

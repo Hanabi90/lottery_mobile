@@ -23,10 +23,10 @@
                     <span v-if="routerName!='home'">首页</span>
                     <x-icon
                         slot="right"
-                        type="navicon"
-                        size="35"
-                        style="fill:#fff;position:relative;top:-8px;right:-3px;"
-                        @click="showMenus = true"
+                        type="log-out"
+                        size="26"
+                        style="fill:#fff;position:relative;top:-5px;right:-5px;"
+                        @click="exit"
                     ></x-icon>
                 </x-header>
 
@@ -36,26 +36,26 @@
                 </vue-page-transition>
 
                 <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
-                    <tabbar-item :link="{path:'/home'}" :selected="true">
+                    <tabbar-item :link="{path:'/home'}" :selected="routerName=='home'?true:false">
                         <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/bettingRecord'}">
-                        <x-icon slot="icon" type="ios-paper" class="homeIcon"></x-icon>
+                    <tabbar-item :link="{path:'/wallet'}" :selected="routerName=='wallet'?true:false">
+                        <x-icon slot="icon" type="card" class="homeIcon" ></x-icon>
                         <span slot="label">
-                            <span>开奖记录</span>
+                            <span>钱包查询</span>
                         </span>
                     </tabbar-item>
                     <tabbar-item>
-                        <x-icon slot="icon" type="ios-gift" class="homeIcon"></x-icon>
+                        <x-icon slot="icon" type="ios-gift" class="homeIcon" ></x-icon>
                         <span slot="label">
                             <span>优惠活动</span>
                         </span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/usercenter'}">
-                        <x-icon slot="icon" type="ios-body" class="homeIcon"></x-icon>
+                    <tabbar-item :link="{path:'/usercenter'}" :selected="routerName=='usercenter'?true:false">
+                        <x-icon slot="icon" type="person" class="homeIcon" ></x-icon>
                         <span slot="label">
-                            <span>我的</span>
+                            <span>个人中心</span>
                         </span>
                     </tabbar-item>
                 </tabbar>
@@ -67,6 +67,7 @@
 <script>
 import DrawerList from '@/components/home/drawerList'
 import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer } from 'vux'
+import {loginOut} from '@/api/index.js'
 export default {
     name: 'app',
     data() {
@@ -80,6 +81,20 @@ export default {
         },
         headerTop() {
             return this.$refs.headerTop
+        }
+    },
+    methods:{
+        exit() {
+            loginOut().then(res => {
+                // this.that.showMenus = false
+                sessionStorage.clear()
+                this.$vux.toast.show({
+                    text: '退出成功',
+                    type: 'success'
+                })
+                this.$store.dispatch('handleReset')
+                this.$router.push('/')
+            })
         }
     },
     components: {
@@ -102,6 +117,7 @@ $bgLight = #444444
 $bgDark = #333333
 $gold = #f8ff35
 html, body, #lottery
+    font-family '微软雅黑'
     height 100%
     width 100%
     background #222

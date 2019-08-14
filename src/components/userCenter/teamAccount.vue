@@ -1,6 +1,6 @@
 <template>
     <div class="teamAccount">
-        <x-table :cell-bordered="false" style="background-color:#fff;">
+        <x-table class="table" :cell-bordered="false" style="background-color:#fff;">
             <thead>
             <tr>
                 <th>用户名称</th>
@@ -10,14 +10,9 @@
             </thead>
             <tbody>
             <tr>
-                <td>Apple</td>
-                <td>$1.25</td>
-                <td> x 1</td>
-            </tr>
-            <tr>
-                <td>Banana</td>
-                <td>$1.20</td>
-                <td> x 2</td>
+                <td>devip000</td>
+                <td>123</td>
+                <td>1658269.000</td>
             </tr>
             </tbody>
         </x-table>
@@ -68,5 +63,10 @@ export default {
 
 <style lang="stylus" scoped>
 .teamAccount
-    width 500px
+    min-height 400px
+    padding 20px
+    box-sizing border-box
+    .table
+        th
+            background #eeeeee
 </style>

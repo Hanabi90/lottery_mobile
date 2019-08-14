@@ -448,3 +448,62 @@ export const getmonthlycontractrecord = formData =>
         url: 'contract/getmonthlycontractrecord',
         data: qs.stringify(formData)
     })
+    
+    
+//第三方API--------------------------------------------------------------第三方API
+export const thirdgameGetmenu = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/getmenu',
+        data: qs.stringify(formData)
+    })
+//获取游戏列表
+export const thirdgameGetgamelist = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/getgamelist',
+        data: qs.stringify(formData)
+    })
+//第三方登录游戏
+export const thirdgameLogin = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/login',
+        data: qs.stringify(formData)
+    })
+//获取用户钱包资讯
+export const thirdgameGetuserwallet = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/getuserwallet',
+        data: qs.stringify(formData)
+    })
+//取得钱包列表
+export const thirdgameGetwalletlist = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/getwalletlist',
+        data: qs.stringify(formData)
+    })
+//「主钱包」转账至「游戏钱包」
+export const thirdgameDeposit = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/deposit',
+        data: qs.stringify(formData)
+    })
+//「游戏钱包」转账至「主钱包」
+export const thirdgameWithdraw = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/withdraw',
+        data: qs.stringify(formData)
+    })
+//更新单一游戏钱包余额
+export const thirdgameUpdatewallet = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/updatewallet',
+        data: qs.stringify(formData)
+    })
+    

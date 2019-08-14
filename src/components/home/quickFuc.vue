@@ -9,10 +9,10 @@
                 <i></i>
                 <p>提现</p>
             </li>
-            <li>
+            <router-link tag="li" to="/deposit">
                 <i></i>
-                <p>我的</p>
-            </li>
+                <p>转账</p>
+            </router-link>
             <li>
                 <i></i>
                 <p>客服</p>

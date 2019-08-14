@@ -4,7 +4,8 @@ import router from './router'
 import store from './store'
 //import { AlertPlugin, ToastPlugin ,ConfirmPlugin,LoadingPlugin } from 'vux'
 import VuePageTransition from 'vue-page-transition'
-
+import  { ConfirmPlugin } from 'vux'
+Vue.use(ConfirmPlugin)
 Vue.use(VuePageTransition)
 
 import ToastPlugin from 'vux/src/plugins/toast'

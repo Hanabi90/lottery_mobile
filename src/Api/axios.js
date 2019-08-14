@@ -27,6 +27,7 @@ const service = axios.create({
 let USERTIMEOUT = 900 //15分钟
 let userUpdate = function() {
     let timeout = setInterval(() => {
+        console.log('object');
         USERTIMEOUT--
         if (!USERTIMEOUT) {
             store.dispatch('handleReset')
@@ -113,6 +114,12 @@ service.interceptors.response.use(
                     return new Promise(() => {})
                 case -81:
                     return Promise.reject(response.data)
+                case -21:
+                    Vue.$vux.toast.show({
+                        text: response.data.msg,
+                        type: 'warn'
+                    })
+                    return false
                 default:
                     Vue.$vux.toast.show({
                         text: response.data.msg,

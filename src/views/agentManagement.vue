@@ -16,7 +16,7 @@
         </div>
         <scroller
             class="scroller"
-            height="-90"
+            height="-140"
             lock-x
             @on-scroll-bottom="handleReachBottom(1)"
             @on-scroll="onCScroll"
@@ -55,17 +55,17 @@
                         </div>
                         <div class="btns">
                             <x-button
-                                @click.native="handleToast('充值')"
+                                @click.native="handleAlert(item.userid,'subordinateRecharge','下级充值')"
                                 class="btn recharge"
                                 type="purple"
                             >充值</x-button>
                             <x-button
-                                @click.native="handleToast('团队余额')"
+                                @click.native="handleAlert(item.userid,'teamAccount','团队余额')"
                                 class="btn recharge"
                                 type="lightblue"
                             >团队余额</x-button>
                             <x-button
-                                @click.native="handleToast('返点设置')"
+                                @click.native="handleAlert(item.userid,'setPoint','返点设置')"
                                 class="btn recharge"
                                 type="blue"
                             >返点设置</x-button>
@@ -82,67 +82,16 @@
         </scroller>
 
         <div v-transfer-dom>
-            <x-dialog v-model="showToast" class="dialog-demo" hide-on-blur>
+            <x-dialog v-model="alert" class="dialog-demo" hide-on-blur>
                 <div class="img-box">
                     <div class="title">
                         <span>返点设置</span>
-                        <div class="icon-wrap" @click="showToast=false">
+                        <div class="icon-wrap" @click="alert=false">
                             <x-icon slot="icon" size="20" type="backspace" class="icons contact"></x-icon>
                         </div>
                         <!-- <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon> -->
                     </div>
-                    <!-- <component class="content" :uid="pointUserId" :is="alertComponent"></component> -->
-                    <div class="content">
-                        <div class="datas">
-                            <p>
-                                <span>用户名：</span>devasaa
-                            </p>
-                            <p>
-                                <span>用户昵称：</span>1968
-                            </p>
-                            <p>
-                                <span>奖金限额</span>212321
-                            </p>
-                        </div>
-                        <div class="range_container">
-                            <span>奖金组：</span>
-                            <range
-                                v-if="showToast"
-                                class="range"
-                                :range-bar-height="10"
-                                v-model="range"
-                                :min="Number(1300)"
-                                :max="Number(1900)"
-                            ></range>
-                            <input class="range_input" type="number" v-model.lazy="range" />
-                        </div>
-                        <div class="btns">
-                            <x-button class="btn recharge" type="blue">提交</x-button>
-                        </div>
-                    </div>
-                    <!-- <div class="content">
-                        <x-table :cell-bordered="false" style="background-color:#fff;">
-                            <thead>
-                                <tr>
-                                    <th>用户名称</th>
-                                    <th>用户昵称</th>
-                                    <th>团队余额</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Apple</td>
-                                    <td>$1.25</td>
-                                    <td>x 1</td>
-                                </tr>
-                                <tr>
-                                    <td>Banana</td>
-                                    <td>$1.20</td>
-                                    <td>x 2</td>
-                                </tr>
-                            </tbody>
-                        </x-table>
-                    </div> -->
+                    <component class="content" :uid="pointUserId" :is="alertComponent"></component>
                 </div>
             </x-dialog>
         </div>
@@ -158,13 +107,18 @@ import {
     XDialog,
     XTable,
     Scroller,
+    LoadMore,
     TransferDomDirective as TransferDom
 } from 'vux'
+    
+import teamAccount from '../components/userCenter/teamAccount'
+import setPoint from '../components/userCenter/setPoint'
+import subordinateRecharge from '../components/userCenter/subordinateRecharge'
 export default {
     name: 'agentManagement',
     data() {
         return {
-            showToast: false,
+            alert: false,
             range: 0,
             alert: false, //弹窗开关
             alertTitle: '', //弹窗标题
@@ -205,7 +159,7 @@ export default {
     },
     methods: {
         handleToast(key) {
-            this.showToast = true
+            this.alert = true
         },
         handleReachBottom(value) {
             // this.$set(this.teamGroup, 'p', value)
@@ -253,6 +207,15 @@ export default {
                 this.top = top
             }
         },
+        handleAlert(value, target, title) {
+            console.log(value);
+            console.log(target);
+            console.log(title);
+            this.alert = true
+            this.alertTitle = title
+            this.alertComponent = target
+            this.pointUserId = value
+        },
     },
     created() {
         this.windowHeight = window.screen.height -100 * 0.6
@@ -264,7 +227,11 @@ export default {
         XDialog,
         XTable,
         Scroller,
-        Range
+        LoadMore,
+        teamAccount,
+        setPoint,
+        subordinateRecharge,
+        Range,
     },
     directives: {
         TransferDom
@@ -339,7 +306,6 @@ export default {
     height 320px
 .img-box
     overflow hidden
-    height 100%
     .title
         line-height 80px
         background-color #000
@@ -354,7 +320,6 @@ export default {
                 fill #fff
     .content
         width 100%
-        height 280px
         .btns
             position relative
             height 100px
@@ -373,38 +338,4 @@ export default {
             font-size 26px
             p
                 line-height 60px
-.range_container
-    display flex
-    padding 0 15px
-    align-items center
-    justify-content space-between
-    input
-        width 20%
-        line-height 60px
-        border-radius 2px
-        outline none
-        border 0
-        font-size 26px
-        background #c9c9c9
-        text-align center
-    span
-        width 20%
-        font-size 24px
-    .range
-        margin-left 0 !important
-        width 46%
-        margin-right 20px !important
-    >>>.range-bar
-        height 20px !important
-        .range-handle
-            height 40px
-            width 40px
-            top -50% !important
-            border 4px solid #ff3939
-            box-sizing border-box
-        .range-quantity
-            background-color #ff3939
-        .range-max, .range-min
-            color #fff
-            display none
 </style>

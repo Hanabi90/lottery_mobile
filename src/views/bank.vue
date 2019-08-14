@@ -1,42 +1,32 @@
 <template>
     <div class="bank">
-        <!-- <div v-if="show" style="background:#eee;padding: 20px">
-            <Card v-for="(item,value) of bankinfo" :key="value" :bordered="false">
-                <p slot="title">
-                    <Icon type="ios-card"></Icon>我的银行卡
-                </p>
-                <Button
-                    shape="circle"
-                    v-if="item.islock==1"
-                    type="error"
-                    href="#"
-                    slot="extra"
-                    @click.prevent="changeBank"
-                >修改银行卡信息</Button>
+        <div v-if="show&&finish" class="bankCards">
+            <div v-for="(item,value) of bankinfo" :key="value">
                 <p>
                     <span>银行账户：</span>
-                    <span v-cloak>{{item.account}}</span>
+                    <span>{{item.account}}</span>
                 </p>
                 <p>
                     <span>银行名称：</span>
-                    <span v-cloak>{{item.bank_name}}</span>
+                    <span>{{item.bank_name}}</span>
                 </p>
                 <p>
                     <span>绑定时间：</span>
-                    <span v-cloak>{{item.atime}}</span>
+                    <span>{{item.atime}}</span>
                 </p>
                 <p>
                     <span>修改时间：</span>
-                    <span v-cloak>{{item.utime}}</span>
+                    <span>{{item.utime}}</span>
                 </p>
-            </Card>
+                <x-button class="btn recharge" v-if="item.islock==1" @click.native="changeBank" type="orange">修改银行卡信息</x-button>
+            </div>
             <p class="contentText">
                 如果您选择银行卡锁定后,如需要删除或者新增银行卡,则需要联系在线客服审核后并解锁方可操作!
                 * 友情提示：为提高账户安全性，建议您选择【锁定银行卡】信息；
                 锁定后无法新增及修改提款银行卡信息；
                 只能选择向在线客服提出申请并提交相关资料复核通过后方可解除锁定。
             </p>
-        </div>-->
+        </div>
         <!-- <Form v-else ref="formInline" :model="formInline" :rules="ruleInline">
             <FormItem prop="account_name">
                 <Input type="text" v-model="formInline.account_name" placeholder="银行卡用户名">
@@ -94,7 +84,7 @@
                 <Button shape="circle" type="error" long @click="handleSubmit('formInline')">设置银行卡</Button>
             </FormItem>
         </Form>-->
-        <div class="top_container">
+        <div class="top_container" v-else-if="!show&&finish">
             <div class="cell">
                 <span>
                     <i>*</i>开户银行
@@ -136,21 +126,24 @@
                 <span>
                     <i>*</i>支行名称
                 </span>
-                <x-input :show-clear="false" name="username" placeholder="请输入支行名称" type="text"></x-input>
+                <x-input :show-clear="false" v-model="formInline.branch" placeholder="请输入支行名称" type="text"></x-input>
             </div>
             <div class="cell">
                 <span>
                     <i>*</i>开户人姓名
                 </span>
-                <x-input :show-clear="false" name="username" placeholder="请输入开户人姓名" type="text"></x-input>
+                <x-input :show-clear="false" v-model="formInline.account_name" placeholder="请输入开户人姓名" type="text"></x-input>
             </div>
             <div class="cell">
                 <span>
                     <i>*</i>银行卡号
                 </span>
-                <x-input :show-clear="false" name="username" placeholder="请输入银行卡号" type="text"></x-input>
+                <x-input :show-clear="false" v-model="formInline.account" placeholder="请输入银行卡号" type="text"></x-input>
             </div>
-            <x-button class="btn recharge" type="orange">设置银行卡</x-button>
+            <div class="btns">
+                <x-button class="btn recharge" @click.native="show=true" type="blue">返回</x-button>
+                <x-button class="btn recharge" @click.native="handleSubmit" type="orange">设置银行卡</x-button>
+            </div>
         </div>
     </div>
 </template>
@@ -167,9 +160,11 @@ import {
 import { Selector, XButton, XInput } from 'vux'
 export default {
     name: 'bank',
+    props:['secpass'],
     data() {
         return {
             show: false, //是否显示添加银行卡
+            finish:false,
             branchList: [], //获取银行列表
             provinceList: [], //省市列表
             cityList: [], //城市列表
@@ -257,7 +252,7 @@ export default {
             getcitylist({ province: value }).then(res => {
                 var data = res.data
                 for (const item of data) {
-                    item.key = item.id
+                    item.key = item.id + '#'+item.name
                     item.value = item.name
                 }
                 this.cityList = data
@@ -266,16 +261,20 @@ export default {
         changeBranch(value) {}
     },
     created() {
+        if(this.secpass==undefined){
+            this.$router.push('usercenter')
+        }
         //查询银行卡
-        getbankinfo({ secpass: 'qwer1234' }).then(res => {
+        getbankinfo({ secpass: this.secpass }).then(res => {
             this.show = !!Number(res.data.binded)
+            this.finish = true
             this.bankinfo = res.data.banklist
         })
         //获取行政区域列表
         getprovincelist().then(res => {
             var data = res.data
             for (const item of data) {
-                item.key = item.id
+                item.key = item.id+'#'+item.name
                 item.value = item.name
             }
             this.provinceList = data
@@ -284,7 +283,7 @@ export default {
         getbanklist().then(res => {
             var data = res.data
             for (const item of data) {
-                item.key = item.id
+                item.key = item.id+'#'+item.bank_name
                 item.value = item.bank_name
             }
             this.branchList = data
@@ -301,9 +300,22 @@ export default {
 <style lang="stylus" scoped>
 @import '../styles/imports'
 
-.top_container
+.bank
     padding 40px 50px
     background $bgLight
+    color $fontColor_grey
+    .bankCards
+        padding 10px
+        div
+            p
+                line-height 50px
+            .btn
+                margin-left 0;
+                margin 20px 0
+        .contentText
+            color #9b9b9b
+            font-size 26px
+            line-height 40px
 .cell
     display flex
     align-items center
@@ -324,7 +336,7 @@ export default {
             line-height 32px
             color $fontColor_grey
     &:nth-child(6)
-        margin-bottom 70px
+        margin-bottom 120px
         &::after
             font-size 26px
             content '银行卡卡号由16位到19位数字组成'
@@ -347,6 +359,10 @@ export default {
             padding-left 30px
         &::before
             border none
+.btns
+    display flex
+    .btn
+        margin-right: 60px;
 .btn
     max-width 320px
     height 70px
