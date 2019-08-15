@@ -57,6 +57,7 @@ const router = new Router({
         {
             path: '/changeSecPassword',
             name: 'changeSecPassword',
+            props:true,
             component: () =>
                 import(/* webpackChunkName: "changeSecPassword" */ './views/changeSecPassword.vue')
         },

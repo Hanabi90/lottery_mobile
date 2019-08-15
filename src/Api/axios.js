@@ -27,7 +27,6 @@ const service = axios.create({
 let USERTIMEOUT = 900 //15分钟
 let userUpdate = function() {
     let timeout = setInterval(() => {
-        console.log('object');
         USERTIMEOUT--
         if (!USERTIMEOUT) {
             store.dispatch('handleReset')

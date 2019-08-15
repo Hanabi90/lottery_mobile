@@ -145,13 +145,14 @@ export default {
         }
     },
     created() {
-        thirdgameGetwalletlist().then(res => {
-            this.walletList = [...res.data]
-            this.walletList.forEach((item, index) => {
-                this.$set(this.walletList[index], 'key', item.wallet_code)
-                this.$set(this.walletList[index], 'value', item.wallet_name)
-            })
-        })
+        // thirdgameGetwalletlist().then(res => {
+        //     console.log(res);
+        //     this.walletList = [...res.data]
+        //     this.walletList.forEach((item, index) => {
+        //         this.$set(this.walletList[index], 'key', item.wallet_code)
+        //         this.$set(this.walletList[index], 'value', item.wallet_name)
+        //     })
+        // })
         thirdgameGetuserwallet().then(res => {
             console.log(res)
             this.userwallet = [...res.data]

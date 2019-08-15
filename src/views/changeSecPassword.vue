@@ -1,7 +1,7 @@
 <template>
     <div class="changePassword">
         <div class="top_container">
-            <group>
+            <group v-show="hasSecpass">
                 <x-input
                     ref="input"
                     :show-clear="false"
@@ -19,9 +19,9 @@
                         ref="input"
                         :show-clear="false"
                         :required="true"
-                        title="输入新提款密码："
+                        :title="hasSecpass?'输入新提款密码：':'设置提款密码：'"
                         name="username"
-                        placeholder="输入新提款密码"
+                        :placeholder="hasSecpass?'输入新提款密码：':'设置提款密码：'"
                         type="password"
                         v-model="formCustom.passwd"
                     ></x-input>
@@ -33,9 +33,9 @@
                     ref="input"
                     :show-clear="false"
                     :required="true"
-                    title="确认新提款密码："
+                    :title="hasSecpass?'确认新提款密码：':'确认提款密码：'"
                     name="username"
-                    placeholder="确认新提款密码"
+                    :placeholder="hasSecpass?'确认新提款密码：':'确认提款密码'"
                     type="password"
                     v-model="formCustom.passwdCheck"
                 ></x-input>
@@ -55,10 +55,16 @@ import { Group, XInput, XButton } from 'vux'
 import {
     RSAencrypt,
     changeuserloginpass,
-    changeusersecpass
+    changeusersecpass,
+    getsecpass
 } from '@/api/index.js'
 export default {
     name: 'changePassword',
+    props:{
+        fromRoute:{
+            default:false
+        }
+    },
     data() {
         const validatePass = (rule, value, callback) => {
             if (value === '') {
@@ -89,6 +95,7 @@ export default {
         }
 
         return {
+            hasSecpass:true,
             formCustom: {
                 oldPasswd: '',
                 passwd: '',
@@ -109,25 +116,15 @@ export default {
                 newpass: md5(this.formCustom.passwd),
                 confirm_newpass: md5(this.formCustom.passwdCheck)
             }
-            if (this.navIndex == 1) {
-                changeuserloginpass({
-                    json: RSAencrypt(JSON.stringify(oJson))
-                }).then(res => {
-                    this.$vux.toast.show({
-                        text: res.msg,
-                        type: 'success'
-                    })
+            changeusersecpass({
+                json: RSAencrypt(JSON.stringify(oJson))
+            }).then(res => {
+                this.$vux.toast.show({
+                    text: res.msg,
+                    type: 'success'
                 })
-            } else {
-                changeusersecpass({
-                    json: RSAencrypt(JSON.stringify(oJson))
-                }).then(res => {
-                    this.$vux.toast.show({
-                        text: res.msg,
-                        type: 'success'
-                    })
-                })
-            }
+                this.$router.push('usercenter')
+            })
         },
         handleReset(name) {
             this.formCustom= {
@@ -144,6 +141,18 @@ export default {
                 passwdCheck: ''
             }),
                 (this.navIndex = value)
+        }
+    },
+    created(){
+        getsecpass().then(res => {
+            this.hasSecpass = res
+        })
+    },
+    computed(){
+        if(this.hasSecpass){
+            this.inputTitle = '输入新提款密码'
+        }else{
+            this.inputTitle = '设置提款密码'
         }
     },
     components: {

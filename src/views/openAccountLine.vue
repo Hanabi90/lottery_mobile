@@ -117,16 +117,14 @@ export default {
             addnewuser({
                 ...dataJson,
                 pdata: RSAencrypt(JSON.stringify(dataJson))
+            }).then(res => {
+                this.loading = false
+                this.$vux.toast.show({
+                    text: res.msg,
+                    type: 'success'
+                })
+                this.$refs.addUserList.resetFields()
             })
-                .then(res => {
-                    this.loading = false
-                    this.$Message.success(res.msg)
-                    this.$refs.addUserList.resetFields()
-                })
-                .catch(error => {
-                    this.loading = false
-                    this.$Message.error(error.msg)
-                })
         }
     },
     created() {
@@ -151,6 +149,9 @@ export default {
 >>>.weui-cell__hd
     width 120px
     overflow hidden
+>>>.vux-x-input.weui-cell
+    background $bgLight
+    border-radius 0
 .btn
     &.adduser
         width 300px

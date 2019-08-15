@@ -3,23 +3,23 @@
         <div class="top_container" v-show="conditionStatus">
             <div class="cell">
                 <span>用户名</span>
-                <x-input :show-clear="false" name="username" type="text"></x-input>
+                <x-input  v-model="teamGroup.username" :show-clear="false" name="username" type="text"></x-input>
             </div>
             <div class="cell">
                 <span>用户余额</span>
-                <x-input :show-clear="false" type="number" placeholder="最少金额"></x-input>
-                <x-input :show-clear="false" type="number" placeholder="最大金额"></x-input>
+                <x-input v-model="teamGroup.bank_min" :show-clear="false" type="number" placeholder="最少金额"></x-input>
+                <x-input v-model="teamGroup.bank_max" :show-clear="false" type="number" placeholder="最大金额"></x-input>
             </div>
             <div class="btns">
-                <x-button class="btn recharge" type="orange">查询</x-button>
+                <x-button class="btn recharge" @click.native="getGroupList" type="orange">查询</x-button>
+                <x-button class="btn recharge" v-show="userTree.length" @click.native="getGroupList({uid:userTree[userTree.length-2].userid})" type="orange">返回</x-button>
             </div>
         </div>
         <scroller
             class="scroller"
-            height="-140"
+            height="-280"
             lock-x
-            @on-scroll-bottom="handleReachBottom(1)"
-            @on-scroll="onCScroll"
+            @on-scroll-bottom="handleReachBottom()"
             ref="scrollerBottom"
             :scroll-bottom-offst="200"
             :bounce="false"
@@ -57,7 +57,8 @@
                             <x-button
                                 @click.native="handleAlert(item.userid,'subordinateRecharge','下级充值')"
                                 class="btn recharge"
-                                type="purple"
+                                :type="istop!=1?'grey':'purple'"
+                                :disabled="istop!=1"
                             >充值</x-button>
                             <x-button
                                 @click.native="handleAlert(item.userid,'teamAccount','团队余额')"
@@ -70,14 +71,14 @@
                                 type="blue"
                             >返点设置</x-button>
                             <x-button
-                                @click.native="handleToast('查询下级')"
+                                @click.native="getGroupList({uid:item.userid})"
                                 class="btn recharge"
                                 type="orange"
                             >查询下级</x-button>
                         </div>
                     </li>
                 </ul>
-                <load-more :tip="onFetching?'加载数据中...':'下拉加载更多'" :show-loading="false"></load-more>
+                <load-more :tip="teamList.length==0?'没有更多数据':'下拉加载更多'" :show-loading="false"></load-more>
             </div>
         </scroller>
 
@@ -85,13 +86,13 @@
             <x-dialog v-model="alert" class="dialog-demo" hide-on-blur>
                 <div class="img-box">
                     <div class="title">
-                        <span>返点设置</span>
-                        <div class="icon-wrap" @click="alert=false">
+                        <span>{{alertTitle}}</span>
+                        <div class="icon-wrap" @click="close">
                             <x-icon slot="icon" size="20" type="backspace" class="icons contact"></x-icon>
                         </div>
                         <!-- <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon> -->
                     </div>
-                    <component class="content" :uid="pointUserId" :is="alertComponent"></component>
+                    <component class="content" :uid="pointUserId" @close="close" :is="alertComponent"></component>
                 </div>
             </x-dialog>
         </div>
@@ -118,7 +119,6 @@ export default {
     name: 'agentManagement',
     data() {
         return {
-            alert: false,
             range: 0,
             alert: false, //弹窗开关
             alertTitle: '', //弹窗标题
@@ -140,7 +140,7 @@ export default {
                 bank_min: '',
                 bank_max: '',
                 p: 1,
-                pn: 10
+                pn: 5
             },
             teamList: [],
             istop: '', //是否是vip类型
@@ -152,40 +152,52 @@ export default {
             userId: JSON.parse(sessionStorage.getItem('userSeting')).userid,
             userType: JSON.parse(sessionStorage.getItem('userSeting')).usertype,
             onFetching: false,
-            windowHeight:0,
             top:0,
-            conditionStatus:true
+            conditionStatus:true,
+            nomoreData:false
         }
     },
     methods: {
         handleToast(key) {
             this.alert = true
         },
-        handleReachBottom(value) {
-            // this.$set(this.teamGroup, 'p', value)
-            // getgrouplist(this.teamGroup).then(res => {
-            //     this.istop = res.data.istop
-            //     this.teamList = res.data.page_data
-            //     this.total = res.data.total_count
-            //     if (res.data.usertree) {
-            //         this.userTree = res.data.usertree
-            //     } else {
-            //         this.teamGroup.p = 0
-            //         this.userTree = []
-            //     }
-            // })
-            console.log('到底了')
+        handleReachBottom() {
+            if(this.nomoreData||this.onFetching){
+                return
+            }
+            this.onFetching = true
+            this.teamGroup.p++
+            getgrouplist({...this.teamGroup,uid:this.userTree.length>0?this.userTree[this.userTree.length-1].userid:''}).then(res => {
+                this.istop = res.data.istop
+                this.teamList = this.teamList.concat(res.data.page_data)
+                if(res.data.page_index>Math.ceil(res.data.total_count/res.data.page_size)){
+                    this.nomoreData = true
+                }
+                this.onFetching = false
+            })
         },
         //查询团队列表
         getGroupList(obj) {
+            this.teamGroup.p = 1
+            this.$nextTick(()=>{
+                this.$refs.scrollerBottom.reset({
+                    top:0
+                })
+            })
+            this.nomoreData = false
+            this.onFetching = true
+
             getgrouplist({ ...this.teamGroup, ...obj }).then(res => {
                 this.istop = res.data.istop
                 this.teamList = res.data.page_data
+                if(!this.teamList.length){
+                    this.nomoreData=true
+                }
                 this.total = res.data.total_count
+                this.onFetching = false
                 if (res.data.usertree) {
                     this.userTree = res.data.usertree
                 } else {
-                    this.teamGroup.p = 0
                     this.userTree = []
                 }
             })
@@ -208,17 +220,16 @@ export default {
             }
         },
         handleAlert(value, target, title) {
-            console.log(value);
-            console.log(target);
-            console.log(title);
             this.alert = true
             this.alertTitle = title
             this.alertComponent = target
             this.pointUserId = value
         },
+        close(){
+            this.alert = false
+        }
     },
-    created() {
-        this.windowHeight = window.screen.height -100 * 0.6
+    mounted() {
         this.getGroupList()
     },
     components: {
@@ -251,10 +262,10 @@ export default {
         margin-bottom 20px
         .btns
             margin 20px 0
+            display flex
             .btn
                 font-size 30px
                 max-width 250px
-                margin-left 176px
     .cell
         display flex
         align-items center

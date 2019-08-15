@@ -2,13 +2,13 @@
     <div class="content">
         <div class="datas">
             <p>
-                <span>用户名：</span>devasaa
+                <span>用户名：</span>{{userInfo.username}}
             </p>
+            <!-- <p>
+                <span>用户昵称：</span>{{userInfo.nickname}}
+            </p> -->
             <p>
-                <span>用户昵称：</span>1968
-            </p>
-            <p>
-                <span>奖金限额</span>212321
+                <span>奖金限额：</span>{{userInfo.limitbons}}
             </p>
         </div>
         <div class="range_container">
@@ -17,8 +17,8 @@
                 class="range"
                 :range-bar-height="10"
                 v-model="range"
-                :min="Number(1300)"
-                :max="Number(1900)"
+                :min="Number(minodds)"
+                :max="Number(maxodds)"
             ></range>
             <input class="range_input" type="number" v-model.lazy="range" />
         </div>
@@ -38,7 +38,16 @@ export default {
         return {
             bonues: 0,
             dataList: '',
-            range:0
+            range:0,
+            userInfo:{
+                limitbons: "",
+                nickname: "",
+                userid: '',
+                username: "",
+                usertype: '',
+            },
+            maxodds:'',
+            minodds:'',
         }
     },
     computed: {
@@ -93,15 +102,24 @@ export default {
                 this.min = this.bonues
                 this.$Message.success(res.msg)
             })
-        }
-    },
-    mounted() {
-        if (this.uid) {
+        },
+        updateInfo(){
             setpoints({ uid: this.uid }).then(res => {
                 this.dataList = res.data
                 this.bonues = Number(res.data.maxodds)
+                this.userInfo = {...res.data.user}
+                this.maxodds=res.data.maxodds
+                this.minodds=res.data.minodds
             })
         }
+    },
+    watch:{
+        uid(){
+            this.updateInfo()
+        }
+    },
+    mounted() {
+        this.updateInfo()
     },
     components: {
         XButton,

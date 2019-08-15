@@ -2,18 +2,18 @@
     <div class="teamAccount">
         <x-table class="table" :cell-bordered="false" style="background-color:#fff;">
             <thead>
-            <tr>
-                <th>用户名称</th>
-                <th>用户昵称</th>
-                <th>团队余额</th>
-            </tr>
+                <tr>
+                    <th>用户名称</th>
+                    <th>用户昵称</th>
+                    <th>团队余额</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>devip000</td>
-                <td>123</td>
-                <td>1658269.000</td>
-            </tr>
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{nickname}}</td>
+                    <td>{{teammoney}}</td>
+                </tr>
             </tbody>
         </x-table>
     </div>
@@ -41,23 +41,32 @@ export default {
                     key: 'teammoney'
                 }
             ],
-            data1: []
+            data1: [],
+            name: '',
+            nickname: '',
+            teammoney: ''
         }
     },
-    mounted() {
-        getgroupbalance({ uid: this.uid }).then(res => {
-            this.data1 = [
-                {
-                    name: res.data.user.username,
-                    nickname: res.data.user.nickname,
-                    teammoney: res.data.teammoney
-                }
-            ]
-        })
+    methods:{
+        updateInfo(){
+            getgroupbalance({ uid: this.uid }).then(res => {
+                (this.name = res.data.user.username),
+                    (this.nickname = res.data.user.nickname),
+                    (this.teammoney = res.data.teammoney)
+            })
+        }
+    },
+    mounted(){
+        this.updateInfo()
+    },
+    watch: {
+        uid() {
+            this.updateInfo()
+        },
     },
     components: {
-        XTable
-    }
+            XTable
+        }
 }
 </script>
 

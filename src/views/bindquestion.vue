@@ -1,6 +1,10 @@
 <template>
     <div>
-        <template v-show="!listIndex">
+            <div class="btns top">
+                    <x-button class="btn withdrawal" @click.native="handleTab('密保设定')" :type="tableIndex==1?'purple':'brightgrey'">密保设定</x-button>
+                    <x-button class="btn withdrawal" @click.native="handleTab('资金密码找回')" :type="tableIndex==2?'purple':'brightgrey'">资金密码找回</x-button>
+                </div>
+        <template v-if="tableIndex=='1'">
             <div class="top_container">
                 <group>
                     <div>
@@ -53,11 +57,30 @@
                             class="btn recharge"
                             type="orange"
                             @click.native="handleSubmit('formInline')"
-                        >修改</x-button>
+                        >提交</x-button>
                     </div>
                 </group>
             </div>
             <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案</div>
+        </template>
+        <template v-else>
+            <div class="top_container money">
+                <x-input
+                    ref="input"
+                    :show-clear="false"
+                    :required="true"
+                    title="请设定资金密码"
+                    name="username"
+                    type="password"
+                    v-model="resetPassword.password"
+                ></x-input>
+                <span class="rules">由字母和数字组成6-16个字符，资金密码不能与登录密码相同</span>
+                <x-button
+                    class="btn recharge"
+                    type="orange"
+                    @click.native="handleSubmit('resetPassword')"
+                >提交</x-button>
+            </div>
         </template>
     </div>
 </template>
@@ -167,6 +190,13 @@ export default {
         }
     },
     methods: {
+        handleTab(name){
+            if(name=="密保设定"){
+                this.tableIndex = 1
+            }else{
+                this.tableIndex = 2
+            }
+        },
         handleSubmit(name) {
             if (name == 'answerInline') {
                 checksequestion({
@@ -192,7 +222,10 @@ export default {
                     flag: 'sequestion',
                     json: RSAencrypt(JSON.stringify(oJosn))
                 }).then(res => {
-                    this.$Message.success('重置资金密码成功')
+                    this.$vux.toast.show({
+                        text: '资金密码设定成功',
+                        type: 'success'
+                    })
                 })
             }
         },
@@ -229,6 +262,7 @@ export default {
         width 100%
         display block
         color $fontColor_grey
+        box-sizing: border-box;
     >>>.weui-cells
         background-color $bgLight
         .weui-cell
@@ -247,9 +281,27 @@ export default {
         .weui-select
             line-height 70px
             height 70px
+    &.money
+        padding 40px 35px
+        >>>.weui-cell__hd
+            width initial
+        .btn
+            max-width 250px
+            height 70px
+            font-size 26px
+        .rules
+            padding-left 240px
+            line-height 50px
 .btns
     display flex
     justify-content space-around
+    &.top
+        background-color $bgLight
+        padding-right 240px
+        padding-left 20px
+        padding-top 40px
+        .btn
+            max-width 220px
     .btn
         max-width 250px
         height 70px

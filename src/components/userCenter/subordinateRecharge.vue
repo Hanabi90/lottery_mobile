@@ -9,6 +9,8 @@
                         :show-clear="false"
                         :required="false"
                         title="充值金额"
+                        placeholder="请输入金额"
+                        type="number"
                         v-model="money"></x-input>
             </li>
             <li>
@@ -22,7 +24,7 @@
                     ></x-input>
             </li>
             <li>
-                <x-button class="btn" @click="handleSubmint" type="purple">充值</x-button>
+                <x-button class="btn" @click.native="handleSubmint" type="purple">充值</x-button>
             </li>
         </ul>
     </div>
@@ -36,7 +38,7 @@ export default {
     props: ['uid'],
     data() {
         return {
-            money: 0, //资金
+            money: '', //资金
             moneyPassword: '', //资金密码
             userName: '',
             parentMoney: 0,
@@ -56,22 +58,36 @@ export default {
                     'handleMoney',
                     res.data.aOwnFund.availablebalance
                 )
+                this.$emit('close')
                 this.childrenMoney = res.data.aUserFund.availablebalance
+                this.$vux.confirm.show({
+                    showCancelButton:false,
+                    title: '充值成功',
+                    content:`您的银行大厅余额：${res.data.aOwnFund.availablebalance},</br>${res.data.aUserFund.username}余额为：${res.data.aUserFund.availablebalance}`,
+                })
+            })
+        },
+        updateInfo(){
+            topup({
+                uid: this.uid
+            }).then(res => {
+                this.userName = res.data.userfund.username
+                this.parentMoney = res.data.ownfund.availablebalance
+                this.childrenMoney = res.data.userfund.availablebalance
             })
         }
     },
-    mounted() {
-        topup({
-            uid: this.uid
-        }).then(res => {
-            this.userName = res.data.userfund.username
-            this.parentMoney = res.data.ownfund.availablebalance
-            this.childrenMoney = res.data.userfund.availablebalance
-        })
+    mounted(){
+        this.updateInfo()
     },
     components: {
         XInput,
         XButton
+    },
+    watch:{
+        uid(){
+            this.updateInfo()
+        }
     }
 }
 </script>    

@@ -5,7 +5,10 @@
         </div>
         <div class="bottom">
             <ul>
-                <li></li>
+                <li v-for="item in userwallet" :key="item.id">
+                    <span>{{item.wallet_name}}</span>
+                    <span>{{item.wallet_balance}}</span>
+                </li>
             </ul>
         </div>
     </div>
@@ -28,7 +31,6 @@ export default {
     },
     methods: {},
     created(){
-        console.log('asddasdasdasdas');
         thirdgameGetwalletlist().then((res)=>{
             console.log(res);
             this.walletList = res.data
