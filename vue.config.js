@@ -4,20 +4,20 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const vuxLoader = require('vux-loader')
 module.exports = {
     transpileDependencies: ['vux'],
-    chainWebpack: config => {
-        if (process.env.NODE_ENV === 'production') {
-            config
-                .plugin('compression')
-                .use(CompressionPlugin, {
-                    asset: '[path].gz[query]',
-                    algorithm: 'gzip',
-                    test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
-                    threshold: 10240,
-                    minRatio: 0.8,
-                    cache: true
-                })
-        }
-    },
+    // chainWebpack: config => {
+    //     if (process.env.NODE_ENV === 'production') {
+    //         config
+    //             .plugin('compression')
+    //             .use(CompressionPlugin, {
+    //                 asset: '[path].gz[query]',
+    //                 algorithm: 'gzip',
+    //                 test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
+    //                 threshold: 10240,
+    //                 minRatio: 0.8,
+    //                 cache: true
+    //             })
+    //     }
+    // },
     configureWebpack: config => {
         require('vux-loader').merge(config, {
             plugins: ['vux-ui', 'duplicate-style']

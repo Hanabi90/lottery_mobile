@@ -26,6 +26,11 @@ import { getnotice } from '@/api/index'
 import { Popup } from 'vux'
 export default {
     name: 'notice',
+    props:{
+        item:{
+            default:null
+        }
+    },
     data() {
         return {
             list: [],
@@ -40,7 +45,6 @@ export default {
     },
     methods:{
         popupShowCtrl(flag,item){
-            console.log(flag);
             this.popupShow=flag?true:false
             if(flag==true){
                 this.currentItem = item
@@ -51,6 +55,13 @@ export default {
         getnotice().then(res => {
             this.list = res.data.results
         })
+    },
+    mounted(){
+        setTimeout(() => {
+            if(this.item!==null){
+                this.popupShowCtrl(true,this.item)
+            }
+        }, 800);
     },
     components: {
         Popup,
@@ -87,4 +98,19 @@ export default {
     padding 0 40px 40px 40px 
     box-sizing border-box
     background #333
+    .listItem
+        line-height 60px
+        .title
+            font-size 36px
+            font-weight bold
+            line-height 40px
+        .sendtime
+            font-size 30px
+            color #bbbbbb
+        .dotted
+            border-bottom 2px dotted #bbbbbb
+            margin 20px 0
+        .content
+            font-size 32px
+            line-height 60px
 </style>

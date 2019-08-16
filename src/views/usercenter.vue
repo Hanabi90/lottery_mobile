@@ -16,7 +16,8 @@
                 <span class="username">欢迎您,{{$store.state.nickname}}</span>
             </div>
             <div class="balance">
-                <span>主钱包余额：￥{{$store.state.money}}</span>
+                <span>主钱包余额：￥<countup :end-val="Number($store.state.money)" :duration="2" :decimals="2" ></countup></span>
+                
                 <div @click="getMoney">
                     <span>刷新</span>
                     <x-icon slot="icon" size="25" type="refresh" class="icons contact"></x-icon>

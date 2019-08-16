@@ -4,12 +4,13 @@ import router from './router'
 import store from './store'
 //import { AlertPlugin, ToastPlugin ,ConfirmPlugin,LoadingPlugin } from 'vux'
 import VuePageTransition from 'vue-page-transition'
-import  { ConfirmPlugin } from 'vux'
+import  { ConfirmPlugin,Countup } from 'vux'
+import VueClipboard from 'vue-clipboard2'
+import ToastPlugin from 'vux/src/plugins/toast'
 Vue.use(ConfirmPlugin)
 Vue.use(VuePageTransition)
+Vue.component('countup', Countup)
 
-import ToastPlugin from 'vux/src/plugins/toast'
-import VueClipboard from 'vue-clipboard2'
 VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
 Vue.use(ToastPlugin, {

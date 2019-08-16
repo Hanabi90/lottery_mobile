@@ -83,7 +83,10 @@ export default {
         },
         doCopy(value) {
             this.$copyText(value).then(e => {
-                // this.$Message.success('已复制到剪贴蒙版')
+                this.$vux.toast.show({
+                        text: '已复制到剪贴板',
+                        type: 'success'
+                    })
             })
         },
         //下载图片
@@ -98,7 +101,10 @@ export default {
         handleDelreglink(id, index) {
             delreglink({ id }).then(res => {
                 this.userLineData.splice(index, 1)
-                // this.$Message.success(res.msg)
+                this.$vux.toast.show({
+                    text: '删除链接成功',
+                    type: 'success'
+                })
             })
         },
         //提交
@@ -121,6 +127,10 @@ export default {
                         })
                     })
                 }
+                this.$vux.toast.show({
+                    text: '生成链接成功',
+                    type: 'success'
+                })
             })
         }
     },

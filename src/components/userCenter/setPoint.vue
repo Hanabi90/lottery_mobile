@@ -16,14 +16,15 @@
             <range
                 class="range"
                 :range-bar-height="10"
-                v-model="range"
+                v-model.number="range"
+                :step="2"
                 :min="Number(minodds)"
                 :max="Number(maxodds)"
             ></range>
             <input class="range_input" type="number" v-model.lazy="range" />
         </div>
         <div class="btns">
-            <x-button class="btn recharge" type="blue">提交</x-button>
+            <x-button class="btn recharge" @click.native="handleSetPoint" type="blue">提交</x-button>
         </div>
     </div>
 </template>
@@ -46,8 +47,8 @@ export default {
                 username: "",
                 usertype: '',
             },
-            maxodds:'',
-            minodds:'',
+            maxodds:0,
+            minodds:0,
         }
     },
     computed: {
@@ -97,10 +98,14 @@ export default {
             setpoints({
                 flag: 'save',
                 uid: this.uid,
-                onekeyodds: this.bonues
+                onekeyodds: this.range
             }).then(res => {
-                this.min = this.bonues
-                this.$Message.success(res.msg)
+                this.min = this.range
+                this.$emit('close')
+                this.$vux.toast.show({
+                    text: '设置返点成功',
+                    type: 'success'
+                })
             })
         },
         updateInfo(){
@@ -108,8 +113,8 @@ export default {
                 this.dataList = res.data
                 this.bonues = Number(res.data.maxodds)
                 this.userInfo = {...res.data.user}
-                this.maxodds=res.data.maxodds
-                this.minodds=res.data.minodds
+                this.maxodds=Number(res.data.maxodds)
+                this.minodds=Number(res.data.minodds)
             })
         }
     },

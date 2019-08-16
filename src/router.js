@@ -83,6 +83,7 @@ const router = new Router({
         {
             path: '/notice',
             name: 'notice',
+            props:true,
             component: () =>
                 import(/* webpackChunkName: "notice" */ './views/notice.vue')
         },

@@ -123,7 +123,8 @@ export default {
                     text: res.msg,
                     type: 'success'
                 })
-                this.$refs.addUserList.resetFields()
+                this.addUserList.userName = ''
+                this.addUserList.password = ''
             })
         }
     },

@@ -10,8 +10,8 @@
             :loop="true"
             v-if="list.length"
         >
-            <swiper-item v-for="(item,index) of list" :key="index">
-                <p class="fixed_layout">
+            <swiper-item v-for="(item,index) of list" :key="index" >
+                <p class="fixed_layout" @click="routeTo(item)">
                     <span>{{item.subject}}:</span>
                     <span>{{item.content}}</span>
                 </p>
@@ -34,6 +34,11 @@ export default {
         getnotice().then(res => {
             this.list = res.data.results
         })
+    },
+    methods:{
+        routeTo(item){
+            this.$router.push({name:'notice',params:{item}})
+        }
     },
     components: {
         Swiper,
