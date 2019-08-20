@@ -7,9 +7,9 @@
             placement="right"
         >
             <!-- drawer content -->
-            <div class="box" slot="drawer">
+            <!-- <div class="box" slot="drawer">
                 <DrawerList :that="this" />
-            </div>
+            </div> -->
             <!-- main content -->
             <view-box ref="viewBox" body-padding-top="40px" body-padding-bottom="50px">
                 <x-header slot="header" class="headerContent fixed_layout" ref="headerTop">
@@ -20,7 +20,7 @@
                         src="./assets/images/logo.png"
                         alt
                     />
-                    <span v-if="routerName!='home'">首页</span>
+                    <span v-if="routerName!='home'">{{$route.name}}</span>
                     <x-icon
                         slot="right"
                         type="log-out"
@@ -36,11 +36,11 @@
                 </vue-page-transition>
 
                 <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
-                    <tabbar-item :link="{path:'/home'}" :selected="routerName=='home'?true:false">
+                    <tabbar-item :link="{path:'/home'}" :selected="routerName=='首页'?true:false">
                         <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/wallet'}" :selected="routerName=='wallet'?true:false">
+                    <tabbar-item :link="{path:'/wallet'}" :selected="routerName=='钱包查询'?true:false">
                         <x-icon slot="icon" type="card" class="homeIcon" ></x-icon>
                         <span slot="label">
                             <span>钱包查询</span>
@@ -52,7 +52,7 @@
                             <span>优惠活动</span>
                         </span>
                     </tabbar-item>
-                    <tabbar-item :link="{path:'/usercenter'}" :selected="routerName=='usercenter'?true:false">
+                    <tabbar-item :link="{path:'/usercenter'}" :selected="routerName=='个人中心'?true:false">
                         <x-icon slot="icon" type="person" class="homeIcon" ></x-icon>
                         <span slot="label">
                             <span>个人中心</span>
@@ -65,7 +65,6 @@
     </div>
 </template>
 <script>
-import DrawerList from '@/components/home/drawerList'
 import { ViewBox, XHeader, Tabbar, TabbarItem, Drawer } from 'vux'
 import {loginOut} from '@/api/index.js'
 export default {
@@ -98,50 +97,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$router);
-        var kefu
-        // var winH = document.body.offsetHeight
-        // var winW = document.body.offsetWidth
-        // var circularW 
-        // var circularH 
-        // var disL,disT;
-        // var scrollTop;
-        // var footerH = 100
-        // var LandR;//水平方向上的left值
-
-        setTimeout(() => {
-            kefu = document.getElementById('lim_mobile_chat')
-            kefu.style.right = 0
-            // circularW = kefu.offsetWidth
-            // circularH = kefu.offsetHeight-58
-            // kefu.addEventListener('touchstart',(ev)=>{
-            //     kefu.addEventListener('touchmove',(ev)=>{
-            //         scrollTop = document.body.scrollTop
-            //         disL = ev.touches[0].pageX - circularW/2;
-            //         disT = ev.touches[0].pageY - circularH/2;
-            //         disL = disL < 0 ? 0 : disL;
-            //         disL = disL >winW-circularW  ? winW-circularW : disL;
-            //         disT = disT < 0 ? 0 : disT;
-            //         disT = disT > winH-circularH ? winH-circularH : disT;
-            //         kefu.style.left = disL + 'px';
-            //         kefu.style.top = disT + 'px'
-            //     })
-            // })
-            // kefu.addEventListener('touchend',()=>{
-            //             var LandR = kefu.offsetLeft
-
-            //             if( (LandR+circularW/2)<=winW/2 ){
-
-
-            //                 kefu.style.left =0;
-            //             }else{
-
-            //             kefu.style.left = winW-circularW + 'px'
-
-            //             }
-            //         })
-        }, 1000);
-        
     },
     components: {
         ViewBox,
@@ -149,7 +104,6 @@ export default {
         Tabbar,
         TabbarItem,
         Drawer,
-        DrawerList
     }
 }
 </script>
@@ -169,6 +123,12 @@ html, body, #lottery
     background #222
     overflow-x hidden
     position relative
+#lim_mobile_chat
+    bottom 110px
+    #lim_mchat_wrapper
+        #lim_mob_chat
+            >span
+                display none !important
 </style>
 <style lang="stylus" scoped>
 .headerContent

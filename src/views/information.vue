@@ -328,15 +328,15 @@ export default {
                     this.$set(setList, 'p', setList.p + 1)
                     if (this.navIndex == '发出的消息') {
                         getSendMessage({ ...setList }).then(res => {
-                            if(res.length > 0){
+                            if (res.length > 0) {
                                 res.data.page_data.forEach(item => {
-                                item.active = false
-                                item.content = '加载中。。。'
-                            })
-                            this.messageSendList = [
-                                ...this.messageSendList,
-                                ...res.data.page_data
-                            ]
+                                    item.active = false
+                                    item.content = '加载中。。。'
+                                })
+                                this.messageSendList = [
+                                    ...this.messageSendList,
+                                    ...res.data.page_data
+                                ]
                             }
                         })
                     } else {

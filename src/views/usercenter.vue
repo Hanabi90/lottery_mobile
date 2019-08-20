@@ -25,7 +25,7 @@
             </div>
             <div class="btns">
                 <x-button class="btn recharge" type="orange" link="/deposit">充值</x-button>
-                <x-button class="btn withdrawal" @click.native="handleAlert('withdrawal')" type="blue">提现</x-button>
+            <x-button class="btn withdrawal" @click.native="handleAlert('提现')" type="blue">提现</x-button>
                 <x-button class="btn history" link="/transfer" type="purple">转账</x-button>
             </div>
         </div>
@@ -46,7 +46,7 @@
                 <ul>
                     <router-link class="li_grey" to="/changePassword" tag="li">登录密码</router-link>
                     <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
-                    <li class="li_grey" to="usercenter" @click="handleAlert('bank')">绑定银行卡</li>
+                    <li class="li_grey" to="usercenter" @click="handleAlert('绑定银行卡')">绑定银行卡</li>
                     <li class="li_grey" to="/bindquestion" @click="handleAlert('bindquestion')">密保设定</li>
                     <router-link class="li_grey" to="/information" tag="li">站内信</router-link>
                     <router-link class="li_grey" to="/notice" tag="li">系统公告</router-link>
@@ -78,6 +78,11 @@ import {
 import md5 from 'js-md5'
 export default {
     name: 'usercenter',
+    props:{
+        routeTo:{
+            default:null
+        }
+    },
     data() {
         return {
             alert: false,
@@ -115,7 +120,7 @@ export default {
         },
         handleAlert(routename) {
             this.routename = routename
-            if (routename == 'bindquestion') {
+            if (routename == '密保设定') {
                 checksequestion().then(res => {
                     if (!(res.data instanceof Array)) {
                         this.alertSetting = {
@@ -129,13 +134,13 @@ export default {
                         this.questionResData = res.data
                         this.alert = true
                     }else{
-                        this.$router.push(this.routename)
+                        this.$router.push({name:this.routename})
                     }
                 })
-            }else if(routename=='withdrawal'){
+            }else if(routename=='提现'){
                 getsecpass().then(res => {
                     if (!res) {
-                        this.$router.push({name:'changeSecPassword',params: { fromRoute: true }})
+                        this.$router.push({name:'提款密码',params: { fromRoute: true }})
                         return
                     } else {
                         this.alert = true
@@ -145,7 +150,7 @@ export default {
             }else {
                 getsecpass().then(res => {
                     if (!res) {
-                        this.$router.push({name:'changeSecPassword',params: { fromRoute: true }})
+                        this.$router.push({name:'提款密码',params: { fromRoute: true }})
                         return
                     } else {
                         this.alert = true
@@ -155,23 +160,23 @@ export default {
             }
         },
         onConfirm(value) {
-            if(this.routename=='bindquestion'){
+            if(this.routename=='密保设定'){
                 checksequestion({
                     flag: 'check',
                     ...this.questionResData,
                     ans: value
                 }).then(res => {
                     this.questionResData = ''
-                    this.$router.push(this.routename)
+                    this.$router.push({name:this.routename})
                 })
-            }else if(this.routename=='withdrawal'){
-                this.$router.push(this.routename)
+            }else if(this.routename=='提现'){
+                this.$router.push({name:this.routename})
             }else{
                 var secpass = RSAencrypt(md5(value))
                 checksecpass({ secpass }).then(res => {
                     if (res.code == 0) {
                         this.$router.push({
-                            name: 'bank',
+                            name: '绑定银行卡',
                             params: { secpass: value }
                         })
                     }
@@ -191,6 +196,11 @@ export default {
                 const money = res.data[0].wallet_balance
                 this.$store.dispatch('handleMoney',money)
             })
+        }
+    },
+    mounted(){
+        if(this.routeTo=='withdrawal'){
+            this.handleAlert('提现')
         }
     },
     created(){

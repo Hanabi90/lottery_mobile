@@ -37,7 +37,7 @@ export default {
     },
     methods:{
         routeTo(item){
-            this.$router.push({name:'notice',params:{item}})
+            this.$router.push({name:'系统公告',params:{item}})
         }
     },
     components: {

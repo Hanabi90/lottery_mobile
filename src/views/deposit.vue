@@ -6,9 +6,9 @@
         <p class="tips">**如选择银行卡转账，请勿使用其他支付方式，否则充值将无法到账</p>
         <p class="dotted"></p>
         <checker
-        v-model="selectedBank"
-        default-item-class="demo5-item"
-        selected-item-class="demo5-item-selected"
+            v-model="selectedBank"
+            default-item-class="demo5-item"
+            selected-item-class="demo5-item-selected"
         >
             <checker-item v-for="(i,index) in banklist" :key="i.title" :value="i.title">
                 <i :style="`backgroundImage:url(${urlList[index]})`"></i>
@@ -25,68 +25,70 @@
 </template>
 
 <script>
-import { Selector, XButton, XInput, Group, Checker, CheckerItem } from 'vux'
-import {unionpayaddcredit,depositMain,thirdPayDeposit} from '@/api/index'
+import { XButton, XInput, Checker, CheckerItem } from 'vux'
+import { unionpayaddcredit, depositMain, thirdPayDeposit } from '@/api/index'
 export default {
     name: 'deposit',
     data() {
         return {
-            selectedBank:'支付宝充值',
-            urlList:[
-                require('../assets/images/deposit/yinlianzhifu.png'),
+            selectedBank: '支付宝充值',
+            urlList: [
                 require('../assets/images/deposit/zhifubaozhifu.png'),
+                require('../assets/images/deposit/yinlianzhifu.png'),
+                require('../assets/images/deposit/xianshang.png'),
+                require('../assets/images/deposit/yunshanfu.png'),
                 require('../assets/images/deposit/weixinzhifu.png'),
-                require('../assets/images/deposit/yunshanfu.png')
+                require('../assets/images/deposit/chaoji.png')
             ],
-            banklist:[],
-            money:'',
-            formData:{
-                    flag: 'load',
-                    aid: 714,
-                    amount: 100,
-                    alertmin: 100,
-                    alertmax: 20000,
-                    typename: 'gp1',
-                    bank_code: 'UNIONPAY'
-                }
+            banklist: [],
+            money: '',
+            formData: {
+                flag: 'load',
+                aid: 714,
+                amount: 100,
+                alertmin: 100,
+                alertmax: 20000,
+                typename: 'gp1',
+                bank_code: 'UNIONPAY'
+            }
         }
     },
     methods: {
-        handleSubmit(){
-            const currentItem = this.banklist.filter((item)=>{
-                return item.title==this.selectedBank
+        handleSubmit() {
+            const currentItem = this.banklist.filter(item => {
+                return item.title == this.selectedBank
             })
-            thirdPayDeposit({data:null,url:currentItem[0].url}).then((res)=>{
-                const formData = {
-                        data:{
+            thirdPayDeposit({ data: null, url: currentItem[0].url }).then(
+                res => {
+                    const formData = {
+                        data: {
                             flag: 'load',
                             amount: this.money,
                             bank_code: res.data.banklist[0].bank_code,
-                            typename : res.data.typename,
-                            aid : res.data.aid,
-                            alertmin : res.data.loadmin,
-                            alertmax : res.data.loadmax,
-                            typename : res.data.typename
+                            typename: res.data.typename,
+                            aid: res.data.aid,
+                            alertmin: res.data.loadmin,
+                            alertmax: res.data.loadmax,
+                            typename: res.data.typename
                         },
-                        url:currentItem[0].url
+                        url: currentItem[0].url
                     }
-                thirdPayDeposit(formData).then((res)=>{
-                    window.open(res.data)
-                })
-            })
+                    thirdPayDeposit(formData).then(res => {
+                        window.open(res.data)
+                    })
+                }
+            )
         }
     },
     created() {
-        depositMain().then((res)=>{
+        depositMain().then(res => {
             this.banklist = res.data
         })
     },
     mounted() {},
     components: {
-        Selector,
         XButton,
         XInput,
-        Group,
         Checker,
         CheckerItem
     }
@@ -113,15 +115,15 @@ export default {
     flex-wrap wrap
     box-sizing border-box
     justify-content space-between
-    .demo5-item 
-        width: 48%;
-        height: 80px;
-        line-height: 80px;
-        text-align: center;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-        margin-right: 6px;
+    .demo5-item
+        width 48%
+        height 80px
+        line-height 80px
+        text-align center
+        border-radius 8px
+        border 1px solid #ccc
+        background-color #fff
+        margin-right 6px
         color #000
         margin-bottom 16px
         display flex
@@ -129,14 +131,13 @@ export default {
         align-items center
         i
             height 60px
-            width 40%;
+            width 25%
             background-size contain
             background-repeat no-repeat
             background-position center center
-    
-    .demo5-item-selected 
-        border-color: #ff4a00;
-        background: #ffffff url('../assets/images/conner.png') no-repeat right bottom;
+    .demo5-item-selected
+        border-color #ff4a00
+        background #ffffff url('../assets/images/conner.png') no-repeat right bottom
 .inputbox
     display flex
     align-items center
@@ -151,6 +152,5 @@ export default {
     margin-top 30px
     height 60px
     line-height 60px
-
 </style>
 

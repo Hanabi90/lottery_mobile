@@ -5,10 +5,10 @@
                 <i></i>
                 <p>充值</p>
             </router-link>
-            <li>
+            <router-link tag="li" :to="{name:'个人中心',params:{routeTo:'withdrawal'}}">
                 <i></i>
                 <p>提现</p>
-            </li>
+            </router-link>
             <router-link tag="li" to="/transfer">
                 <i></i>
                 <p>转账</p>

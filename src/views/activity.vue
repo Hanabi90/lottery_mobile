@@ -2,7 +2,11 @@
     <div class="activity fixed_layout">
         <ul v-if="activitylist">
             <li v-for="(item, index) in activitylist" :key="index">
-                <img @click="handleDetail(item)" src="../assets/images/banner3.jpg" alt />
+                <img
+                    @click="handleDetail(item)"
+                    :src="require(`../assets/images/banner${index}.jpg`)"
+                    alt
+                />
                 <div>
                     <h5>
                         <p>{{item.title}}</p>
@@ -15,60 +19,79 @@
                 </div>
             </li>
         </ul>
-        <popup v-model="popupShow" class="popup_container" position="left" width="100%" :show-mask="false">
-            <sticky
-                >
+        <popup
+            v-model="popupShow"
+            class="popup_container"
+            position="left"
+            width="100%"
+            :show-mask="false"
+        >
+            <sticky>
                 <p class="header">
-                    <x-icon class="ios-arrow-back" type="ios-arrow-back" size="30" @click.native="popupShowCtrl(false)"></x-icon>
-                    <span class="vux-close">信息详情 </span>
+                    <x-icon
+                        class="ios-arrow-back"
+                        type="ios-arrow-back"
+                        size="30"
+                        @click.native="popupShowCtrl(false)"
+                    ></x-icon>
+                    <span class="vux-close">信息详情</span>
                 </p>
             </sticky>
-            
+
             <div class="dotted"></div>
-            <div class="popup_container" v-html="content">
-            
-            </div>
+            <div class="popup_container" v-html="content"></div>
         </popup>
     </div>
 </template>
 
 <script>
-import { XButton,Popup,Sticky } from 'vux'
+import { XButton, Popup, Sticky } from 'vux'
 import { getactivitylist, getactivityinfo } from '@/api/index'
 
 export default {
     name: 'activity',
-    data(){
-        return{
-            activitylist:null,
-            content:'',
-            popupShow:false
+    props: {
+        index: {
+            default: -1
         }
     },
-    methods:{
-        handleDetail(item){
+    data() {
+        return {
+            activitylist: null,
+            content: '',
+            popupShow: false
+        }
+    },
+    methods: {
+        handleDetail(item) {
             this.content = item.content
             this.popupShowCtrl(true)
-            console.log(this.content);
         },
-        popupShowCtrl(flag,item){
-            this.popupShow=flag?true:false
+        popupShowCtrl(flag, item) {
+            this.popupShow = flag ? true : false
         }
     },
     components: {
-        XButton,Popup,Sticky 
+        XButton,
+        Popup,
+        Sticky
     },
-    created() {
-        getactivitylist().then((res)=>{
+    mounted() {
+        getactivitylist().then(res => {
             this.activitylist = res.data.activitylist
+            if (this.index != -1) {
+                setTimeout(() => {
+                    this.handleDetail(this.activitylist[this.index])
+                }, 800)
+            }
         })
-        // getactivityinfo
     }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '../styles/imports'
+
 .activity
     background $bgDark
     padding 20px
@@ -97,7 +120,7 @@ export default {
                     height 60px
                     line-height 60px
 .popup_container
-    background-color  $bgDark
+    background-color $bgDark
     text-align center
     padding 0 30px 30px 30px
     box-sizing border-box
@@ -109,11 +132,10 @@ export default {
         height 100px
         line-height 100px
         display flex
-        align-items: center;
+        align-items center
         justify-content center
     .ios-arrow-back
         fill #fff
         position absolute
         left 0
-    
 </style>

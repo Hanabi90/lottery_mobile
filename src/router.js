@@ -14,7 +14,7 @@ const router = new Router({
         },
         {
             path: '/home',
-            name: 'home',
+            name: '首页',
             component: () =>
                 import(/* webpackChunkName: "home" */ './views/home.vue')
         },
@@ -32,44 +32,45 @@ const router = new Router({
         },
         {
             path: '/usercenter',
-            name: 'usercenter',
+            name: '个人中心',
+            props:true,
             component: () =>
                 import(/* webpackChunkName: "usercenter" */ './views/usercenter.vue')
         },
         {
             path: '/openAccountLine',
-            name: 'openAccountLine',
+            name: '注册开户',
             component: () =>
                 import(/* webpackChunkName: "openAccountLine" */ './views/openAccountLine.vue')
         },
         {
             path: '/openLine',
-            name: 'openLine',
+            name: '推广链接',
             component: () =>
                 import(/* webpackChunkName: "openLine" */ './views/openLine.vue')
         },
         {
             path: '/changePassword',
-            name: 'changePassword',
+            name: '登录密码',
             component: () =>
                 import(/* webpackChunkName: "changePassword" */ './views/changePassword.vue')
         },
         {
             path: '/changeSecPassword',
-            name: 'changeSecPassword',
+            name: '提款密码',
             props:true,
             component: () =>
                 import(/* webpackChunkName: "changeSecPassword" */ './views/changeSecPassword.vue')
         },
         {
             path: '/bindquestion',
-            name: 'bindquestion',
+            name: '密保设定',
             component: () =>
                 import(/* webpackChunkName: "bindquestion" */ './views/bindquestion.vue')
         },
         {
             path: '/bank',
-            name: 'bank',
+            name: '绑定银行卡',
             props:true,
             component: () =>
                 import(/* webpackChunkName: "bank" */ './views/bank.vue')
@@ -82,7 +83,7 @@ const router = new Router({
         },
         {
             path: '/notice',
-            name: 'notice',
+            name: '系统公告',
             props:true,
             component: () =>
                 import(/* webpackChunkName: "notice" */ './views/notice.vue')
@@ -95,43 +96,44 @@ const router = new Router({
         },
         {
             path: '/information',
-            name: 'information',
+            name: '站内信',
             component: () =>
                 import(/* webpackChunkName: "information" */ './views/information.vue')
         },
         {
             path: '/agentManagement',
-            name: 'agentManagement',
+            name: '团队管理',
             component: () =>
                 import(/* webpackChunkName: "agentManagement" */ './views/agentManagement.vue')
         },
         {
             path: '/wallet',
-            name: 'wallet',
+            name: '钱包查询',
             component: () =>
                 import(/* webpackChunkName: "wallet" */ './views/wallet.vue')
         },
         {
             path: '/withdrawal',
-            name: 'withdrawal',
+            name: '提现',
             component: () =>
                 import(/* webpackChunkName: "withdrawal" */ './views/withdrawal.vue')
         },
         {
             path: '/transfer',
-            name: 'transfer',
+            name: '转账',
             component: () =>
                 import(/* webpackChunkName: "transfer" */ './views/transfer.vue')
         },
         {
             path: '/deposit',
-            name: 'deposit',
+            name: '充值',
             component: () =>
                 import(/* webpackChunkName: "deposit" */ './views/deposit.vue')
         },
         {
             path: '/activity',
-            name: 'activity',
+            name: '活动',
+            props:true,
             component: () =>
                 import(/* webpackChunkName: "activity" */ './views/activity.vue')
         }

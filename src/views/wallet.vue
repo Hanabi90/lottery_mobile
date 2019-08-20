@@ -4,9 +4,9 @@
             <h5>我的钱包</h5>
             <ul  v-if="userwallet!==null">
                 <li><span>总资金：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li>
-                <li><span>转账钱包：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li>
-                <li><span>可提资金：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li>
-                <li><span>提款限额：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li>
+                <!-- <li><span>转账钱包：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li> -->
+                <!-- <li><span>可提资金：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li> -->
+                <!-- <li><span>提款限额：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li> -->
             </ul>
         </div>
         <div class="bottom">
@@ -26,8 +26,6 @@ import {
     thirdgameGetuserwallet,
     thirdgameGetwalletlist,
     thirdgameUpdatewallet,
-    depositMain,
-    unionpayaddcredit
 } from '@/api/index'
 export default {
     name: 'wallet',
@@ -41,18 +39,12 @@ export default {
     methods: {},
     created(){
         thirdgameGetwalletlist().then((res)=>{
-            console.log(res);
+            // console.log(res);
             this.walletList = res.data
         })
         thirdgameGetuserwallet().then((res)=>{
-            console.log(res);
+            // console.log(res);
             this.userwallet = res.data
-        })
-        depositMain().then((res)=>{
-            console.log(res);
-        })
-        unionpayaddcredit().then((res)=>{
-            console.log(res);
         })
     },
 }

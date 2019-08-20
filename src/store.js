@@ -8,7 +8,7 @@ let oState = {
     money: '',
     nickname: '',
     drawerRight: true, //个人中心开关
-    userCenter: false, //用户中心
+    userCenter: false, //个人中心
     lotteryId: '', //彩种id
     lotteryNumber: '', //选择的号码
     hackReset: true, //利用v-if 重组组件lottery 组件
@@ -23,42 +23,42 @@ let oState = {
 export default new Vuex.Store({
     state: { ...oState },
     mutations: {
-        reset(state) {
+        reset (state) {
             for (const iterator in oState) {
                 state[iterator] = oState[iterator]
             }
         },
 
-        lotteryMenue(state, data) {
+        lotteryMenue (state, data) {
             state.lotteryMenue = { ...data }
         },
-        login(state, data) {
+        login (state, data) {
             // 变更状态
             state.loginCode = data
         },
-        money(state, data) {
+        money (state, data) {
             state.money = data
         },
-        nickname(state, data) {
+        nickname (state, data) {
             state.nickname = data
         },
-        lotteryId(state, data) {
+        lotteryId (state, data) {
             state.lotteryId = data
         },
 
-        userCenter(state, data) {
+        userCenter (state, data) {
             state.userCenter = data
         },
-        lotteryNumber(state, data) {
+        lotteryNumber (state, data) {
             state.lotteryNumber = { ...data }
         },
-        hackReset(state, data) {
+        hackReset (state, data) {
             state.hackReset = data
         },
-        issue(state, data) {
+        issue (state, data) {
             state.issue = data
         },
-        orderList(state, data) {
+        orderList (state, data) {
             switch (data.type) {
                 case 'add':
                     state.orderList.unshift(data.data)
@@ -73,73 +73,73 @@ export default new Vuex.Store({
                     break
             }
         },
-        orderHistory(state, data) {
+        orderHistory (state, data) {
             state.orderHistory = [...data]
         },
-        openList(state, data) {
+        openList (state, data) {
             state.openList = [...data]
         },
-        unReadAmount(state, data) {
+        unReadAmount (state, data) {
             state.unReadAmount = data
         },
-        bonues(state, data) {
+        bonues (state, data) {
             state.bonues = data
         },
-        trace(state, data) {
+        trace (state, data) {
             state.trace = data
         }
     },
     actions: {
-        test(context){
+        test (context) {
             var res = api.getbalance()
             return res
         },
-        handleReset(context) {
+        handleReset (context) {
             context.commit('reset')
         },
-        handleLotteryMenue(context, data) {
+        handleLotteryMenue (context, data) {
             context.commit('lotteryMenue', data)
         },
-        handleLogin(context, data) {
+        handleLogin (context, data) {
             context.commit('login', data)
         },
-        handleMoney(context, data) {
+        handleMoney (context, data) {
             context.commit('money', data)
         },
-        handleNickName(context, data) {
+        handleNickName (context, data) {
             context.commit('nickname', data)
         },
-        handleLotteryId(context, data) {
+        handleLotteryId (context, data) {
             context.commit('lotteryId', data)
         },
-        handleUserCenter(context, data) {
+        handleUserCenter (context, data) {
             context.commit('userCenter', data)
         },
-        handleLotteryNumber(context, data) {
+        handleLotteryNumber (context, data) {
             context.commit('lotteryNumber', data)
         },
-        handleHackReset(context, data) {
+        handleHackReset (context, data) {
             context.commit('hackReset', data)
         },
-        handleIssue(context, data) {
+        handleIssue (context, data) {
             context.commit('issue', data)
         },
-        handleOrderList(context, data) {
+        handleOrderList (context, data) {
             context.commit('orderList', data)
         },
-        handleOrderHistory(context, data) {
+        handleOrderHistory (context, data) {
             context.commit('orderHistory', data)
         },
-        handleOpenList(context, data) {
+        handleOpenList (context, data) {
             context.commit('openList', data)
         },
-        handleUnReadAmount(context, data) {
+        handleUnReadAmount (context, data) {
             context.commit('unReadAmount', data)
         },
-        handleBonues(context, data) {
+        handleBonues (context, data) {
             context.commit('bonues', data)
         },
-        handleTrace(context, data) {
+        handleTrace (context, data) {
             context.commit('trace', data)
         }
     }

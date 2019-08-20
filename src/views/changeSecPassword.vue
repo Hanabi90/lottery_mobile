@@ -148,13 +148,6 @@ export default {
             this.hasSecpass = res
         })
     },
-    computed(){
-        if(this.hasSecpass){
-            this.inputTitle = '输入新提款密码'
-        }else{
-            this.inputTitle = '设置提款密码'
-        }
-    },
     components: {
         Group,
         XInput,

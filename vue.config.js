@@ -16,17 +16,18 @@ module.exports = {
                     minRatio: 0.8,
                     cache: true
                 })
-                .tap(args => {})
+                .tap(args => { })
         }
     },
     configureWebpack: config => {
-        require('vux-loader').merge(config, {
+        vuxLoader.merge(config, {
             plugins: ['vux-ui', 'duplicate-style']
         })
     },
     devServer: {
         open: true,
         host: 'sid-test.hoyibet.com',
-        before: app => {}
-    }
+        before: app => { }
+    },
+    publicPath: './'
 }
