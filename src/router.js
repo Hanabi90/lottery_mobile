@@ -118,10 +118,22 @@ const router = new Router({
                 import(/* webpackChunkName: "withdrawal" */ './views/withdrawal.vue')
         },
         {
+            path: '/transfer',
+            name: 'transfer',
+            component: () =>
+                import(/* webpackChunkName: "transfer" */ './views/transfer.vue')
+        },
+        {
             path: '/deposit',
             name: 'deposit',
             component: () =>
                 import(/* webpackChunkName: "deposit" */ './views/deposit.vue')
+        },
+        {
+            path: '/activity',
+            name: 'activity',
+            component: () =>
+                import(/* webpackChunkName: "activity" */ './views/activity.vue')
         }
     ]
 })

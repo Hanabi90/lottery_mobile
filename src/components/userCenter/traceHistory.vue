@@ -164,13 +164,11 @@
 <script>
 import {
     Scroller,
-    LoadMore,
     Flexbox,
     FlexboxItem,
     Selector,
     Datetime,
     XButton,
-    XInput,
     Popup
 } from 'vux'
 
@@ -621,13 +619,11 @@ export default {
     },
     components: {
         Scroller,
-        LoadMore,
         Flexbox,
         FlexboxItem,
         Datetime,
         Selector,
         XButton,
-        XInput,
         Popup
     }
 }

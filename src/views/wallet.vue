@@ -25,7 +25,9 @@
 import {
     thirdgameGetuserwallet,
     thirdgameGetwalletlist,
-    thirdgameUpdatewallet
+    thirdgameUpdatewallet,
+    depositMain,
+    unionpayaddcredit
 } from '@/api/index'
 export default {
     name: 'wallet',
@@ -45,6 +47,12 @@ export default {
         thirdgameGetuserwallet().then((res)=>{
             console.log(res);
             this.userwallet = res.data
+        })
+        depositMain().then((res)=>{
+            console.log(res);
+        })
+        unionpayaddcredit().then((res)=>{
+            console.log(res);
         })
     },
 }

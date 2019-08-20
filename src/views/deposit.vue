@@ -1,176 +1,94 @@
 <template>
-    <div>
-        <div class="top_container">
-            <group>
-                <div class="btns">
-                    <x-button class="btn recharge" type="blue">切换成自动转换模式</x-button>
-                </div>
-                <div>
-                    <selector
-                        title="转账从："
-                        class="selector"
-                        ref="defaultValueRef"
-                        direction="ltr"
-                        :options="userwallet"
-                        @on-change="checkSelect('1')"
-                        v-model="selector_1"
-                    ></selector>
-                </div>
-                <div>
-                    <selector
-                        title="转账至："
-                        class="selector"
-                        ref="defaultValueRef"
-                        direction="ltr"
-                        :options="userwalletCopy"
-                        @on-change="checkSelect('2')"
-                        v-model="selector_2"
-                    ></selector>
-                </div>
-                <div>
-                    <x-input
-                        ref="input"
-                        :show-clear="false"
-                        :required="false"
-                        title="转账金额："
-                        name="username"
-                        type="number"
-                        v-model="amount"
-                        @on-change="inputMoneyListern($event)"
-                    ></x-input>
-                    <span class="rules">*金额必须为整数，并且大于1.</span>
-                </div>
-                <div class="btns">
-                    <x-button class="btn recharge" @click.native="handleDeposit" type="orange">确定提交</x-button>
-                </div>
-            </group>
+    <div class="deposit">
+        <p>充值处理时间：7*24小时充值服务</p>
+        <p class="dotted"></p>
+        <p>选择充值银行：{{selectedBank}}</p>
+        <p class="tips">**如选择银行卡转账，请勿使用其他支付方式，否则充值将无法到账</p>
+        <p class="dotted"></p>
+        <checker
+        v-model="selectedBank"
+        default-item-class="demo5-item"
+        selected-item-class="demo5-item-selected"
+        >
+            <checker-item v-for="(i,index) in banklist" :key="i.title" :value="i.title">
+                <i :style="`backgroundImage:url(${urlList[index]})`"></i>
+                {{i.title}}
+            </checker-item>
+        </checker>
+        <p class="dotted"></p>
+        <span>充值金额(人民币)：</span>
+        <div class="inputbox">
+            <x-input type="number" v-model="money"></x-input>元
         </div>
-        <!-- <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案</div> -->
+        <x-button class="btn withdrawal" @click.native="handleSubmit" type="orange">下一步</x-button>
     </div>
 </template>
 
 <script>
-import { Selector, XButton, XInput, Group } from 'vux'
-import {
-    thirdgameGetuserwallet,
-    thirdgameGetwalletlist,
-    thirdgameUpdatewallet,
-    thirdgameDeposit,
-    thirdgameWithdraw
-} from '@/api/index'
+import { Selector, XButton, XInput, Group, Checker, CheckerItem } from 'vux'
+import {unionpayaddcredit,depositMain,thirdPayDeposit} from '@/api/index'
 export default {
     name: 'deposit',
     data() {
         return {
-            walletList: [],
-            userwallet: [],
-            userwalletCopy: [],
-            selector_1: '',
-            selector_2: '',
-            amount: ''
+            selectedBank:'支付宝充值',
+            urlList:[
+                require('../assets/images/deposit/yinlianzhifu.png'),
+                require('../assets/images/deposit/zhifubaozhifu.png'),
+                require('../assets/images/deposit/weixinzhifu.png'),
+                require('../assets/images/deposit/yunshanfu.png')
+            ],
+            banklist:[],
+            money:'',
+            formData:{
+                    flag: 'load',
+                    aid: 714,
+                    amount: 100,
+                    alertmin: 100,
+                    alertmax: 20000,
+                    typename: 'gp1',
+                    bank_code: 'UNIONPAY'
+                }
         }
     },
     methods: {
-        checkSelect(name) {
-            if (name == '1') {
-                if (this.selector_1 !== '_main') {
-                    this.selector_2 = '_main'
-                } else if (this.selector_1 == this.selector_2) {
-                    this.selector_2 = ''
-                }
-            } else {
-                if (this.selector_2 !== '_main') {
-                    this.selector_1 = '_main'
-                } else if (this.selector_1 == this.selector_2) {
-                    this.selector_1 = ''
-                }
-            }
-            this.amount = ''
-            this.$refs.input.currentValue = ''
-        },
-        inputMoneyListern(value) {
-            //输入监听
-            var number = Number(value - 0)
-            if (number <= 0) {
-                this.amount = ''
-                this.$refs.input.currentValue = ''
-            }
-            if (number > this.maxAmount) {
-                this.amount = parseInt(this.maxAmount)
-                this.$refs.input.currentValue = parseInt(this.maxAmount)
-            }
-        },
-        handleDeposit() {
-            var paramter = {
-                amount:this.amount,
-                walletcode:''
-            }
-            if (this.selector_1 == '_main') {
-                paramter.walletcode = this.selector_2
-                thirdgameDeposit(paramter).then((res)=>{
-                    this.$vux.confirm.show({
-                        showCancelButton:false,
-                        title: '转账成功',
-                        content:`主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
-                        onConfirm : () => {
-                            
-                        }
-                    })
-                })                    
-            }else{
-                paramter.walletcode = this.selector_1
-                thirdgameWithdraw(paramter).then((res)=>{
-                    this.$vux.confirm.show({
-                        showCancelButton:false,
-                        title: '转账成功',
-                        content:`主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
-                        onConfirm : () => {
-                            
-                        }
-                    })
-                })                
-            }
-
-        }
-    },
-    computed: {
-        maxAmount() {
-            if (this.selector_1 !== '') {
-                return this.userwallet.filter(item => {
-                    return item.wallet_code == this.selector_1
-                })[0]['wallet_balance']
-            } else {
-                return ''
-            }
+        handleSubmit(){
+            const currentItem = this.banklist.filter((item)=>{
+                return item.title==this.selectedBank
+            })
+            thirdPayDeposit({data:null,url:currentItem[0].url}).then((res)=>{
+                const formData = {
+                        data:{
+                            flag: 'load',
+                            amount: this.money,
+                            bank_code: res.data.banklist[0].bank_code,
+                            typename : res.data.typename,
+                            aid : res.data.aid,
+                            alertmin : res.data.loadmin,
+                            alertmax : res.data.loadmax,
+                            typename : res.data.typename
+                        },
+                        url:currentItem[0].url
+                    }
+                thirdPayDeposit(formData).then((res)=>{
+                    window.open(res.data)
+                })
+            })
         }
     },
     created() {
-        // thirdgameGetwalletlist().then(res => {
-        //     console.log(res);
-        //     this.walletList = [...res.data]
-        //     this.walletList.forEach((item, index) => {
-        //         this.$set(this.walletList[index], 'key', item.wallet_code)
-        //         this.$set(this.walletList[index], 'value', item.wallet_name)
-        //     })
-        // })
-        thirdgameGetuserwallet().then(res => {
-            console.log(res)
-            this.userwallet = [...res.data]
-            this.userwallet.forEach((item, index) => {
-                this.$set(this.userwallet[index], 'key', item.wallet_code)
-                this.$set(this.userwallet[index], 'value', item.wallet_name)
-            })
-            this.userwalletCopy = [...this.userwallet]
+        depositMain().then((res)=>{
+            this.banklist = res.data
         })
     },
-    mounted(){
-        
-    },
+    mounted() {},
     components: {
         Selector,
         XButton,
         XInput,
-        Group
+        Group,
+        Checker,
+        CheckerItem
     }
 }
 </script>
@@ -178,52 +96,61 @@ export default {
 <style lang="stylus" scoped>
 @import '../styles/imports'
 
-.top_container
-    background $bgLight
-    padding 40px 100px
-    .rules
-        padding-left 130px
-        font-size 30px
-        margin-bottom 40px
-        width 100%
-        display block
+.deposit
+    background-color $bgLight
+    color #fff
+    min-height 100vh
+    padding 40px
+    .dotted
+        border-bottom 1px dotted #fff
+        height 1px
+        margin 20px 0
+    .tips
         color $gold
-    >>>.weui-cells
-        background-color $bgLight
-        .weui-cell
-            padding 0
-    >>>.weui-cell__hd
-        width 130px
-        text-align left
-        .weui-label
-            width 100%
-    >>>.weui-cell__bd
-        width 200px
-        line-height 70px
-        margin-bottom 20px
-        &::after
-            margin-top -16px
-        .weui-select
-            line-height 70px
-            height 70px
-            font-family '微软雅黑'
-.btns
+        line-height 50px
+>>>.vux-checker-box
     display flex
-    width 100%
-    justify-content space-around
-    padding-left 130px
+    flex-wrap wrap
     box-sizing border-box
-    margin-bottom 40px
-    .btn
-        font-family '微软雅黑'
-        height 70px
-        font-size 26px
-        width 100%
-.beizhu
-    background $bgDark
-    padding 30px 20px
-    color $fontColor_grey
-    font-size 30px
-    line-height 40px
+    justify-content space-between
+    .demo5-item 
+        width: 48%;
+        height: 80px;
+        line-height: 80px;
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        margin-right: 6px;
+        color #000
+        margin-bottom 16px
+        display flex
+        justify-content space-around
+        align-items center
+        i
+            height 60px
+            width 40%;
+            background-size contain
+            background-repeat no-repeat
+            background-position center center
+    
+    .demo5-item-selected 
+        border-color: #ff4a00;
+        background: #ffffff url('../assets/images/conner.png') no-repeat right bottom;
+.inputbox
+    display flex
+    align-items center
+    >>>.weui-cell
+        padding 0
+        line-height 80px
+        height 80px
+        margin 10px 20px 10px 0
+        .weui-cell__bd
+            height 100%
+.btn
+    margin-top 30px
+    height 60px
+    line-height 60px
+
 </style>
 

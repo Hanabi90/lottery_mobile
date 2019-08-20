@@ -119,6 +119,18 @@ service.interceptors.response.use(
                         type: 'warn'
                     })
                     return false
+                case -160:
+                        Vue.$vux.toast.show({
+                            text: response.data.msg,
+                            type: 'warn'
+                        })
+                        Router.back(-1)
+                case -157:
+                        Vue.$vux.toast.show({
+                            text: response.data.msg,
+                            type: 'warn'
+                        })
+                        return false
                 default:
                     Vue.$vux.toast.show({
                         text: response.data.msg,

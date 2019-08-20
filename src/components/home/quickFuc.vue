@@ -1,22 +1,22 @@
 <template>
     <div class="quickFuc">
         <ul>
-            <li>
+            <router-link tag="li" to="/deposit">
                 <i></i>
                 <p>充值</p>
-            </li>
+            </router-link>
             <li>
                 <i></i>
                 <p>提现</p>
             </li>
-            <router-link tag="li" to="/deposit">
+            <router-link tag="li" to="/transfer">
                 <i></i>
                 <p>转账</p>
             </router-link>
-            <li>
+            <!-- <li>
                 <i></i>
                 <p>客服</p>
-            </li>
+            </li> -->
         </ul>
     </div>
 </template>

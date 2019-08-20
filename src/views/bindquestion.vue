@@ -52,7 +52,7 @@
                         <span class="rules">长度最多为25个字符</span>
                     </div>
                     <div class="btns">
-                        <x-button class="btn withdrawal" type="blue">重置</x-button>
+                        <x-button class="btn withdrawal" @click.native="clearInfo" type="blue">重置</x-button>
                         <x-button
                             class="btn recharge"
                             type="orange"
@@ -209,7 +209,10 @@ export default {
             }
             if (name == 'formInline') {
                 setsequestion({ ...this.formInline }).then(res => {
-                    this.$Message.success('Success!')
+                    this.$vux.toast.show({
+                        text: '资金密码设定成功',
+                        type: 'success'
+                    })
                 })
             }
             if (name == 'resetPassword') {
@@ -231,6 +234,14 @@ export default {
         },
         changeContent(value) {
             this.tableIndex = value
+        },
+        clearInfo(){
+            this.formInline = {
+                dna_ques_1: '',
+                ans1: '',
+                dna_ques_2: '',
+                ans2: ''
+            }
         }
     },
     mounted() {

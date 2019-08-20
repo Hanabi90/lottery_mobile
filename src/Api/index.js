@@ -506,4 +506,34 @@ export const thirdgameUpdatewallet = formData =>
         url: '/thirdgame/updatewallet',
         data: qs.stringify(formData)
     })
+//提供第三方充值接口
+export const depositMain = formData =>
+    service.request({
+        method: 'post',
+        url: 'deposit/main',
+        data: qs.stringify(formData)
+    })
+//银联
+export const unionpayaddcredit = formData =>
+    service.request({
+        method: 'post',
+        url: 'deposit/unionpayaddcredit',
+        data: qs.stringify(formData)
+    })
+//提款
+export const withdraw = formData =>
+    service.request({
+        method: 'post',
+        url: 'withdraw/withdraw',
+        data: qs.stringify(formData)
+    })
+//三方支付
+export const thirdPayDeposit = (formData) =>{
+    return service.request({
+        method: 'post',
+        url: formData.url,
+        data: formData?qs.stringify(formData.data):''
+    })
+}
+    
     

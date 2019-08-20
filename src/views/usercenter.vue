@@ -24,9 +24,9 @@
                 </div>
             </div>
             <div class="btns">
-                <x-button class="btn recharge" type="orange">充值</x-button>
-                <x-button class="btn withdrawal" link="/withdrawal" type="blue">提现</x-button>
-                <x-button class="btn history" link="/deposit" type="purple">转账</x-button>
+                <x-button class="btn recharge" type="orange" link="/deposit">充值</x-button>
+                <x-button class="btn withdrawal" @click.native="handleAlert('withdrawal')" type="blue">提现</x-button>
+                <x-button class="btn history" link="/transfer" type="purple">转账</x-button>
             </div>
         </div>
         <div class="main_container">
@@ -72,7 +72,8 @@ import {
     RSAencrypt,
     getsecpass,
     checksequestion,
-    thirdgameGetuserwallet
+    thirdgameGetuserwallet,
+    getbankinfo
 } from '@/api/index.js'
 import md5 from 'js-md5'
 export default {
@@ -81,6 +82,7 @@ export default {
         return {
             alert: false,
             routename: null,
+            userSeting:null,
             questionList: [
                 { key: '4', value: '您母亲的姓名是？' },
                 { key: '8', value: '您配偶的生日是？' },
@@ -130,7 +132,17 @@ export default {
                         this.$router.push(this.routename)
                     }
                 })
-            } else {
+            }else if(routename=='withdrawal'){
+                getsecpass().then(res => {
+                    if (!res) {
+                        this.$router.push({name:'changeSecPassword',params: { fromRoute: true }})
+                        return
+                    } else {
+                        this.alert = true
+                        this.routename = routename
+                    }
+                })
+            }else {
                 getsecpass().then(res => {
                     if (!res) {
                         this.$router.push({name:'changeSecPassword',params: { fromRoute: true }})
@@ -152,6 +164,8 @@ export default {
                     this.questionResData = ''
                     this.$router.push(this.routename)
                 })
+            }else if(this.routename=='withdrawal'){
+                this.$router.push(this.routename)
             }else{
                 var secpass = RSAencrypt(md5(value))
                 checksecpass({ secpass }).then(res => {
@@ -181,6 +195,8 @@ export default {
     },
     created(){
         this.getMoney()
+        this.userSeting = JSON.parse(sessionStorage.getItem('userSeting'))
+        this.$store.dispatch('handleNickName',this.userSeting.username)
     },
     components: {
         XButton,

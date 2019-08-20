@@ -1,4 +1,4 @@
 [0723/143123.462:ERROR:process_info.cc(359)] UncheckedAllocate
-[0723/143144.610:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: ²Ù×÷³É¹¦Íê³É¡£ (0x0)
+[0723/143144.610:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½É¡ï¿½ (0x0)
 [0723/160750.218:ERROR:process_info.cc(359)] UncheckedAllocate
 [0724/052532.636:ERROR:process_info.cc(359)] UncheckedAllocate

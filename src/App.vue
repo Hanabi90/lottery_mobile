@@ -46,7 +46,7 @@
                             <span>钱包查询</span>
                         </span>
                     </tabbar-item>
-                    <tabbar-item>
+                    <tabbar-item :link="{path:'/activity'}">
                         <x-icon slot="icon" type="ios-gift" class="homeIcon" ></x-icon>
                         <span slot="label">
                             <span>优惠活动</span>
@@ -72,7 +72,7 @@ export default {
     name: 'app',
     data() {
         return {
-            showMenus: false
+            showMenus: false,
         }
     },
     computed: {
@@ -96,6 +96,52 @@ export default {
                 this.$router.push('/')
             })
         }
+    },
+    mounted(){
+        console.log(this.$router);
+        var kefu
+        // var winH = document.body.offsetHeight
+        // var winW = document.body.offsetWidth
+        // var circularW 
+        // var circularH 
+        // var disL,disT;
+        // var scrollTop;
+        // var footerH = 100
+        // var LandR;//水平方向上的left值
+
+        setTimeout(() => {
+            kefu = document.getElementById('lim_mobile_chat')
+            kefu.style.right = 0
+            // circularW = kefu.offsetWidth
+            // circularH = kefu.offsetHeight-58
+            // kefu.addEventListener('touchstart',(ev)=>{
+            //     kefu.addEventListener('touchmove',(ev)=>{
+            //         scrollTop = document.body.scrollTop
+            //         disL = ev.touches[0].pageX - circularW/2;
+            //         disT = ev.touches[0].pageY - circularH/2;
+            //         disL = disL < 0 ? 0 : disL;
+            //         disL = disL >winW-circularW  ? winW-circularW : disL;
+            //         disT = disT < 0 ? 0 : disT;
+            //         disT = disT > winH-circularH ? winH-circularH : disT;
+            //         kefu.style.left = disL + 'px';
+            //         kefu.style.top = disT + 'px'
+            //     })
+            // })
+            // kefu.addEventListener('touchend',()=>{
+            //             var LandR = kefu.offsetLeft
+
+            //             if( (LandR+circularW/2)<=winW/2 ){
+
+
+            //                 kefu.style.left =0;
+            //             }else{
+
+            //             kefu.style.left = winW-circularW + 'px'
+
+            //             }
+            //         })
+        }, 1000);
+        
     },
     components: {
         ViewBox,
@@ -180,3 +226,7 @@ html, body, #lottery
             border-bottom none
 </style>
 
+
+<style lang="less">
+@import '~vux/src/styles/reset.less';
+</style>

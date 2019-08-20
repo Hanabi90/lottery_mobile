@@ -20,15 +20,23 @@
             ref="scroller_1"
             :scroll-bottom-offst="200"
             :bounce="false"
-             v-show="navIndex=='收到的消息'"
+            v-show="navIndex=='收到的消息'"
         >
             <div class="content">
                 <!-- <checklist required :options="inlineDescList" v-model="inlineDescListValue" ></checklist> -->
                 <div class="msg" v-for="(item,index) in list" :key="index+'msg'">
                     <check-icon :value.sync="item.active"></check-icon>
-                    <div class="text" :class="{unread:item.readtime==null}" @click="handleSendContent(item.entry,index)">
-                        <p><span>{{item.subject}}</span></p>
-                        <p><span>{{item.sendtime}}</span></p>
+                    <div
+                        class="text"
+                        :class="{unread:item.readtime==null}"
+                        @click="handleSendContent(item.entry,index)"
+                    >
+                        <p>
+                            <span>{{item.subject}}</span>
+                        </p>
+                        <p>
+                            <span>{{item.sendtime}}</span>
+                        </p>
                     </div>
                     <div
                         class="delete"
@@ -40,7 +48,7 @@
                 <!-- <div class="selectAll">
                     <check-icon :value.sync="all">全选</check-icon>
                     <div class="delete" @click="handleDelete">删除信息</div>
-                </div> -->
+                </div>-->
             </div>
         </scroller>
         <scroller
@@ -53,20 +61,28 @@
             :bounce="false"
             v-show="navIndex=='发出的消息'"
         >
-        <div class="content" >
-            <div class="msg" v-for="(item,index) in messageSendList" :key="index+'msg'">
-                <check-icon :value.sync="item.active"></check-icon>
-                <div class="text" :class="{unread:item.readtime==null}" @click="handleSendContent(item.entry,index)">
-                    <p><span>{{item.subject}}</span></p>
-                    <p><span>{{item.sendtime}}</span></p>
+            <div class="content">
+                <div class="msg" v-for="(item,index) in messageSendList" :key="index+'msg'">
+                    <check-icon :value.sync="item.active"></check-icon>
+                    <div
+                        class="text"
+                        :class="{unread:item.readtime==null}"
+                        @click="handleSendContent(item.entry,index)"
+                    >
+                        <p>
+                            <span>{{item.subject}}</span>
+                        </p>
+                        <p>
+                            <span>{{item.sendtime}}</span>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <!-- <checklist required :options="inlineDescList" v-model="inlineDescListValue" @on-change="change"></checklist> -->
-            <!-- <div class="selectAll">
+                <!-- <checklist required :options="inlineDescList" v-model="inlineDescListValue" @on-change="change"></checklist> -->
+                <!-- <div class="selectAll">
                 <check-icon :value.sync="all">全选</check-icon>
                 <div class="delete" @click="handleDelete">删除信息</div>
-            </div> -->
-        </div>
+                </div>-->
+            </div>
         </scroller>
         <div class="selectAll" v-if="navIndex=='收到的消息'||navIndex=='发出的消息'">
             <check-icon :value.sync="all">全选</check-icon>
@@ -90,7 +106,11 @@
                     placeholder="请输入内容"
                 ></x-textarea>
                 <div class="btns">
-                    <x-button class="btn" @click.native="handleSubmit('formInline')" type="orange">发送</x-button>
+                    <x-button
+                        class="btn"
+                        @click.native="handleSubmit('formInline')"
+                        type="orange"
+                    >发送</x-button>
                     <x-button class="btn" type="blue">重置</x-button>
                 </div>
             </group>
@@ -98,9 +118,19 @@
         <div class="content grey" v-show="navIndex=='给上级发消息'||navIndex=='回复'">
             <group>
                 <x-input title="消息标题" v-model="parentsLine.subject"></x-input>
-                <x-textarea title="消息内容" :max="200" v-model="parentsLine.content" name="description" placeholder="请输入内容"></x-textarea>
+                <x-textarea
+                    title="消息内容"
+                    :max="200"
+                    v-model="parentsLine.content"
+                    name="description"
+                    placeholder="请输入内容"
+                ></x-textarea>
                 <div class="btns">
-                    <x-button class="btn" @click.native="handleSubmitLine('parentsLine')" type="orange">发送</x-button>
+                    <x-button
+                        class="btn"
+                        @click.native="handleSubmitLine('parentsLine')"
+                        type="orange"
+                    >发送</x-button>
                     <x-button class="btn" type="blue">重置</x-button>
                 </div>
             </group>
@@ -144,19 +174,44 @@ import {
     getunreadmessageamount
 } from '@/api/index'
 import {
-    Tab, TabItem,Checklist,CheckIcon,XInput,Group,XTextarea,XButton,Selector,Popup,Scroller 
+    Tab,
+    TabItem,
+    CheckIcon,
+    XInput,
+    Group,
+    XTextarea,
+    XButton,
+    Selector,
+    Popup,
+    Scroller
 } from 'vux'
 export default {
     name: 'information',
     data() {
         return {
             inlineDescList: [
-        {key: '1', value: '契约分红发放', inlineDesc: '2019-05-01 11:20:20'},
-        {key: '2', value: '契约分红发放', inlineDesc: '2019-05-01 11:20:20'},
-        {key: '3', value: '契约分红发放', inlineDesc: '2019-05-01 11:20:20'},
-        {key: '4', value: '契约分红发放', inlineDesc: '2019-05-01 11:20:20'}
-      ],
-      inlineDescListValue: [1],
+                {
+                    key: '1',
+                    value: '契约分红发放',
+                    inlineDesc: '2019-05-01 11:20:20'
+                },
+                {
+                    key: '2',
+                    value: '契约分红发放',
+                    inlineDesc: '2019-05-01 11:20:20'
+                },
+                {
+                    key: '3',
+                    value: '契约分红发放',
+                    inlineDesc: '2019-05-01 11:20:20'
+                },
+                {
+                    key: '4',
+                    value: '契约分红发放',
+                    inlineDesc: '2019-05-01 11:20:20'
+                }
+            ],
+            inlineDescListValue: [1],
             messageSetting: {
                 //收到的消息
                 flag: 'recieve', //类型
@@ -169,9 +224,9 @@ export default {
                 pn: 18, //数量
                 p: 1 //页数
             },
-            test:'',
-            popupShow:false,
-            currentItem:null,
+            test: '',
+            popupShow: false,
+            currentItem: null,
             all: false,
             list: [],
             navIndex: '收到的消息',
@@ -252,28 +307,29 @@ export default {
         }
     },
     methods: {
-        handleTest(index){
-            if(index==this.navIndex){
+        handleTest(index) {
+            if (index == this.navIndex) {
                 return
             }
             this.navIndex = index
         },
-        popupShowCtrl(flag){
-            this.popupShow=flag?true:false
+        popupShowCtrl(flag) {
+            this.popupShow = flag ? true : false
         },
         handleReachBottom() {
             let setList =
                 this.navIndex == '发出的消息'
                     ? this.messageSendSetting
                     : this.messageSetting
-            let page = this.navIndex == '发出的消息' ? this.sendPage : this.getPage
-            console.log(setList.p,page);
+            let page =
+                this.navIndex == '发出的消息' ? this.sendPage : this.getPage
             if (setList.p < page) {
                 return new Promise(resolve => {
                     this.$set(setList, 'p', setList.p + 1)
                     if (this.navIndex == '发出的消息') {
                         getSendMessage({ ...setList }).then(res => {
-                            res.data.page_data.forEach(item => {
+                            if(res.length > 0){
+                                res.data.page_data.forEach(item => {
                                 item.active = false
                                 item.content = '加载中。。。'
                             })
@@ -281,14 +337,20 @@ export default {
                                 ...this.messageSendList,
                                 ...res.data.page_data
                             ]
+                            }
                         })
                     } else {
                         getmessage(this.messageSetting).then(res => {
-                            res.data.page_data.forEach(item => {
-                                item.active = false
-                                item.content = '加载中。。。'
-                            })
-                            this.list = [...this.list, ...res.data.page_data]
+                            if (res.length > 0) {
+                                res.data.page_data.forEach(item => {
+                                    item.active = false
+                                    item.content = '加载中。。。'
+                                })
+                                this.list = [
+                                    ...this.list,
+                                    ...res.data.page_data
+                                ]
+                            }
                         })
                     }
                     resolve()
@@ -333,22 +395,22 @@ export default {
                 )
             }
         },
-        handleSendContent(value,index) {
+        handleSendContent(value, index) {
             var params
-            if(this.navIndex=='收到的消息'){
-                params = {entry:value}
-            }else{
-                params = {flag:'send',entry:value}
+            if (this.navIndex == '收到的消息') {
+                params = { entry: value }
+            } else {
+                params = { flag: 'send', entry: value }
             }
             getmessagecontent({
-                    entry: value
-                }).then(res => {
-                    this.currentItem = res.data
-                    if(this.navIndex=='收到的消息'){
-                        this.$set(this.list[index],'readtime',1)
-                    }
-                    this.popupShowCtrl(true)
-                })
+                entry: value
+            }).then(res => {
+                this.currentItem = res.data
+                if (this.navIndex == '收到的消息') {
+                    this.$set(this.list[index], 'readtime', 1)
+                }
+                this.popupShowCtrl(true)
+            })
         },
         handleDelete() {
             let arr = [], //拿到药删除的id
@@ -363,23 +425,26 @@ export default {
             if (arr.length) {
                 // 是否有选中删除的对象
                 deletemessage({
-                    flag: this.navIndex == '收到的消息' ? 'receiveuser' : 'senduser',
+                    flag:
+                        this.navIndex == '收到的消息'
+                            ? 'receiveuser'
+                            : 'senduser',
                     msgid: arr
                 }).then(res => {
-                    if(this.navIndex=='收到的消息'){
-                        arr.forEach((listItem)=>{
-                            var index = this.list.findIndex((item)=>{
-                                return item.entry==listItem
+                    if (this.navIndex == '收到的消息') {
+                        arr.forEach(listItem => {
+                            var index = this.list.findIndex(item => {
+                                return item.entry == listItem
                             })
-                            this.list.splice(index,1)
-                            console.log(index);
+                            this.list.splice(index, 1)
+                            console.log(index)
                         })
-                    }else{
-                        arr.forEach((listItem)=>{
-                            var index = this.messageSendList.findIndex((item)=>{
-                                return item.entry==listItem
+                    } else {
+                        arr.forEach(listItem => {
+                            var index = this.messageSendList.findIndex(item => {
+                                return item.entry == listItem
                             })
-                            this.messageSendList.splice(index,1)
+                            this.messageSendList.splice(index, 1)
                         })
                     }
                 })
@@ -393,7 +458,7 @@ export default {
             this.activeIndex = ''
             this.all = false
             if (name == '收到的消息') {
-                this.$refs.scroller_2.reset({top:0})
+                this.$refs.scroller_2.reset({ top: 0 })
                 this.messageSetting = {
                     //收到的消息
                     flag: 'recieve', //类型
@@ -423,7 +488,7 @@ export default {
                 })
             }
             if (name == '发出的消息') {
-                this.$refs.scroller_1.reset({top:0})
+                this.$refs.scroller_1.reset({ top: 0 })
                 this.messageSendSetting = {
                     //发送的消息
                     flag: 'send', //类型
@@ -461,46 +526,43 @@ export default {
             }
         },
         handleSubmit(name) {
-
-                    sendmessagetochild(this.formInline).then(res => {
-                        // this.$Message.success('消息已成功发送!')
-                        this.$vux.toast.show({
-                        text: '消息已成功发送',
-                        type: 'success'
-                    })
-                        this.formInline = {
-                            subject: '',
-                            childid: this.formInline.key,
-                            content: ''
-                        }
-                    })
-                
-            
+            sendmessagetochild(this.formInline).then(res => {
+                // this.$Message.success('消息已成功发送!')
+                this.$vux.toast.show({
+                    text: '消息已成功发送',
+                    type: 'success'
+                })
+                this.formInline = {
+                    subject: '',
+                    childid: this.formInline.key,
+                    content: ''
+                }
+            })
         },
         handleReply() {
-            this.replyLine = {...this.parentsLine}
-                messagereply({
-                    entry: this.list[this.activeIndex].entry,
-                    receiverid: this.list[this.activeIndex].senderid,
-                    id: this.list[this.activeIndex].entry,
-                    ...this.replyLine
-                }).then(res => {
-                    // this.$Message.success('消息已成功发送!')
-                    this.$vux.toast.show({
-                        text: '消息已成功发送',
-                        type: 'success'
-                    })
-                    this.parentsLine = {
-                        subject: '',
-                        content: ''
-                    }
-                    this.navIndex = '收到的消息'
+            this.replyLine = { ...this.parentsLine }
+            messagereply({
+                entry: this.list[this.activeIndex].entry,
+                receiverid: this.list[this.activeIndex].senderid,
+                id: this.list[this.activeIndex].entry,
+                ...this.replyLine
+            }).then(res => {
+                // this.$Message.success('消息已成功发送!')
+                this.$vux.toast.show({
+                    text: '消息已成功发送',
+                    type: 'success'
                 })
-            },
+                this.parentsLine = {
+                    subject: '',
+                    content: ''
+                }
+                this.navIndex = '收到的消息'
+            })
+        },
         handleSubmitLine() {
-            if(this.navIndex=="回复"){
+            if (this.navIndex == '回复') {
                 this.handleReply()
-            }else{
+            } else {
                 sendmessagetoparent({
                     ...this.parentsLine
                 }).then(res => {
@@ -536,15 +598,15 @@ export default {
             }
         }
     },
-    watch:{
-        all(val){
+    watch: {
+        all(val) {
             this.handleAll(val)
         }
     },
-    beforeRouteLeave (to, from, next) {
-        if(this.popupShow){
-            this.popupShow=false
-        }else{
+    beforeRouteLeave(to, from, next) {
+        if (this.popupShow) {
+            this.popupShow = false
+        } else {
             next()
         }
     },
@@ -560,7 +622,16 @@ export default {
         })
     },
     components: {
-        Tab, TabItem,Checklist,CheckIcon,XInput,Group,XTextarea,XButton,Selector,Popup,Scroller
+        Tab,
+        TabItem,
+        CheckIcon,
+        XInput,
+        Group,
+        XTextarea,
+        XButton,
+        Selector,
+        Popup,
+        Scroller
     }
 }
 </script>
@@ -587,13 +658,13 @@ export default {
                     font-size 26px
                     color #bbb
                 &::after
-                        content '已读'
-                        position absolute
-                        right 20px
-                        top 20px
-                        font-size 24px
-                        padding 10px
-                        background #3262ff
+                    content '已读'
+                    position absolute
+                    right 20px
+                    top 20px
+                    font-size 24px
+                    padding 10px
+                    background #3262ff
                 &.unread
                     &::after
                         content '未读'
@@ -630,7 +701,6 @@ export default {
             color #fff
         >>>.weui-cell:before
             border none
-        
             .vux-check-icon
                 padding 8px 20px
                 border-radius 4px
@@ -679,7 +749,7 @@ export default {
     padding 16px 40px
     border 1px solid #ea2f4c
     border-radius 4px
-    margin-left: 30px;
+    margin-left 30px
 .popup_container
     padding 0 40px 40px 40px
     box-sizing border-box
