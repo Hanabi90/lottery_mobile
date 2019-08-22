@@ -13,6 +13,12 @@ const router = new Router({
             component: Login
         },
         {
+            path: '/register',
+            name: 'register',
+            component: () =>
+                import(/* webpackChunkName: "register" */ './views/register.vue')
+        },
+        {
             path: '/home',
             name: '首页',
             component: () =>
@@ -142,7 +148,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     if (!sessionStorage.getItem('token')) {
         if (to.name != 'login') {
-            router.push({ name: 'login' })
+            if(to.name != 'register'){
+                router.push({ name: 'login' })
+            }
         }
     }
     next()

@@ -60,6 +60,7 @@ export default {
                 )
                 this.$emit('close')
                 this.childrenMoney = res.data.aUserFund.availablebalance
+                this.$emit('updateMoney',res.data.aUserFund.availablebalance)
                 this.$vux.confirm.show({
                     showCancelButton:false,
                     title: '充值成功',

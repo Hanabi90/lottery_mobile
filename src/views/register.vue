@@ -3,7 +3,17 @@
         <div class="content">
             <img src="../assets/images/logo.png" alt class="logo" />
             <group>
-                <x-input class="input" v-model="userName" @on-change="onUserNameChange" :readonly="readonly" @on-focus="readonly=false" placeholder="请输入用户名" :show-clear="false">
+                <x-input class="input" v-model="userName" placeholder="请输入用户名" :show-clear="false">
+                    <x-icon slot="label" type="ios-contact" size="30"></x-icon>
+                </x-input>
+            </group>
+            <group>
+                <x-input class="input" v-model="userName" placeholder="请输入用户名" :show-clear="false">
+                    <x-icon slot="label" type="ios-contact" size="30"></x-icon>
+                </x-input>
+            </group>
+            <group>
+                <x-input class="input" v-model="userName" placeholder="请输入用户名" :show-clear="false">
                     <x-icon slot="label" type="ios-contact" size="30"></x-icon>
                 </x-input>
             </group>
@@ -29,11 +39,7 @@
                 <img :src="imgUrl" @click="getImgCode" />
             </group>
             <x-button @click.native="handlelogin" class="btn" style="margin:10px 0" type="warn">登录</x-button>
-            <label class="remember">
-                <input class="remember-checkbox" @change="rememberCheckbox" v-model="rememberMe" type="checkbox" name="记住账号" id="">
-                <span>记住账号</span>
-            </label>
-            <!-- <x-button class="btn" style="background:#ffd336;color:#854909"  type="warn">注册</x-button> -->
+            <x-button class="btn" style="background:#ffd336;color:#854909"  type="warn">注册</x-button>
         </div>
     </div>
 </template>
@@ -42,8 +48,7 @@
 import { Group, XInput, XButton } from 'vux'
 import md5 from 'js-md5'
 import { login, popularizereg,RSAencrypt} from '@/api/index.js'
-// var isDev = window.location.href == 'http://sid-test.hoyibet.com:8080/'
-var isDev = false
+var isDev = window.location.href == 'http://sid-test.hoyibet.com:8080/'
 export default {
     data() {
         return {
@@ -53,9 +58,7 @@ export default {
             data1: 2,
             imgUrl: '',
             imgCode: '',
-            vvccookie:'',
-            rememberMe:false,
-            readonly:true
+            vvccookie:''
         }
     },
     methods: {
@@ -74,36 +77,15 @@ export default {
                 this.$store.dispatch('handleNickName', res.data.username)
             })
         },
-        onUserNameChange(){
-            if(localStorage.getItem('rememberMe')!==this.userName){
-                this.rememberMe=false
-            }
-        },
         getImgCode(){
             popularizereg().then(res => {
                 this.imgUrl = res.data.imgurl
                 this.vvccookie = res.data.vvccookie
             })
-        },
-        rememberCheckbox(){
-            if(this.rememberMe){
-                localStorage.setItem('rememberMe',this.userName)
-            }else{
-                localStorage.removeItem('rememberMe')
-            }
         }
     },
     mounted() {
         this.getImgCode()
-        if(sessionStorage.getItem('token')){
-            this.$router.push({name:'首页'})
-        }
-        if(localStorage.getItem('rememberMe')){
-            this.rememberMe = true
-            this.userName = localStorage.getItem('rememberMe')
-        }else{
-            this.userName = ''
-        }
     },
     components: {
         Group,
@@ -121,7 +103,6 @@ export default {
     display flex
     justify-content center
     align-items center
-    
     .flex
         >>>.weui-cells
             display flex
@@ -137,13 +118,6 @@ export default {
             width 372px
             margin auto
             margin-bottom 100px
-        .remember
-            color #fff
-            display flex
-            align-items center
-            input
-                margin-top: 8px;
-                margin-right: 10px;
     .btn
         height 80px
         font-size 36px

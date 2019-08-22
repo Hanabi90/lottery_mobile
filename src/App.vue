@@ -94,9 +94,35 @@ export default {
                 this.$store.dispatch('handleReset')
                 this.$router.push('/')
             })
+        },
+        IsPC() {
+            var userAgentInfo = navigator.userAgent
+            var Agents = new Array(
+                'Android',
+                'iPhone',
+                'SymbianOS',
+                'Windows Phone',
+                'iPad',
+                'iPod'
+            )
+            var flag = true
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false
+                    break
+                }
+            }
+            return flag
         }
     },
     mounted(){
+        var hostname = window.location.hostname.split('.')
+        hostname.splice(0,1,'www')
+        let url = `https://${hostname.join('.')}`
+        console.log(url);
+        if (this.IsPC()) {
+            window.open(url, '_self')
+        }
     },
     components: {
         ViewBox,

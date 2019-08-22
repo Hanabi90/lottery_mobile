@@ -4,7 +4,6 @@
             <x-input
                 v-model="addUserList.userName"
                 :show-clear="false"
-                :required="true"
                 title="用户名："
                 name="username"
                 placeholder="请输入姓名"
@@ -15,7 +14,6 @@
             <x-input
                 v-model="addUserList.password"
                 :show-clear="false"
-                :required="true"
                 title="密码："
                 name="username"
                 placeholder="请输入密码"

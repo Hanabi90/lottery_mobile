@@ -92,7 +92,7 @@
                         </div>
                         <!-- <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon> -->
                     </div>
-                    <component class="content" :uid="pointUserId" @close="close" :is="alertComponent"></component>
+                    <component class="content" :uid="pointUserId" @close="close" @updateMoney="updateMoney" :is="alertComponent"></component>
                 </div>
             </x-dialog>
         </div>
@@ -158,6 +158,12 @@ export default {
         }
     },
     methods: {
+        updateMoney(num){
+            const currentItem = this.teamList.filter((item,index)=>{
+                return item.userid == this.pointUserId
+            })[0]
+            this.$set(currentItem,'money',num)
+        },
         handleToast(key) {
             this.alert = true
         },
