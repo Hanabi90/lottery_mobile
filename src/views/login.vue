@@ -3,15 +3,20 @@
         <div class="content">
             <img src="../assets/images/logo.png" alt class="logo" />
             <group>
-                <x-input class="input" v-model="userName" @on-change="onUserNameChange" :readonly="readonly" @on-focus="readonly=false" placeholder="请输入用户名" :show-clear="false">
+                <x-input class="input" v-model="userName" @on-change="onUserNameChange"  placeholder="请输入用户名" :show-clear="false">
                     <x-icon slot="label" type="ios-contact" size="30"></x-icon>
                 </x-input>
             </group>
             <group>
+                <form style="display:none">
+                    <input type="password"/>
+                </form>
+                    <input type="password" style="width:0;height:0;float:left;visibility:hidden"/>
                 <x-input
                     class="input"
+                    @on-focus="test"
                     v-model="passWorde"
-                    type="password"
+                    type="text"
                     placeholder="请输入密码"
                     :show-clear="false"
                 >
@@ -29,11 +34,11 @@
                 <img :src="imgUrl" @click="getImgCode" />
             </group>
             <x-button @click.native="handlelogin" class="btn" style="margin:10px 0" type="warn">登录</x-button>
+            <x-button class="btn" style="background:#ffd336;color:#854909" link="/registered" type="warn">注册</x-button>
             <label class="remember">
                 <input class="remember-checkbox" @change="rememberCheckbox" v-model="rememberMe" type="checkbox" name="记住账号" id="">
                 <span>记住账号</span>
             </label>
-            <!-- <x-button class="btn" style="background:#ffd336;color:#854909"  type="warn">注册</x-button> -->
         </div>
     </div>
 </template>
@@ -59,7 +64,10 @@ export default {
         }
     },
     methods: {
-        handlelogin() {
+        test(e,w){
+            w.target.type="password"
+        },
+        async handlelogin() {
             const params = {
                 username: this.userName,
                 loginpass: this.passWorde,
@@ -73,6 +81,7 @@ export default {
                 this.$router.push({ name: '首页' })
                 this.$store.dispatch('handleNickName', res.data.username)
             })
+            this.getImgCode()
         },
         onUserNameChange(){
             if(localStorage.getItem('rememberMe')!==this.userName){
@@ -95,9 +104,9 @@ export default {
     },
     mounted() {
         this.getImgCode()
-        if(sessionStorage.getItem('token')){
-            this.$router.push({name:'首页'})
-        }
+        // if(sessionStorage.getItem('token')){
+        //     this.$router.push({name:'首页'})
+        // }
         if(localStorage.getItem('rememberMe')){
             this.rememberMe = true
             this.userName = localStorage.getItem('rememberMe')

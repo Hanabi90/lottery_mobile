@@ -8,18 +8,18 @@ const router = new Router({
     linkExactActiveClass: 'is-active',
     routes: [
         {
-            path: '/',
+            path: '/login',
             name: 'login',
             component: Login
         },
         {
-            path: '/register',
-            name: 'register',
+            path: '/registered',
+            name: 'registered',
             component: () =>
-                import(/* webpackChunkName: "register" */ './views/register.vue')
+                import(/* webpackChunkName: "registered" */ './views/registered.vue')
         },
         {
-            path: '/home',
+            path: '/',
             name: '首页',
             component: () =>
                 import(/* webpackChunkName: "home" */ './views/home.vue')
@@ -137,6 +137,12 @@ const router = new Router({
                 import(/* webpackChunkName: "deposit" */ './views/deposit.vue')
         },
         {
+            path: '/electronics',
+            name: '电子',
+            component: () =>
+                import(/* webpackChunkName: "electronics" */ './views/electronics.vue')
+        },
+        {
             path: '/activity',
             name: '活动',
             props:true,
@@ -148,7 +154,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     if (!sessionStorage.getItem('token')) {
         if (to.name != 'login') {
-            if(to.name != 'register'){
+            if(to.name != 'registered'){
                 router.push({ name: 'login' })
             }
         }

@@ -1,24 +1,35 @@
 <template>
     <div class="openLine">
         <div class="usertset">
-            <div class="range_container">
+            <!-- <div class="range_container">
             <span>奖金组：</span>
             <range class="range" :range-bar-height="10" v-model.number="addUserLine.keepodds" :min="Number(bonusGroup.minodds)" :max="Number(bonusGroup.maxodds)"></range>
             <input type="number" v-model.lazy="addUserLine.keepodds" />
-            <!-- <input type="number" :value="0" @blur="changekeepodds($event)"/> -->
-        </div>
-        <div class="usertype radio">
-            <span>用户类型：</span>
-            <div class="radio">
-                <input id="radio-1" name="radio" value="1" type="radio" v-model="addUserLine.usertype"/>
-                <label for="radio-1" class="radio-label">代理</label>
+            </div>-->
+            <div class="usertype radio">
+                <span>用户类型：</span>
+                <div class="radio">
+                    <input
+                        id="radio-1"
+                        name="radio"
+                        value="1"
+                        type="radio"
+                        v-model="addUserLine.usertype"
+                    />
+                    <label for="radio-1" class="radio-label">代理</label>
+                </div>
+                <div class="radio">
+                    <input
+                        id="radio-2"
+                        name="radio"
+                        value="0"
+                        type="radio"
+                        v-model="addUserLine.usertype"
+                    />
+                    <label for="radio-2" class="radio-label">会员</label>
+                </div>
             </div>
-            <div class="radio">
-                <input id="radio-2" name="radio" value="0" type="radio" v-model="addUserLine.usertype"/>
-                <label for="radio-2" class="radio-label">会员</label>
-            </div>
-        </div>
-        <x-button class="btn adduser" @click.native="handleSubmit()" type="orange">生成链接</x-button>
+            <x-button class="btn adduser" @click.native="handleSubmit()" type="orange">生成链接</x-button>
         </div>
         <div class="main_container" v-for="(item,index) in userLineData" :key="item.id">
             <div class="top">
@@ -31,16 +42,27 @@
                     </div>
                     <div>
                         <span>二维码：</span>
-                        <qrcode ref="qrcodeImg" :size=Number(50) :value="item.url" type="img"></qrcode>
+                        <qrcode ref="qrcodeImg" :size="Number(50)" :value="item.url" type="img"></qrcode>
                     </div>
                 </div>
             </div>
             <div class="btns">
-                <x-button @click.native="doCopy(item.url)"
-                v-clipboard:copy="copyUrl" 
-                 class="btn history"  type="purple">复制链接</x-button>
-                <x-button @click.native="downloadFile(index,item.odds)" class="btn withdrawal"  type="blue">下载图片</x-button>
-                <x-button @click.native="handleDelreglink(item.id, index)" class="btn recharge"  type="orange">删除</x-button>
+                <x-button
+                    @click.native="doCopy(item.url)"
+                    v-clipboard:copy="copyUrl"
+                    class="btn history"
+                    type="purple"
+                >复制链接</x-button>
+                <x-button
+                    @click.native="downloadFile(index,item.odds)"
+                    class="btn withdrawal"
+                    type="blue"
+                >下载图片</x-button>
+                <x-button
+                    @click.native="handleDelreglink(item.id, index)"
+                    class="btn recharge"
+                    type="orange"
+                >删除</x-button>
             </div>
         </div>
     </div>
@@ -54,13 +76,13 @@ import {
     setreglink,
     delreglink
 } from '@/api/index'
-import {Qrcode,XButton,Range}  from 'vux'
+import { Qrcode, XButton, Range } from 'vux'
 export default {
     name: 'openLine',
     data() {
         return {
-            copyUrl:'',
-            userLineData:[],
+            copyUrl: '',
+            userLineData: [],
             bonusGroup: {
                 curodds: 0,
                 maxodds: 2000,
@@ -72,30 +94,68 @@ export default {
                 keepodds: 1500,
                 usertype: '1' //1-代理| 0-会员
             },
+            bitmap: ''
         }
     },
     methods: {
         //复制到剪贴蒙版
-        changekeepodds(value){
-            console.log(parseInt(value.srcElement.value,10));
-            value.srcElement.value = parseInt(value.value,10)
-            this.$set(this.addUserLine,'keepodds',parseInt(value.srcElement.value,10))
+        changekeepodds(value) {
+            console.log(parseInt(value.srcElement.value, 10))
+            value.srcElement.value = parseInt(value.value, 10)
+            this.$set(
+                this.addUserLine,
+                'keepodds',
+                parseInt(value.srcElement.value, 10)
+            )
         },
         doCopy(value) {
             this.$copyText(value).then(e => {
                 this.$vux.toast.show({
-                        text: '已复制到剪贴板',
-                        type: 'success'
-                    })
+                    text: '已复制到剪贴板',
+                    type: 'success'
+                })
             })
         },
         //下载图片
-        downloadFile(index,odds) {
+        downloadFile(index, odds) {
             let qrcodeUrl = this.$refs.qrcodeImg[index].imgData,
-            aLink = document.createElement('a')
-            aLink.download = `推广二维码:奖金${odds}`
+                aLink = document.createElement('a')
+            aLink.download = `qrcode`
             aLink.href = qrcodeUrl
-            aLink.click()
+            // plus.nativeUI.toast(qrcodeUrl);
+            if (this.$store.state.isApp==true) {
+                this.loadDataImage(qrcodeUrl)
+            } else {
+                aLink.click()
+            }
+        },
+        loadDataImage(data) {
+            this.bitmap = new plus.nativeObj.Bitmap('test')
+            this.bitmap.loadBase64Data(
+                data,
+                () => {
+                    console.log('加载Base64图片数据成功')
+                    // this.bitmap.save("capture.png");
+                    this.bitmap.save(
+                        `_doc/qrcode${new Date().getTime()}.jpg`,
+                        {},
+                        i => {
+                            // 保存文件到系统相册中
+                            //i.target文件路径
+                            plus.gallery.save(i.target, () => {
+                                alert('保存图片到相册成功')
+                            })
+                            this.bitmap.clear() //销毁Bitmap图片
+                            this.bitmap.recycle() //回收图片内存
+                        },
+                        () => {
+                            this.bitmap.clear() //销毁Bitmap图片
+                            this.bitmap.recycle() //回收图片内存
+                        }
+                    )
+                },
+                () => {}
+            )
         },
         //删除推广链接
         handleDelreglink(id, index) {
@@ -139,6 +199,7 @@ export default {
             for (const key in res.data) {
                 this.$set(this.bonusGroup, key, res.data[key])
             }
+            this.$set(this.addUserLine, 'keepodds', res.data.maxodds)
             if (res.data.tuiguan.length) {
                 this.userLineData = []
                 res.data.tuiguan.forEach(item => {
@@ -218,10 +279,9 @@ $gold = #f8ff35
                 .range-max, .range-min
                     color #fff
                     display none
-        
 .radio
     margin 20px
-    margin-left: 0;
+    margin-left 0
 .radio input[type='radio']
     position absolute
     opacity 0
@@ -242,6 +302,7 @@ $gold = #f8ff35
     -webkit-transition all 250ms ease
     transition all 250ms ease
 .radio input[type='radio']:checked + .radio-label:before
+    top 8px
     background-color #FFC107
     box-shadow inset 0 0 0 4px #f4f4f4
 .radio input[type='radio']:focus + .radio-label:before
@@ -253,6 +314,8 @@ $gold = #f8ff35
     background #b4b4b4
 .radio input[type='radio'] + .radio-label:empty:before
     margin-right 0
+.radio input[type='radio'] + .radio-label:before
+    top 8px
 .main_container
     padding 20px
     background $bgLight
@@ -262,14 +325,14 @@ $gold = #f8ff35
         line-height 60px
         margin-bottom 20px
     .qrcode_container
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display flex
+        justify-content space-between
+        align-items center
         &>div:nth-child(2)
             display flex
             align-items center
     .btns
-        display: flex;
+        display flex
         button
             width 28%
             color #eee

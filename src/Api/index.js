@@ -471,6 +471,13 @@ export const thirdgameLogin = formData =>
         url: '/thirdgame/login',
         data: qs.stringify(formData)
     })
+//4.取得游戏类型与关联大厅
+export const getgametypeandlobby = formData =>
+    service.request({
+        method: 'post',
+        url: '/thirdgame/getgametypeandlobby',
+        data: qs.stringify(formData)
+    })
 //获取用户钱包资讯
 export const thirdgameGetuserwallet = formData =>
     service.request({

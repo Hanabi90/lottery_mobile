@@ -21,6 +21,11 @@ export default {
         QuickFuc,
         HotLottery,
         // LotteryList
+    },
+    created(){
+        if(!sessionStorage.getItem('token')){
+            this.$router.push({name:'login'})
+        }
     }
 }
 </script>

@@ -5,7 +5,6 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :required="true"
                     title="输入旧提款密码："
                     name="username"
                     placeholder="输入旧提款密码"
@@ -18,7 +17,6 @@
                     <x-input
                         ref="input"
                         :show-clear="false"
-                        :required="true"
                         :title="hasSecpass?'输入新提款密码：':'设置提款密码：'"
                         name="username"
                         :placeholder="hasSecpass?'输入新提款密码：':'设置提款密码：'"
@@ -32,7 +30,6 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :required="true"
                     :title="hasSecpass?'确认新提款密码：':'确认提款密码：'"
                     name="username"
                     :placeholder="hasSecpass?'确认新提款密码：':'确认提款密码'"

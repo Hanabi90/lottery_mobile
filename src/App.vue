@@ -2,7 +2,7 @@
     <div id="lottery">
         <drawer
             class="drawerMap"
-            v-if="routerName!='login'"
+            v-if="routerName!='login'&&routerName!='registered'"
             :show.sync="showMenus"
             placement="right"
         >
@@ -12,9 +12,9 @@
             </div> -->
             <!-- main content -->
             <view-box ref="viewBox" body-padding-top="40px" body-padding-bottom="50px">
-                <x-header slot="header" class="headerContent fixed_layout" ref="headerTop">
+                <x-header slot="header"  class="headerContent fixed_layout" ref="headerTop">
                     <img
-                        v-if="routerName=='home'"
+                        v-if="routerName=='首页'"
                         class="logo fixed_layout"
                         slot="overwrite-left"
                         src="./assets/images/logo.png"
@@ -36,7 +36,7 @@
                 </vue-page-transition>
 
                 <tabbar class="vux-demo-tabbar fixed_layout" icon-class="vux-center" slot="bottom">
-                    <tabbar-item :link="{path:'/home'}" :selected="routerName=='首页'?true:false">
+                    <tabbar-item :link="{name:'首页'}" :selected="routerName=='首页'?true:false">
                         <x-icon slot="icon" type="home" class="homeIcon"></x-icon>
                         <span slot="label">首页</span>
                     </tabbar-item>
@@ -82,6 +82,12 @@ export default {
             return this.$refs.headerTop
         }
     },
+    watch:{
+        $route(){
+            window.routerName = this.$route.name
+            
+        }
+    },
     methods:{
         exit() {
             loginOut().then(res => {
@@ -92,7 +98,7 @@ export default {
                     type: 'success'
                 })
                 this.$store.dispatch('handleReset')
-                this.$router.push('/')
+                this.$router.push({name:'login'})
             })
         },
         IsPC() {
@@ -113,13 +119,22 @@ export default {
                 }
             }
             return flag
+        },
+        isIosAnd(){
+            var UA = window.navigator.userAgent;
+            if(/Android|HTC/i.test(UA) || !!(window.navigator['platform'] + '').match(/Linux/i)) UA = 'Android';
+            else if(/iPad/i.test(UA) || /iPod|iPhone/i.test(UA)) UA = 'iOS';
+            else UA = 'other';
+            this.$store.dispatch('handleIsApp',UA)
         }
     },
     mounted(){
+        if(window.location.href.includes('app')){
+            this.$store.dispatch('handleIsApp',true)
+        }
         var hostname = window.location.hostname.split('.')
         hostname.splice(0,1,'www')
         let url = `https://${hostname.join('.')}`
-        console.log(url);
         if (this.IsPC()) {
             window.open(url, '_self')
         }
@@ -150,7 +165,11 @@ html, body, #lottery
     overflow-x hidden
     position relative
 #lim_mobile_chat
-    bottom 110px
+    // display none !important
+    top 80%
+    left 80%
+    bottom initial
+    right initial
     #lim_mchat_wrapper
         #lim_mob_chat
             >span

@@ -5,7 +5,6 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :required="true"
                     title="输入旧登录密码："
                     name="username"
                     placeholder="输入旧登录密码"
@@ -18,7 +17,6 @@
                     <x-input
                         ref="input"
                         :show-clear="false"
-                        :required="true"
                         title="输入新登录密码："
                         name="username"
                         placeholder="输入新登录密码"
@@ -32,7 +30,6 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :required="true"
                     title="确认新登录密码："
                     name="username"
                     placeholder="确认新登录密码"

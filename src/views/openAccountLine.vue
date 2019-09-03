@@ -20,7 +20,7 @@
                 type="password"
             ></x-input>
         </group>
-        <div class="range_container">
+        <!-- <div class="range_container">
             <span>奖金组：</span>
             <range
                 class="range"
@@ -30,7 +30,7 @@
                 :max="bonusGroup.maxodds"
             ></range>
             <input type="number" v-model.lazy="range" />
-        </div>
+        </div> -->
         <div class="usertype radio">
             <span>用户类型：</span>
             <div class="radio">
@@ -107,7 +107,7 @@ export default {
         handleSubmit() {
             this.loading = true
             let dataJson = {
-                onekeyodds: this.addUserList.bonus, //奖金
+                onekeyodds: this.bonusGroup.maxodds, //奖金
                 usertype: this.addUserList.userType, //用户类型
                 username: this.addUserList.userName, //用户名
                 userpass: this.addUserList.password //密码
@@ -217,6 +217,7 @@ export default {
     transition all 250ms ease
 .radio input[type='radio']:checked + .radio-label:before
     background-color #FFC107
+    top 8px
     box-shadow inset 0 0 0 4px #f4f4f4
 .radio input[type='radio']:focus + .radio-label:before
     outline none
@@ -227,4 +228,6 @@ export default {
     background #b4b4b4
 .radio input[type='radio'] + .radio-label:empty:before
     margin-right 0
+.radio input[type='radio'] + .radio-label:before
+    top 8px
 </style>

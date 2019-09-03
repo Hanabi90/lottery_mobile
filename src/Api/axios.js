@@ -16,7 +16,7 @@ window._axiosPromiserArr = []
 //建立实例
 const service = axios.create({
     // 设置超时时间
-    timeout: 14000,
+    timeout: 50000,
     baseURL: process.env.VUE_APP_BASE_URL,
     cancelToken: new CancelToken(function(cancel) {
         window._axiosPromiserArr.push({ cancel })
@@ -60,9 +60,7 @@ service.interceptors.request.use(
             //重置倒计时
             USERTIMEOUT = 900
             //显示loading
-            Vue.$vux.loading.show({
-                text: 'Loading'
-            })
+            Vue.$vux.loading.show()
         }
         if (config.url.indexOf('userlogin') != -1) {
             userUpdate()
@@ -160,6 +158,7 @@ service.interceptors.response.use(
                     text: '断网了',
                     type: 'warn'
                 })
+                Router.push('/')
             }
         } else {
             const responseCode = error.response.status

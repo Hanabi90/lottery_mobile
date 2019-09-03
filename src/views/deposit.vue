@@ -9,6 +9,7 @@
             v-model="selectedBank"
             default-item-class="demo5-item"
             selected-item-class="demo5-item-selected"
+            @on-change="changeBank"
         >
             <checker-item v-for="(i,index) in banklist" :key="i.title" :value="i.title">
                 <i :style="`backgroundImage:url(${urlList[index]})`"></i>
@@ -16,51 +17,77 @@
             </checker-item>
         </checker>
         <p class="dotted"></p>
+        <selector v-if="wangyinList" v-model="selectedWangyin" :options="wangyinList"></selector>
         <span>充值金额(人民币)：</span>
         <div class="inputbox">
-            <x-input type="number" v-model="money"></x-input>元
+            <x-input type="number" :show-clear="false" v-model="money"></x-input>元
         </div>
         <x-button class="btn withdrawal" @click.native="handleSubmit" type="orange">下一步</x-button>
     </div>
 </template>
 
 <script>
-import { XButton, XInput, Checker, CheckerItem } from 'vux'
+import { XButton, XInput, Checker, CheckerItem,Selector } from 'vux'
 import { unionpayaddcredit, depositMain, thirdPayDeposit } from '@/api/index'
 export default {
     name: 'deposit',
     data() {
         return {
-            selectedBank: '支付宝充值',
+            selectedBank: '支付宝支付',
             urlList: [
                 require('../assets/images/deposit/zhifubaozhifu.png'),
                 require('../assets/images/deposit/yinlianzhifu.png'),
                 require('../assets/images/deposit/xianshang.png'),
                 require('../assets/images/deposit/yunshanfu.png'),
-                require('../assets/images/deposit/weixinzhifu.png'),
-                require('../assets/images/deposit/chaoji.png')
+                require('../assets/images/deposit/chaoji.png'),
+                require('../assets/images/deposit/weixinzhifu.png')
             ],
             banklist: [],
             money: '',
             formData: {
-                flag: 'load',
-                aid: 714,
-                amount: 100,
-                alertmin: 100,
-                alertmax: 20000,
-                typename: 'gp1',
-                bank_code: 'UNIONPAY'
-            }
+                data: {
+                    flag: 'load',
+                    amount: '',
+                    bank_code: '',
+                    typename: '',
+                    aid: '',
+                    alertmin: '',
+                    alertmax: '',
+                    typename: ''
+                },
+                url: ''
+            },
+            wangyinList:null,
+            selectedWangyin:''
         }
     },
     methods: {
         handleSubmit() {
+            console.log(this.money);
+            console.log(this.formData);
+            if(Number(this.money)<=Number(this.formData.data.alertmin)||Number(this.money)>=Number(this.formData.data.alertmax)){
+                this.$vux.toast.show({
+                    text: `请确保充值金额大于${this.formData.data.alertmin},小于${this.formData.data.alertmax}`,
+                    type: 'wran'
+                })
+            }else{
+                this.$set(this.formData.data,'amount',this.money)
+                if(this.selectedBank.includes('网银支付')){
+                    this.$set(this.formData.data,'bank_code',this.selectedWangyin)
+                }
+                thirdPayDeposit(this.formData).then(res => {
+                    window.open(res.data)
+                })
+            }
+        },
+        changeBank(){
+            if(this.selectedBank=='')return
             const currentItem = this.banklist.filter(item => {
                 return item.title == this.selectedBank
             })
             thirdPayDeposit({ data: null, url: currentItem[0].url }).then(
                 res => {
-                    const formData = {
+                    this.formData = {
                         data: {
                             flag: 'load',
                             amount: this.money,
@@ -73,9 +100,16 @@ export default {
                         },
                         url: currentItem[0].url
                     }
-                    thirdPayDeposit(formData).then(res => {
-                        window.open(res.data)
-                    })
+                    if(this.selectedBank.includes('网银支付')){
+                        this.wangyinList = res.data.banklist
+                        this.wangyinList.map((item)=>{
+                            item.key=item.bank_code
+                            item.value = item.bank_name
+                        })
+                        this.selectedWangyin = this.wangyinList[0].bank_code
+                    }else{
+                        this.wangyinList = null
+                    }
                 }
             )
         }
@@ -90,7 +124,8 @@ export default {
         XButton,
         XInput,
         Checker,
-        CheckerItem
+        CheckerItem,
+        Selector
     }
 }
 </script>
@@ -110,6 +145,8 @@ export default {
     .tips
         color $gold
         line-height 50px
+    >>>.vux-selector::before
+        content none
 >>>.vux-checker-box
     display flex
     flex-wrap wrap
@@ -148,6 +185,8 @@ export default {
         margin 10px 20px 10px 0
         .weui-cell__bd
             height 100%
+            .weui-input
+                height 100%
 .btn
     margin-top 30px
     height 60px

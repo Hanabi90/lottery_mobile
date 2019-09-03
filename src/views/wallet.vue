@@ -1,7 +1,10 @@
 <template>
     <div class="wallet">
         <div class="top">
-            <h5>我的钱包</h5>
+            <div class="myWallet">
+                <h5>我的钱包</h5>
+                <x-icon slot="icon" @click="refresh" type="refresh" class="refresh"></x-icon>
+            </div>
             <ul  v-if="userwallet!==null">
                 <li><span>总资金：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li>
                 <!-- <li><span>转账钱包：</span><span><countup :end-val="Number(userwallet[0].wallet_balance)" :duration="2" :decimals="2" ></countup></span></li> -->
@@ -36,16 +39,20 @@ export default {
 
         }
     },
-    methods: {},
+    methods: {
+        refresh(){
+            thirdgameGetuserwallet().then((res)=>{
+                // console.log(res);
+                this.userwallet = res.data
+            })
+        }
+    },
     created(){
         thirdgameGetwalletlist().then((res)=>{
             // console.log(res);
             this.walletList = res.data
         })
-        thirdgameGetuserwallet().then((res)=>{
-            // console.log(res);
-            this.userwallet = res.data
-        })
+        this.refresh()
     },
 }
 </script>
@@ -59,10 +66,15 @@ export default {
         background-color $bgDark
         box-sizing border-box
         padding-bottom 40px
-        h5
+        .myWallet
+            display flex
+            align-items center
+            justify-content space-between
             border-bottom 1px solid #777777
             padding 0px 30px
             line-height 80px
+            .refresh
+                fill $gold
     .bottom
         background-color $bgLight
         ul

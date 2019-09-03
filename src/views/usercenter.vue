@@ -16,8 +16,11 @@
                 <span class="username">欢迎您,{{$store.state.nickname}}</span>
             </div>
             <div class="balance">
-                <span>主钱包余额：￥<countup :end-val="Number($store.state.money)" :duration="2" :decimals="2" ></countup></span>
-                
+                <span>
+                    主钱包余额：￥
+                    <countup :end-val="Number($store.state.money)" :duration="2" :decimals="2"></countup>
+                </span>
+
                 <div @click="getMoney">
                     <span>刷新</span>
                     <x-icon slot="icon" size="25" type="refresh" class="icons contact"></x-icon>
@@ -25,12 +28,13 @@
             </div>
             <div class="btns">
                 <x-button class="btn recharge" type="orange" link="/deposit">充值</x-button>
-            <x-button class="btn withdrawal" @click.native="handleAlert('提现')" type="blue">提现</x-button>
+                <x-button class="btn withdrawal" @click.native="handleAlert('提现')" type="blue">提现</x-button>
                 <x-button class="btn history" link="/transfer" type="purple">转账</x-button>
+                <x-button class="btn history" @click.native="openkefu" type="lightblue">客服</x-button>
             </div>
         </div>
         <div class="main_container">
-            <div class="router_container">
+            <div class="router_container" v-if="userSeting.usertype!=0">
                 <p>团队管理</p>
                 <ul>
                     <router-link class="li_grey" to="/agentManagement" tag="li">团队首页</router-link>
@@ -48,7 +52,14 @@
                     <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
                     <li class="li_grey" to="usercenter" @click="handleAlert('绑定银行卡')">绑定银行卡</li>
                     <li class="li_grey" to="/bindquestion" @click="handleAlert('bindquestion')">密保设定</li>
-                    <router-link class="li_grey" to="/information" tag="li">站内信</router-link>
+                    <li class="li_grey zhanneixin_box">
+                        <router-link class="zhanneixin" to="/information">站内信</router-link>
+                        <badge
+                            class="badge"
+                            v-show="unreadmessageamount!=0"
+                            :text="unreadmessageamount"
+                        ></badge>
+                    </li>
                     <router-link class="li_grey" to="/notice" tag="li">系统公告</router-link>
                 </ul>
             </div>
@@ -66,28 +77,35 @@
 </template>
 
 <script>
-import { XButton, Confirm, TransferDomDirective as TransferDom } from 'vux'
+import {
+    XButton,
+    Confirm,
+    TransferDomDirective as TransferDom,
+    Badge
+} from 'vux'
 import {
     checksecpass,
     RSAencrypt,
     getsecpass,
     checksequestion,
     thirdgameGetuserwallet,
+    getunreadmessageamount,
     getbankinfo
 } from '@/api/index.js'
 import md5 from 'js-md5'
 export default {
     name: 'usercenter',
-    props:{
-        routeTo:{
-            default:null
+    props: {
+        routeTo: {
+            default: null
         }
     },
     data() {
         return {
             alert: false,
+            unreadmessageamount: 0,
             routename: null,
-            userSeting:null,
+            userSeting: null,
             questionList: [
                 { key: '4', value: '您母亲的姓名是？' },
                 { key: '8', value: '您配偶的生日是？' },
@@ -103,7 +121,7 @@ export default {
                 { key: '17', value: '您最熟悉的学校宿舍室友名字是？' },
                 { key: '18', value: '对您影响最大的人名字是？' }
             ],
-            questionResData:null,
+            questionResData: null,
             alertSetting: {
                 'close-on-confirm': false,
                 'show-input': true,
@@ -113,10 +131,8 @@ export default {
         }
     },
     methods: {
-        test() {
-            this.$store.dispatch('test').then(res => {
-                console.log(res)
-            })
+        openkefu() {
+            globalMobileIcon.openMobileInnerChat()
         },
         handleAlert(routename) {
             this.routename = routename
@@ -126,31 +142,37 @@ export default {
                         this.alertSetting = {
                             'close-on-confirm': false,
                             'show-input': true,
-                            title: this.questionList.filter((item)=>{
-                                return item.key==res.data.dna_ques
+                            title: this.questionList.filter(item => {
+                                return item.key == res.data.dna_ques
                             })[0].value,
                             'input-attrs': { type: 'text' }
                         }
                         this.questionResData = res.data
                         this.alert = true
-                    }else{
-                        this.$router.push({name:this.routename})
+                    } else {
+                        this.$router.push({ name: this.routename })
                     }
                 })
-            }else if(routename=='提现'){
+            } else if (routename == '提现') {
                 getsecpass().then(res => {
                     if (!res) {
-                        this.$router.push({name:'提款密码',params: { fromRoute: true }})
+                        this.$router.push({
+                            name: '提款密码',
+                            params: { fromRoute: true }
+                        })
                         return
                     } else {
                         this.alert = true
                         this.routename = routename
                     }
                 })
-            }else {
+            } else {
                 getsecpass().then(res => {
                     if (!res) {
-                        this.$router.push({name:'提款密码',params: { fromRoute: true }})
+                        this.$router.push({
+                            name: '提款密码',
+                            params: { fromRoute: true }
+                        })
                         return
                     } else {
                         this.alert = true
@@ -160,18 +182,18 @@ export default {
             }
         },
         onConfirm(value) {
-            if(this.routename=='密保设定'){
+            if (this.routename == '密保设定') {
                 checksequestion({
                     flag: 'check',
                     ...this.questionResData,
                     ans: value
                 }).then(res => {
                     this.questionResData = ''
-                    this.$router.push({name:this.routename})
+                    this.$router.push({ name: this.routename })
                 })
-            }else if(this.routename=='提现'){
-                this.$router.push({name:this.routename})
-            }else{
+            } else if (this.routename == '提现') {
+                this.$router.push({ name: this.routename })
+            } else {
                 var secpass = RSAencrypt(md5(value))
                 checksecpass({ secpass }).then(res => {
                     if (res.code == 0) {
@@ -191,26 +213,30 @@ export default {
                 onConfirm: () => {}
             })
         },
-        getMoney(){
-            thirdgameGetuserwallet().then((res)=>{
+        getMoney() {
+            thirdgameGetuserwallet().then(res => {
                 const money = res.data[0].wallet_balance
-                this.$store.dispatch('handleMoney',money)
+                this.$store.dispatch('handleMoney', money)
             })
         }
     },
-    mounted(){
-        if(this.routeTo=='withdrawal'){
+    mounted() {
+        if (this.routeTo == 'withdrawal') {
             this.handleAlert('提现')
         }
     },
-    created(){
+    created() {
         this.getMoney()
         this.userSeting = JSON.parse(sessionStorage.getItem('userSeting'))
-        this.$store.dispatch('handleNickName',this.userSeting.username)
+        this.$store.dispatch('handleNickName', this.userSeting.username)
+        getunreadmessageamount().then(res => {
+            this.unreadmessageamount = res.data.unreadamount
+        })
     },
     components: {
         XButton,
-        Confirm
+        Confirm,
+        Badge
     },
     directives: {
         TransferDom
@@ -254,7 +280,7 @@ $gold = #f8ff35
             justify-content space-around
             padding 20px 0
             .btn
-                max-width 200px
+                max-width 160px
                 line-height 100px
                 font-size 30px
     .main_container
@@ -262,6 +288,14 @@ $gold = #f8ff35
         .router_container
             display flex
             flex-direction column
+            .zhanneixin_box
+                position relative
+                .zhanneixin
+                    color #fff
+                .badge
+                    position absolute
+                    top 16px
+                    right 8px
             p
                 line-height 100px
                 color #fff

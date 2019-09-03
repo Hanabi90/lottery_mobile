@@ -19,6 +19,7 @@ let oState = {
     unReadAmount: 0, //未读消息
     bonues: '', //奖金,
     trace: false, //追号开关
+    isApp:false
 }
 export default new Vuex.Store({
     state: { ...oState },
@@ -87,6 +88,9 @@ export default new Vuex.Store({
         },
         trace (state, data) {
             state.trace = data
+        },
+        updateIsApp (state, data) {
+            state.isApp = data
         }
     },
     actions: {
@@ -141,6 +145,9 @@ export default new Vuex.Store({
         },
         handleTrace (context, data) {
             context.commit('trace', data)
+        },
+        handleIsApp (context, data) {
+            context.commit('updateIsApp', data)
         }
     }
 })

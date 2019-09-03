@@ -65,11 +65,11 @@
                                 class="btn recharge"
                                 type="lightblue"
                             >团队余额</x-button>
-                            <x-button
+                            <!-- <x-button
                                 @click.native="handleAlert(item.userid,'setPoint','返点设置')"
                                 class="btn recharge"
                                 type="blue"
-                            >返点设置</x-button>
+                            >返点设置</x-button> -->
                             <x-button
                                 @click.native="getGroupList({uid:item.userid})"
                                 class="btn recharge"
