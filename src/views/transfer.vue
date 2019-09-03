@@ -36,8 +36,9 @@
                         name="username"
                         type="number"
                         v-model="amount"
-                        @on-change="inputMoneyListern($event)"
                     ></x-input>
+                        <!-- @on-change="inputMoneyListern($event)" -->
+
                     <span class="rules">*金额必须为整数，并且大于1.</span>
                 </div>
                 <div class="btns">
@@ -88,22 +89,46 @@ export default {
             this.amount = ''
             this.$refs.input.currentValue = ''
         },
-        inputMoneyListern(value) {
-            //输入监听
-            var number = Number(value - 0)
-            if (number <= 0) {
-                this.amount = ''
-                this.$refs.input.currentValue = ''
-            }
-            if (number > this.maxAmount) {
-                this.amount = parseInt(this.maxAmount)
-                this.$refs.input.currentValue = parseInt(this.maxAmount)
-            }
-        },
+        // inputMoneyListern(value) {
+        //     //输入监听
+        //     var number = Number(value - 0)
+        //     if (number <= 0) {
+        //         this.amount = 0
+        //         this.$refs.input.currentValue = 0
+        //         this.$vux.toast.show({
+        //             text: `您的${this.userwallet.filter((item)=>{
+        //                 return item.key==this.selector_1
+        //             })[0].value}余额为${this.maxAmount}`
+        //         })
+        //     }
+        //     if (number > this.maxAmount) {
+        //         this.amount = parseInt(this.maxAmount)
+        //         this.$refs.input.currentValue = parseInt(this.maxAmount)
+        //         this.$vux.toast.show({
+        //             text: `您的${this.userwallet.filter((item)=>{
+        //                 return item.key==this.selector_2
+        //             })[0].value}可转账最大余额为${this.maxAmount}`
+        //         })
+        //     }
+        // },
         handleDeposit() {
             var paramter = {
                 amount:this.amount,
                 walletcode:''
+            }
+            if(Number(this.amount)>Number(this.maxAmount)){
+                this.$vux.toast.show({
+                    text: `余额不足，${this.userwallet.filter((item)=>{
+                        return item.key==this.selector_1
+                    })[0].value}可转账最大余额为${this.maxAmount}`
+                })
+                return
+            }
+            if(Number(this.amount)<=0){
+                this.$vux.toast.show({
+                    text: `金额必须为整数，并且大于1`
+                })
+                return
             }
             if (this.selector_1 == '_main') {
                 paramter.walletcode = this.selector_2

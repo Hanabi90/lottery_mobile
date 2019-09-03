@@ -117,6 +117,8 @@ export default {
     created() {
         depositMain().then(res => {
             this.banklist = res.data
+            this.selectedBank = this.banklist[0].title
+            this.changeBank()
         })
     },
     mounted() {},

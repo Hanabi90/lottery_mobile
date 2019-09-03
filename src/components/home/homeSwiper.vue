@@ -7,8 +7,7 @@
                     width="100%"
                     height="100%"
                     class="title fadeInUp animated"
-                    :src="require(`../../assets/images/banner${index}.jpg`)"
-                    alt
+                    :src="activitylist[index].mb_banner"
                 />
             </swiper-item>
         </swiper>
