@@ -3,11 +3,15 @@
         <div class="content">
             <img src="../assets/images/logo.png" alt class="logo" />
             <group class="first">
-                <x-input class="input" v-model="userName" :readonly="readonly" @on-focus="readonly=false" placeholder="用户名称" :show-clear="false">
+                <x-input class="input" v-model="userName" placeholder="用户名称" :show-clear="false">
                     <x-icon slot="label" type="ios-contact" size="30"></x-icon>
                 </x-input>
             </group>
             <group>
+                <form style="display:none">
+                    <input type="password"/>
+                </form>
+                    <input type="password" style="width:0;height:0;float:left;visibility:hidden"/>
                 <x-input class="input" v-model="passWorde" type="password" placeholder="用户密码" :show-clear="false">
                     <x-icon slot="label" type="locked" size="30"></x-icon>
                 </x-input>

@@ -21,13 +21,17 @@
                         alt
                     />
                     <span v-if="routerName!='home'">{{$route.name}}</span>
-                    <x-icon
+                    <!-- <x-icon
                         slot="right"
-                        type="log-out"
+                        type="alert"
                         size="26"
                         style="fill:#fff;position:relative;top:-5px;right:-5px;"
                         @click="exit"
-                    ></x-icon>
+                    ></x-icon> -->
+                    <div slot="right" style="display:flex;color:#fff" @click="exit">
+                        <span>退出</span>
+                        <i class="icon iconfont icon-exit" style="fontSize:30px"></i>
+                    </div>
                 </x-header>
 
                 <!-- remember to import BusPlugin in main.js if you use components: x-img and sticky -->
@@ -151,6 +155,9 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '../src/styles/cover.less';
+</style>
+<style >
+@import './styles/icons.css';
 </style>
 
 <style lang="stylus">

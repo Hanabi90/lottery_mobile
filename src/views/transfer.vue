@@ -4,7 +4,7 @@
             <group>
                 <!-- <div class="btns">
                     <x-button class="btn recharge" type="blue">切换成自动转换模式</x-button>
-                </div> -->
+                </div>-->
                 <div>
                     <selector
                         title="转账从："
@@ -37,7 +37,10 @@
                         type="number"
                         v-model="amount"
                     ></x-input>
-                        <!-- @on-change="inputMoneyListern($event)" -->
+                    <checker v-model="amount" radio-required default-item-class="demo1-item" selected-item-class="demo1-item-selected">
+                        <checker-item :value="item.value" v-for="item in quickAmount" :key="item.key+'quick'">{{item.key}}</checker-item>
+                    </checker>
+                    <!-- @on-change="inputMoneyListern($event)" -->
 
                     <span class="rules">*金额必须为整数，并且大于1.</span>
                 </div>
@@ -51,7 +54,7 @@
 </template>
 
 <script>
-import { Selector, XButton, XInput, Group } from 'vux'
+import { Selector, XButton, XInput, Group,Checker, CheckerItem } from 'vux'
 import {
     thirdgameGetuserwallet,
     thirdgameGetwalletlist,
@@ -68,11 +71,20 @@ export default {
             userwalletCopy: [],
             selector_1: '',
             selector_2: '',
-            amount: ''
+            amount: '',
+            quickAmount:[
+                {key:10,value:10},
+                {key:50,value:50},
+                {key:100,value:100},
+                {key:500,value:500},
+                {key:1000,value:1000},
+                {key:'全部',value:0},
+            ]
         }
     },
     methods: {
         checkSelect(name) {
+            this.$set(this.quickAmount[5],'value',this.maxAmount)
             if (name == '1') {
                 if (this.selector_1 !== '_main') {
                     this.selector_2 = '_main'
@@ -113,18 +125,20 @@ export default {
         // },
         handleDeposit() {
             var paramter = {
-                amount:this.amount,
-                walletcode:''
+                amount: this.amount,
+                walletcode: ''
             }
-            if(Number(this.amount)>Number(this.maxAmount)){
+            if (Number(this.amount) > Number(this.maxAmount)) {
                 this.$vux.toast.show({
-                    text: `余额不足，${this.userwallet.filter((item)=>{
-                        return item.key==this.selector_1
-                    })[0].value}可转账最大余额为${this.maxAmount}`
+                    text: `余额不足，${
+                        this.userwallet.filter(item => {
+                            return item.key == this.selector_1
+                        })[0].value
+                    }可转账最大余额为${this.maxAmount}`
                 })
                 return
             }
-            if(Number(this.amount)<=0){
+            if (Number(this.amount) <= 0) {
                 this.$vux.toast.show({
                     text: `金额必须为整数，并且大于1`
                 })
@@ -132,30 +146,40 @@ export default {
             }
             if (this.selector_1 == '_main') {
                 paramter.walletcode = this.selector_2
-                thirdgameDeposit(paramter).then((res)=>{
+                thirdgameDeposit(paramter).then(res => {
                     this.$vux.confirm.show({
-                        showCancelButton:false,
+                        showCancelButton: false,
                         title: '转账成功',
-                        content:`主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
-                        onConfirm : () => {
-                            
-                        }
+                        content: `主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
+                        onConfirm: () => {}
                     })
-                })                    
-            }else{
+                    this.amount = ''
+                    this.getuserWallet()
+                })
+            } else {
                 paramter.walletcode = this.selector_1
-                thirdgameWithdraw(paramter).then((res)=>{
+                thirdgameWithdraw(paramter).then(res => {
                     this.$vux.confirm.show({
-                        showCancelButton:false,
+                        showCancelButton: false,
                         title: '转账成功',
-                        content:`主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
-                        onConfirm : () => {
-                            
-                        }
+                        content: `主钱包余额为${res.data.main_wallet_balance},</br>${res.data.wallet_name}余额为${res.data.wallet_balance}`,
+                        onConfirm: () => {}
                     })
-                })                
+                    this.amount = ''
+                    this.getuserWallet()
+                })
             }
-
+        },
+        getuserWallet(){
+            thirdgameGetuserwallet().then(res => {
+                this.userwallet = [...res.data]
+                this.userwallet.forEach((item, index) => {
+                    this.$set(this.userwallet[index], 'key', item.wallet_code)
+                    this.$set(this.userwallet[index], 'value', item.wallet_name)
+                })
+                this.userwalletCopy = [...this.userwallet]
+                this.$set(this.quickAmount[5],'value',this.maxAmount)
+            })
         }
     },
     computed: {
@@ -179,7 +203,6 @@ export default {
         //     })
         // })
         thirdgameGetuserwallet().then(res => {
-            console.log(res)
             this.userwallet = [...res.data]
             this.userwallet.forEach((item, index) => {
                 this.$set(this.userwallet[index], 'key', item.wallet_code)
@@ -188,14 +211,12 @@ export default {
             this.userwalletCopy = [...this.userwallet]
         })
     },
-    mounted(){
-        
-    },
     components: {
         Selector,
         XButton,
         XInput,
-        Group
+        Group,
+        Checker, CheckerItem
     }
 }
 </script>
@@ -205,12 +226,28 @@ export default {
 
 .top_container
     background $bgLight
-    padding 40px 100px
+    padding 40px 40px
+    >>>.vux-checker-box
+        display flex
+        justify-content space-between
+        color #000
+        margin 20px 0
+        .vux-checker-item
+            flex 1
+            text-align center
+            padding 10px 0
+            margin-left 10px
+            border-radius 8px
+            background-color #fff
+            font-size 26px
+            &.demo1-item-selected
+                color #fff
+                background-color #ff2925
     .rules
-        padding-left 130px
         font-size 30px
-        margin-bottom 40px
+        margin-bottom 30px
         width 100%
+        text-align: center;
         display block
         color $gold
     >>>.weui-cells
@@ -236,7 +273,6 @@ export default {
     display flex
     width 100%
     justify-content space-around
-    padding-left 130px
     box-sizing border-box
     margin-bottom 40px
     .btn
