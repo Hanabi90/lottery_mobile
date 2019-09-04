@@ -114,6 +114,8 @@ export default {
                         text: res.msg,
                         type: 'success'
                     })
+                    this.handleReset()
+                    this.$router.push({name:'个人中心'})
                 })
             } else {
                 changeusersecpass({
@@ -123,6 +125,8 @@ export default {
                         text: res.msg,
                         type: 'success'
                     })
+                    this.handleReset()
+                    this.$router.push({name:'个人中心'})
                 })
             }
         },

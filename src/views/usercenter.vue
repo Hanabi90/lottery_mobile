@@ -51,7 +51,7 @@
                     <router-link class="li_grey" to="/changePassword" tag="li">登录密码</router-link>
                     <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
                     <li class="li_grey" to="usercenter" @click="handleAlert('绑定银行卡')">绑定银行卡</li>
-                    <li class="li_grey" to="/bindquestion" @click="handleAlert('bindquestion')">密保设定</li>
+                    <li class="li_grey" to="/bindquestion" @click="handleAlert('密保设定')">密保设定</li>
                     <li class="li_grey zhanneixin_box">
                         <router-link class="zhanneixin" to="/information">站内信</router-link>
                         <badge
@@ -162,6 +162,7 @@ export default {
                         })
                         return
                     } else {
+                console.log('提现');
                         this.alert = true
                         this.routename = routename
                     }
@@ -192,7 +193,12 @@ export default {
                     this.$router.push({ name: this.routename })
                 })
             } else if (this.routename == '提现') {
-                this.$router.push({ name: this.routename })
+                var secpass = RSAencrypt(md5(value))
+                checksecpass({ secpass }).then(res => {
+                    if (res.code == 0) {
+                        this.$router.push({ name: this.routename })
+                    }
+                })
             } else {
                 var secpass = RSAencrypt(md5(value))
                 checksecpass({ secpass }).then(res => {

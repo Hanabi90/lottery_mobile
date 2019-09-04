@@ -11,8 +11,10 @@
             selected-item-class="demo5-item-selected"
             @on-change="changeBank"
         >
-            <checker-item v-for="(i,index) in banklist" :key="i.title" :value="i.title">
-                <i :style="`backgroundImage:url(${urlList[index]})`"></i>
+            <checker-item v-for="i in banklist" :key="i.title" :value="i.title">
+                <!-- <i :class="i.url.split('/')[1]"></i> -->
+                <!-- <i :style="`backgroundImage:url('../assets/images/deposit/${i.url.split('/')[1]}')`"></i> -->
+                <i :style="{backgroundImage: 'url(' + require(`../assets/images/deposit/${i.url.split('/')[1]}.png`) + ')'}"></i>
                 {{i.title}}
             </checker-item>
         </checker>
@@ -34,14 +36,6 @@ export default {
     data() {
         return {
             selectedBank: '支付宝支付',
-            urlList: [
-                require('../assets/images/deposit/zhifubaozhifu.png'),
-                require('../assets/images/deposit/yinlianzhifu.png'),
-                require('../assets/images/deposit/xianshang.png'),
-                require('../assets/images/deposit/yunshanfu.png'),
-                require('../assets/images/deposit/chaoji.png'),
-                require('../assets/images/deposit/weixinzhifu.png')
-            ],
             banklist: [],
             money: '',
             formData: {
@@ -63,8 +57,13 @@ export default {
     },
     methods: {
         handleSubmit() {
-            console.log(this.money);
-            console.log(this.formData);
+            if(this.selectedBank==''){
+               this.$vux.toast.show({
+                    text: `请选定一家充值方式`,
+                    type: 'wran'
+                })
+                return
+            }
             if(Number(this.money)<=Number(this.formData.data.alertmin)||Number(this.money)>=Number(this.formData.data.alertmax)){
                 this.$vux.toast.show({
                     text: `请确保充值金额大于${this.formData.data.alertmin},小于${this.formData.data.alertmax}`,
@@ -75,13 +74,17 @@ export default {
                 if(this.selectedBank.includes('网银支付')){
                     this.$set(this.formData.data,'bank_code',this.selectedWangyin)
                 }
+                var winRef = window.open("", "_blank")
                 thirdPayDeposit(this.formData).then(res => {
-                    window.open(res.data)
+                    winRef.location = res.data
                 })
             }
         },
         changeBank(){
-            if(this.selectedBank=='')return
+            if(this.selectedBank==''){
+                this.wangyinList = false
+                return
+            }
             const currentItem = this.banklist.filter(item => {
                 return item.title == this.selectedBank
             })
@@ -121,7 +124,6 @@ export default {
             this.changeBank()
         })
     },
-    mounted() {},
     components: {
         XButton,
         XInput,

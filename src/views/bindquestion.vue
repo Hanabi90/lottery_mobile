@@ -68,7 +68,7 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :required="true"
+                    :required="false"
                     title="请设定资金密码"
                     name="username"
                     type="password"
@@ -210,9 +210,10 @@ export default {
             if (name == 'formInline') {
                 setsequestion({ ...this.formInline }).then(res => {
                     this.$vux.toast.show({
-                        text: '资金密码设定成功',
+                        text: '密保设定成功',
                         type: 'success'
                     })
+                    this.$router.push({name:'个人中心'})
                 })
             }
             if (name == 'resetPassword') {
@@ -229,6 +230,7 @@ export default {
                         text: '资金密码设定成功',
                         type: 'success'
                     })
+                    this.$router.push({name:'个人中心'})
                 })
             }
         },

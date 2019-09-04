@@ -2,9 +2,9 @@
     <div>
         <div class="top_container">
             <group>
-                <div class="btns">
+                <!-- <div class="btns">
                     <x-button class="btn recharge" type="blue">切换成自动转换模式</x-button>
-                </div>
+                </div> -->
                 <div>
                     <selector
                         title="转账从："

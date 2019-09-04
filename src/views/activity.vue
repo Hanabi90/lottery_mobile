@@ -15,7 +15,7 @@
                             <span>{{item.act_begin_time.split(' ')[0]}}-{{item.act_end_time.split(' ')[0]}}</span>
                         </p>
                     </h5>
-                    <x-button type="orange">参与</x-button>
+                    <!-- <x-button type="orange">参与</x-button> -->
                 </div>
             </li>
         </ul>

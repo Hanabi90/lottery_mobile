@@ -165,7 +165,7 @@ export default {
         withdraw().then(res => {
             if(!res){
                 this.$router.push({
-                    name: 'bank',
+                    name: '绑定银行卡',
                     params: { secpass: 'test' }
                 })
             }else{

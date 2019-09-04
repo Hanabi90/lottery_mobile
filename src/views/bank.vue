@@ -283,7 +283,7 @@ export default {
         getbanklist().then(res => {
             var data = res.data
             for (const item of data) {
-                item.key = item.id+'#'+item.bank_name
+                item.key = item.bank_id+'#'+item.bank_name
                 item.value = item.bank_name
             }
             this.branchList = data
