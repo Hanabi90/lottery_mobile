@@ -108,6 +108,7 @@ export default {
                 this.$router.push({ name: '首页' })
                 this.$store.dispatch('handleNickName', res.data.username)
             })
+            this.getImgCode()
         },
         getImgCode(){
             popularizereg().then(res => {

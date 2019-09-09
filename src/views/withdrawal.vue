@@ -17,7 +17,7 @@
             </p>
             <flexbox>
                 <flexbox-item :span="0.3">用户名:</flexbox-item>
-                <flexbox-item :span="0.7">{{withdrawRes.user.user_name}}</flexbox-item>
+                <flexbox-item :span="0.7">{{withdrawRes.user['username']}}</flexbox-item>
             </flexbox>
             <flexbox>
                 <flexbox-item :span="0.3">可提款金额:</flexbox-item>
@@ -47,7 +47,7 @@
         <div class="content2" v-if="step2==1">
             <flexbox>
                 <flexbox-item :span="0.5">用户名:</flexbox-item>
-                <flexbox-item :span="0.5">{{withdrawRes.user.user_name}}</flexbox-item>
+                <flexbox-item :span="0.5">{{withdrawRes.user['username']}}</flexbox-item>
             </flexbox>
             <flexbox>
                 <flexbox-item :span="0.5">可提款金额:</flexbox-item>

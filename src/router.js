@@ -25,6 +25,12 @@ const router = new Router({
                 import(/* webpackChunkName: "home" */ './views/home.vue')
         },
         {
+            path: '/downloadApp',
+            name: 'downloadApp',
+            component: () =>
+                import(/* webpackChunkName: "downloadApp" */ './views/downloadApp.vue')
+        },
+        {
             path: '/bettingRecord',
             name: 'bettingRecord',
             component: () =>
@@ -63,7 +69,7 @@ const router = new Router({
         },
         {
             path: '/changeSecPassword',
-            name: '提款密码',
+            name: '资金密码',
             props:true,
             component: () =>
                 import(/* webpackChunkName: "changeSecPassword" */ './views/changeSecPassword.vue')
@@ -154,7 +160,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     if (!sessionStorage.getItem('token')) {
         if (to.name != 'login') {
-            if(to.name != 'registered'){
+            if(to.name != 'registered'&&to.name!='downloadApp' ){
                 router.push({ name: 'login' })
             }
         }

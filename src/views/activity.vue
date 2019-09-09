@@ -4,7 +4,7 @@
             <li v-for="(item, index) in activitylist" :key="index">
                 <img
                     @click="handleDetail(item)"
-                    :src="activitylist[index].mb"
+                    :src="activitylist[index].mb_banner"
                     alt
                 />
                 <div>

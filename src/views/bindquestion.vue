@@ -61,7 +61,7 @@
                     </div>
                 </group>
             </div>
-            <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案</div>
+            <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘资金密码的时候使用密保功能找回资金密码， 请妥善保管好您设定的密保问题和答案</div>
         </template>
         <template v-else>
             <div class="top_container money">
@@ -194,6 +194,13 @@ export default {
             if(name=="密保设定"){
                 this.tableIndex = 1
             }else{
+                if(this.listIndex==''){
+                    this.$vux.toast.show({
+                        text: '您还未设定密保，请先设定密保',
+                        type: 'text'
+                    })
+                    return
+                }
                 this.tableIndex = 2
             }
         },

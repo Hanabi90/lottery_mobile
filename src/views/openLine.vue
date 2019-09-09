@@ -38,7 +38,7 @@
                 <div class="qrcode_container">
                     <div>
                         <p>推广代码：{{item.code}}</p>
-                        <p>奖金组：{{item.odds}}</p>
+                        <!-- <p>奖金组：{{item.odds}}</p> -->
                     </div>
                     <div>
                         <span>二维码：</span>

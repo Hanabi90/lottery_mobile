@@ -109,8 +109,6 @@ service.interceptors.response.use(
                     sessionStorage.clear()
                     Router.push('/')
                     return new Promise(() => {})
-                case -81:
-                    return Promise.reject(response.data)
                 case -21:
                     Vue.$vux.toast.show({
                         text: response.data.msg,

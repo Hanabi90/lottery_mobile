@@ -30,7 +30,7 @@
                 <x-button class="btn recharge" type="orange" link="/deposit">充值</x-button>
                 <x-button class="btn withdrawal" @click.native="handleAlert('提现')" type="blue">提现</x-button>
                 <x-button class="btn history" link="/transfer" type="purple">转账</x-button>
-                <x-button class="btn history" @click.native="openkefu" type="lightblue">客服</x-button>
+                <!-- <x-button class="btn history" @click.native="openkefu" type="lightblue">客服</x-button> -->
             </div>
         </div>
         <div class="main_container">
@@ -49,7 +49,7 @@
                 <p>个人管理</p>
                 <ul>
                     <router-link class="li_grey" to="/changePassword" tag="li">登录密码</router-link>
-                    <router-link class="li_grey" to="/changeSecPassword" tag="li">提款密码</router-link>
+                    <router-link class="li_grey" to="/changeSecPassword" tag="li">资金密码</router-link>
                     <li class="li_grey" to="usercenter" @click="handleAlert('绑定银行卡')">绑定银行卡</li>
                     <li class="li_grey" to="/bindquestion" @click="handleAlert('密保设定')">密保设定</li>
                     <li class="li_grey zhanneixin_box">
@@ -157,7 +157,7 @@ export default {
                 getsecpass().then(res => {
                     if (!res) {
                         this.$router.push({
-                            name: '提款密码',
+                            name: '资金密码',
                             params: { fromRoute: true }
                         })
                         return
@@ -171,7 +171,7 @@ export default {
                 getsecpass().then(res => {
                     if (!res) {
                         this.$router.push({
-                            name: '提款密码',
+                            name: '资金密码',
                             params: { fromRoute: true }
                         })
                         return

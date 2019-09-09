@@ -24,7 +24,7 @@
                         v-model="formCustom.passwd"
                     ></x-input>
                 </group>
-                <span>由字母和数字组成6-16个字符，不可连续三个相同字符，登录密码不能和提款密码相同</span>
+                <span>由字母和数字组成6-16个字符，不可连续三个相同字符，登录密码不能和资金密码相同</span>
             </div>
             <group>
                 <x-input
@@ -42,7 +42,7 @@
                 <x-button class="btn recharge" type="orange" @click.native="handleSubmit">修改</x-button>
             </div>
         </div>
-        <div class="beizhu">备注：请妥善保管您的登录密码，如遗忘请使用您的提款密码重置。</div>
+        <div class="beizhu">备注：请妥善保管您的登录密码，如遗忘请使用您的资金密码重置。</div>
     </div>
 </template>
 

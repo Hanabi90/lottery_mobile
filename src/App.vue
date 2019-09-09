@@ -2,7 +2,7 @@
     <div id="lottery">
         <drawer
             class="drawerMap"
-            v-if="routerName!='login'&&routerName!='registered'"
+            v-if="routerName!='login'&&routerName!='registered'&&routerName!='downloadApp'"
             :show.sync="showMenus"
             placement="right"
         >
@@ -129,10 +129,23 @@ export default {
             if(/Android|HTC/i.test(UA) || !!(window.navigator['platform'] + '').match(/Linux/i)) UA = 'Android';
             else if(/iPad/i.test(UA) || /iPod|iPhone/i.test(UA)) UA = 'iOS';
             else UA = 'other';
-            this.$store.dispatch('handleIsApp',UA)
+            console.log(UA);
+        },
+        isWeiXin() {
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+                console.log('wechat');
+                return true;
+            }
+            else {
+                console.log('notwechat');
+                return false;
+            }
         }
     },
     mounted(){
+        this.isIosAnd()
+        this.isWeiXin()
         if(window.location.href.includes('app')){
             this.$store.dispatch('handleIsApp',true)
         }

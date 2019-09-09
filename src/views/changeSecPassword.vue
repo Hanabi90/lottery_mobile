@@ -5,9 +5,9 @@
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    title="输入旧提款密码："
+                    title="输入旧资金密码："
                     name="username"
-                    placeholder="输入旧提款密码"
+                    placeholder="输入旧资金密码"
                     type="password"
                     v-model="formCustom.oldPasswd"
                 ></x-input>
@@ -17,22 +17,22 @@
                     <x-input
                         ref="input"
                         :show-clear="false"
-                        :title="hasSecpass?'输入新提款密码：':'设置提款密码：'"
+                        :title="hasSecpass?'输入新资金密码：':'设置资金密码：'"
                         name="username"
-                        :placeholder="hasSecpass?'输入新提款密码：':'设置提款密码：'"
+                        :placeholder="hasSecpass?'输入新资金密码：':'设置资金密码：'"
                         type="password"
                         v-model="formCustom.passwd"
                     ></x-input>
                 </group>
-                <span>由字母和数字组成6-16个字符，不可连续3个相同字符，提款密码不能和登录密码相同</span>
+                <span>由字母和数字组成6-16个字符，不可连续3个相同字符，资金密码不能和登录密码相同</span>
             </div>
             <group>
                 <x-input
                     ref="input"
                     :show-clear="false"
-                    :title="hasSecpass?'确认新提款密码：':'确认提款密码：'"
+                    :title="hasSecpass?'确认新资金密码：':'确认资金密码：'"
                     name="username"
-                    :placeholder="hasSecpass?'确认新提款密码：':'确认提款密码'"
+                    :placeholder="hasSecpass?'确认新资金密码：':'确认资金密码'"
                     type="password"
                     v-model="formCustom.passwdCheck"
                 ></x-input>
@@ -42,7 +42,7 @@
                 <x-button class="btn recharge" type="orange" @click.native="handleSubmit">修改</x-button>
             </div>
         </div>
-        <div class="beizhu">备注：请妥善保管您的提款密码，如遗忘请使用密保功能找回或联系在线客服处理</div>
+        <div class="beizhu">备注：请妥善保管您的资金密码，如遗忘请使用密保功能找回或联系在线客服处理</div>
     </div>
 </template>
 

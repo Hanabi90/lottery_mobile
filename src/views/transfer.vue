@@ -49,7 +49,7 @@
                 </div>
             </group>
         </div>
-        <!-- <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘提款密码的时候使用密保功能找回提款密码， 请妥善保管好您设定的密保问题和答案</div> -->
+        <!-- <div class="beizhu">备注：密保设定是指您通过设定一些问题和答案，在 您遗忘资金密码的时候使用密保功能找回资金密码， 请妥善保管好您设定的密保问题和答案</div> -->
     </div>
 </template>
 
@@ -84,7 +84,7 @@ export default {
     },
     methods: {
         checkSelect(name) {
-            this.$set(this.quickAmount[5],'value',this.maxAmount)
+            this.$set(this.quickAmount[5],'value',Math.floor(this.maxAmount))
             if (name == '1') {
                 if (this.selector_1 !== '_main') {
                     this.selector_2 = '_main'
@@ -138,7 +138,7 @@ export default {
                 })
                 return
             }
-            if (Number(this.amount) <= 0) {
+            if (Number(this.amount) <= 0||String(this.amount).includes('.')) {
                 this.$vux.toast.show({
                     text: `金额必须为整数，并且大于1`
                 })
@@ -178,7 +178,7 @@ export default {
                     this.$set(this.userwallet[index], 'value', item.wallet_name)
                 })
                 this.userwalletCopy = [...this.userwallet]
-                this.$set(this.quickAmount[5],'value',this.maxAmount)
+                this.$set(this.quickAmount[5],'value',Math.floor(this.maxAmount))
             })
         }
     },

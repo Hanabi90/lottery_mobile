@@ -19,7 +19,7 @@
             </checker-item>
         </checker>
         <p class="dotted"></p>
-        <selector v-if="wangyinList" v-model="selectedWangyin" :options="wangyinList"></selector>
+        <!-- <selector v-if="wangyinList" v-model="selectedWangyin" :options="wangyinList"></selector> -->
         <span>充值金额(人民币)：</span>
         <div class="inputbox">
             <x-input type="number" :show-clear="false" v-model="money"></x-input>元
