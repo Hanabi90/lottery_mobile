@@ -28,9 +28,9 @@
                         style="fill:#fff;position:relative;top:-5px;right:-5px;"
                         @click="exit"
                     ></x-icon> -->
-                    <div slot="right" style="display:flex;color:#fff" @click="exit">
-                        <span>退出</span>
-                        <i class="icon iconfont icon-exit" style="fontSize:30px"></i>
+                    <div slot="right" style="display:flex;color:#fff" @click="openkefu">
+                        <span>客服</span>
+                        <i class="icon iconfont icon-kefu" style="fontSize:20px"></i>
                     </div>
                 </x-header>
 
@@ -93,18 +93,6 @@ export default {
         }
     },
     methods:{
-        exit() {
-            loginOut().then(res => {
-                // this.that.showMenus = false
-                sessionStorage.clear()
-                this.$vux.toast.show({
-                    text: '退出成功',
-                    type: 'success'
-                })
-                this.$store.dispatch('handleReset')
-                this.$router.push({name:'login'})
-            })
-        },
         IsPC() {
             var userAgentInfo = navigator.userAgent
             var Agents = new Array(
@@ -141,7 +129,10 @@ export default {
                 console.log('notwechat');
                 return false;
             }
-        }
+        },
+        openkefu() {
+            globalMobileIcon.openMobileInnerChat()
+        },
     },
     mounted(){
         this.isIosAnd()
@@ -185,7 +176,7 @@ html, body, #lottery
     overflow-x hidden
     position relative
 #lim_mobile_chat
-    // display none !important
+    display none !important
     top 80%
     left 80%
     bottom initial

@@ -22,46 +22,46 @@
 <script language="javascript"
     src="https://myquick.y2ss.com/chat/chatClient/monitor.js?jid=7651687265&companyID=5029118&configID=18446&codeType=custom&ss=1"></script>
 <script>
-    window.onload = function () {
-        var div1 = document.querySelector('#lim_mobile_chat');
-        //限制最大宽高，不让滑块出去
-        var oL,oT
-        var maxW = document.body.clientWidth - div1.offsetWidth;
-        var maxH = document.body.clientHeight - div1.offsetHeight;
-        //手指触摸开始，记录div的初始位置
-        div1.addEventListener('touchstart', function (e) {
-            var ev = e || window.event;
-            var touch = ev.targetTouches[0];
-            oL = touch.clientX - div1.offsetLeft;
-            oT = touch.clientY - div1.offsetTop;
-        });
-        //触摸中的，位置记录
-        div1.addEventListener('touchmove', function (e) {
-            var ev = e || window.event;
-            ev.preventDefault()
-            var touch = ev.targetTouches[0];
-            var oLeft = touch.clientX - oL;
-            var oTop = touch.clientY - oT;
-            if (oLeft < 0) {
-                oLeft = 0;
-            } else if (oLeft >= maxW) {
-                oLeft = maxW;
-            }
-            if (oTop < 0) {
-                oTop = 0;
-            } else if (oTop >= maxH) {
-                oTop = maxH;
-            }
-            div1.style.left = oLeft + 'px';
-            div1.style.top = oTop + 'px';
-        });
-        //触摸结束时的处理
+    // window.onload = function () {
+    //     var div1 = document.querySelector('#lim_mobile_chat');
+    //     //限制最大宽高，不让滑块出去
+    //     var oL,oT
+    //     var maxW = document.body.clientWidth - div1.offsetWidth;
+    //     var maxH = document.body.clientHeight - div1.offsetHeight;
+    //     //手指触摸开始，记录div的初始位置
+    //     div1.addEventListener('touchstart', function (e) {
+    //         var ev = e || window.event;
+    //         var touch = ev.targetTouches[0];
+    //         oL = touch.clientX - div1.offsetLeft;
+    //         oT = touch.clientY - div1.offsetTop;
+    //     });
+    //     //触摸中的，位置记录
+    //     div1.addEventListener('touchmove', function (e) {
+    //         var ev = e || window.event;
+    //         ev.preventDefault()
+    //         var touch = ev.targetTouches[0];
+    //         var oLeft = touch.clientX - oL;
+    //         var oTop = touch.clientY - oT;
+    //         if (oLeft < 0) {
+    //             oLeft = 0;
+    //         } else if (oLeft >= maxW) {
+    //             oLeft = maxW;
+    //         }
+    //         if (oTop < 0) {
+    //             oTop = 0;
+    //         } else if (oTop >= maxH) {
+    //             oTop = maxH;
+    //         }
+    //         div1.style.left = oLeft + 'px';
+    //         div1.style.top = oTop + 'px';
+    //     });
+    //     //触摸结束时的处理
         
-        //阻止默认事件
-        function defaultEvent(e) {
-            e.preventDefault();
-        }
-    }
+    //     //阻止默认事件
+    //     function defaultEvent(e) {
+    //         e.preventDefault();
+    //     }
+    // }
 </script>
 <!-- Webchat默认功能代码: 结束-->
 

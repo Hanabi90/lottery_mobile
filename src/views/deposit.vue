@@ -57,6 +57,14 @@ export default {
     },
     methods: {
         handleSubmit() {
+            if(this.banklist==null){
+                this.$vux.toast.show({
+                    text: `充值渠道正在维护，请联系客服`,
+                    type: 'wran'
+                })
+                this.$router.push({name:'个人中心'})
+                return
+            }
             if(this.selectedBank==''){
                this.$vux.toast.show({
                     text: `请选定一家充值方式`,
@@ -120,6 +128,12 @@ export default {
     created() {
         depositMain().then(res => {
             this.banklist = res.data
+            if(this.banklist==null){
+                this.$vux.toast.show({
+                    text: `充值渠道正在维护，请联系客服`,
+                    type: 'wran'
+                })
+            }
             this.selectedBank = this.banklist[0].title
             this.changeBank()
         })

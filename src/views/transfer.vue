@@ -155,6 +155,7 @@ export default {
                     })
                     this.amount = ''
                     this.getuserWallet()
+                    this.$router.back(-1)
                 })
             } else {
                 paramter.walletcode = this.selector_1
@@ -167,6 +168,7 @@ export default {
                     })
                     this.amount = ''
                     this.getuserWallet()
+                    this.$router.back(-1)
                 })
             }
         },

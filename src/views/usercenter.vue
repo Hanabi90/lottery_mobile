@@ -12,8 +12,12 @@
         </div>
         <div class="top_container">
             <div class="icon-wrap">
-                <x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
-                <span class="username">欢迎您,{{$store.state.nickname}}</span>
+                <div class="wrap"><x-icon slot="icon" size="30" type="ios-contact" class="icons contact"></x-icon>
+                <span class="username">欢迎您,{{$store.state.nickname}}</span></div>
+                <div class="wrap" style="display:flex;color:#fff" @click="exit">
+                    <span>登出</span>
+                    <i class="icon iconfont icon-exit" style="fontSize:20px"></i>
+                </div>
             </div>
             <div class="balance">
                 <span>
@@ -90,7 +94,8 @@ import {
     checksequestion,
     thirdgameGetuserwallet,
     getunreadmessageamount,
-    getbankinfo
+    getbankinfo,
+    loginOut
 } from '@/api/index.js'
 import md5 from 'js-md5'
 export default {
@@ -131,8 +136,17 @@ export default {
         }
     },
     methods: {
-        openkefu() {
-            globalMobileIcon.openMobileInnerChat()
+        exit() {
+            loginOut().then(res => {
+                // this.that.showMenus = false
+                sessionStorage.clear()
+                this.$vux.toast.show({
+                    text: '退出成功',
+                    type: 'success'
+                })
+                this.$store.dispatch('handleReset')
+                this.$router.push({name:'login'})
+            })
         },
         handleAlert(routename) {
             this.routename = routename
@@ -268,8 +282,12 @@ $gold = #f8ff35
         .icon-wrap
             display flex
             align-items center
+            justify-content space-between
             color #fff
             padding 20px 0
+            .wrap
+                display flex
+                align-items center
         .balance
             color $gold
             display flex
